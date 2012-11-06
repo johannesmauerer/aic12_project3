@@ -1,4 +1,34 @@
-target/
-.classpath
-.project
-.settings
+#=================
+#eclipse-workspace
+#=================
+eclipse-workspace
+
+#=================
+#eclipse-project
+#=================
+*.project
+*.classpath
+*.settings
+*bin
+*.springBeans
+*.checkstyle
+
+#=================
+#maven-files
+#=================
+*target
+
+#================
+#Mac OS X hidden files/folders
+#================
+.DS_Store
+
+#================
+#WinXP hidden files/folders
+#================
+*Thumbs.db
+
+#================
+#Assembly artifacts
+#================
+*.zip
