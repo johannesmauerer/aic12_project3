@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import aic12.project3.common.beans.Request;
+import aic12.project3.dao.tweetsManagement.DownloadManager;
 import aic12.project3.dao.tweetsManagement.TweetsDAO;
 import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.test.service.requestManagement.RequestAnalysisTestIF;
@@ -38,10 +39,14 @@ public class RequestAnalysisTest {
 		TweetsDAO daoMock = mock(TweetsDAO.class);
 		when(daoMock.getTweetsCount(any(Request.class))).thenReturn(false);
 		ra.setTweetsDAO(daoMock);
+		// mock downloadManager
+		DownloadManager dlMock = mock(DownloadManager.class);
+		ra.setDownloadManager(dlMock);
 		
 		ra.newRequest(req);
 		
 		verify(queueMock, never()).addRequest(req);
+		verify(dlMock, times(1)).downloadEnoughTweets(req);
 	}
 
 }
