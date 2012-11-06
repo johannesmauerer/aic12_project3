@@ -23,4 +23,9 @@ public class RequestQueueReadyImpl implements RequestQueueReady, RequestQueueRea
 		readyQueue = queue;
 	}
 
+	@Override
+	public Request getNextRequest() {
+		return readyQueue.poll();
+	}
+
 }

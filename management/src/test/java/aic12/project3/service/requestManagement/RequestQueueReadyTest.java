@@ -2,6 +2,7 @@ package aic12.project3.service.requestManagement;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.Queue;
 
@@ -33,6 +34,20 @@ public class RequestQueueReadyTest {
 		rqr.addRequest(req);
 		
 		verify(queueMock, times(1)).add(req);
+	}
+	
+	@Test
+	public void getNextRequestTest() throws Exception {
+		RequestQueueReadyTestIF rqr = ctx.getBean(RequestQueueReadyTestIF.class);
+		
+		Request expected = new Request();
+		// mock queue
+		Queue<Request> queueMock = mock(Queue.class);
+		when(queueMock.poll()).thenReturn(expected);
+		rqr.setQueue(queueMock);
+		
+		Request actual = rqr.getNextRequest();
+		assertThat(actual, is(expected));
 	}
 
 }
