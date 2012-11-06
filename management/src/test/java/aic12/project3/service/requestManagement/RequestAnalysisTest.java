@@ -48,5 +48,26 @@ public class RequestAnalysisTest {
 		verify(queueMock, never()).addRequest(req);
 		verify(dlMock, times(1)).downloadEnoughTweets(req);
 	}
+	
+	@Test
+	public void newRequestAddToReadyQueueTest() {
+		RequestAnalysisTestIF ra = ctx.getBean(RequestAnalysisTestIF.class);
+		Request req = new Request();
+		// mock queue
+		RequestQueueReady queueMock = mock(RequestQueueReady.class);
+		ra.setRequestQueueReady(queueMock);
+		// mock tweetsDao
+		TweetsDAO daoMock = mock(TweetsDAO.class);
+		when(daoMock.getTweetsCount(any(Request.class))).thenReturn(true);
+		ra.setTweetsDAO(daoMock);
+		// mock downloadManager
+		DownloadManager dlMock = mock(DownloadManager.class);
+		ra.setDownloadManager(dlMock);
+		
+		ra.newRequest(req);
+		
+		verify(queueMock, times(1)).addRequest(req);
+		verify(dlMock, never()).downloadEnoughTweets(req);
+	}
 
 }
