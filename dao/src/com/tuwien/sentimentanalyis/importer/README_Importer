@@ -1,0 +1,10 @@
+
+The importer Class is for importing tweets 
+
+When an importer gets instantiated, its constructors takes two Strings as input. 
+One is the Name of the File that has to be imported. The other one is the name of a properties file, which saves the state of an import.
+
+The state gets saved as a float number in form of a private variable in the Importer class.
+Whenever a line gets imported in the Database it saves the state to a properties file
+
+
