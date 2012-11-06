@@ -51,7 +51,7 @@ public class SentimentService
 
             int i = 0;
             long start = System.currentTimeMillis();
-            for (Tweet tweet : result.getTweets())
+            for (Tweet tweet : (List<Tweet>)result.getTweets())
             {
                 System.out.println("Tweet from: " + tweet.getCreatedAt());
                 System.out.println(tweet.getText());
