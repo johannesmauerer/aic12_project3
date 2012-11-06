@@ -1,4 +1,4 @@
-package aic12.service.requestManagement;
+package aic12.project3.service.requestManagement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
