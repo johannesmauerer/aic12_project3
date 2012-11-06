@@ -10,7 +10,7 @@ public class App {
 	 */
 	public static void main(String[] args) {
 		
-		iImporter importer = new Importer("/home/snapper/tweets.txt","tweets.properties");
+		iImporter importer = new Importer("example_tweets.txt","example_tweets.properties");
 		DBCollection collection = importer.connectToCollection("localhost", 44444, "sentimentanalysis", "tweets");
 		
 		importer.importTweets(collection);
