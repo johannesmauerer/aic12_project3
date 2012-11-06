@@ -1,12 +1,10 @@
 package aic12.project3.service.requestManagement;
 
-import org.springframework.stereotype.Component;
+import aic12.project3.common.beans.Request;
 
-@Component
-public class RequestQueueReady {
 
-	public String some() {
-		return "some";
-	}
+public interface RequestQueueReady {
+
+	public void addRequest(Request req);
 
 }
