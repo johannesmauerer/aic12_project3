@@ -17,7 +17,7 @@ import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.test.service.requestManagement.RequestAnalysisTestIF;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/aic12/service/app-config.xml")
+@ContextConfiguration(locations="/aic12/project3/service/app-config.xml")
 public class RequestAnalysisTest {
 	
 	@Autowired
