@@ -150,7 +150,7 @@ public class DocumentsSet {
             		tmp = st.nextToken();
             		if(f2i.get(tmp)!=null) {
             			num = f2i.get(tmp);
-            			//solo se non lo contiene già
+            			//solo se non lo contiene gi
             			if(!index.get(i).contains(num))
             				index.get(i).add(num);
             		}
@@ -193,7 +193,7 @@ public class DocumentsSet {
             		tmp = st.nextToken();
             		if(f2i.get(tmp)!=null) {
             			num = f2i.get(tmp);
-            			//solo se non lo contiene già
+            			//solo se non lo contiene gi
             			if(!index.get(i).contains(num)) {
             				index.get(i).add(num);
             				index_str.get(i).add(tmp);

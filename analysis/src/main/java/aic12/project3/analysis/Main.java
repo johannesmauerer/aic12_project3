@@ -1,4 +1,4 @@
-package main;
+package aic12.project3.analysis;
 
 import java.util.LinkedList;
 import java.util.List;
