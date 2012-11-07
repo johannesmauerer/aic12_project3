@@ -12,8 +12,8 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import aic.project3.analysis.core.documents.DocumentsSet;
-import aic.project3.analysis.core.util.Options;
+import aic12.project3.analysis.core.documents.DocumentsSet;
+import aic12.project3.analysis.core.util.Options;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;

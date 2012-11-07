@@ -1,4 +1,4 @@
-package aic.project3.analysis.core.documents;
+package aic12.project3.analysis.core.documents;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 
 import classifier.Preprocesser;
 
-import aic.project3.analysis.core.util.Options;
+import aic12.project3.analysis.core.util.Options;
 
 
 
