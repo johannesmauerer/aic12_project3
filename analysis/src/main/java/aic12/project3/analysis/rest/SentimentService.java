@@ -34,7 +34,7 @@ public class SentimentService
 
     public SentimentService() throws Exception
     {
-        // Pre chaching of neural networks
+        //Pre chaching of neural networks
         List<IClassifier> classifiers = new LinkedList<IClassifier>();
         ClassifierBuilder cb = new ClassifierBuilder();
         WekaClassifier wc1 = cb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
@@ -45,7 +45,7 @@ public class SentimentService
         classifiers.add(wc3);
         wm = new WeightedMajority(classifiers);
 
-        // Running test classification for further caching
+        //Running test classification for further caching
         wm.weightedClassify("test");
     }
 
@@ -57,7 +57,7 @@ public class SentimentService
     {
         List<Tweet> tweets = new ArrayList<Tweet>();
 
-        // TODO: query database for tweets
+        //TODO: query database for tweets
         
         //so far Twitter4J is used
         {

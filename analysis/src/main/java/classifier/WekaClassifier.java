@@ -22,7 +22,7 @@ public class WekaClassifier implements IClassifier, Serializable {
 	private static final long serialVersionUID = 539728411811295588L;
 	private Classifier _cl;
 	private Instances _train;
-		
+	
 	public WekaClassifier() throws Exception {
 	    DataSource source_train = new DataSource(WekaClassifier.class.getClassLoader().getResourceAsStream("train1.arff"));
 		_train = source_train.getDataSet();

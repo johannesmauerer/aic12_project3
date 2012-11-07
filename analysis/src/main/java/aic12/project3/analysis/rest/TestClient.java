@@ -29,7 +29,7 @@ public class TestClient
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
         
         Client client = Client.create(config);
-        WebResource resource = client.resource("http://localhost:8080/cloudservice-1.0-SNAPSHOT/sentiment/analyze");
+        WebResource resource = client.resource("http://localhost:8080/cloudservice-analysis-1.0-SNAPSHOT/sentiment/analyze");
         Response response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Response.class, request);
         System.out.println("Amount: " + response.getNumberOfTweets() + " - Sentiment: " + response.getSentiment());
     }
