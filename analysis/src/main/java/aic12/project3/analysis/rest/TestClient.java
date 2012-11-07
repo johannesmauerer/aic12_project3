@@ -1,52 +1,35 @@
 package aic12.project3.analysis.rest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
 
+import javax.ws.rs.core.MediaType;
+
 import aic12.project3.common.beans.Request;
+import aic12.project3.common.beans.Response;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 
 public class TestClient
 {
     public static void main(String[] args) throws IOException
     {
-        URL url = new URL("http://localhost:8080/cloudservice-1.0-SNAPSHOT/sentiment/analyze");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setDoOutput(true);
-        con.setRequestMethod("GET");
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Accept", "application/json");
-        
         Request request = new Request();
         request.setId(1);
-        request.setCompanyName("microsoft");
+        request.setCompanyName("affe");
         request.setMinNoOfTweets(25);
         request.setFrom(new Date());
         request.setTo(new Date());
         
-        OutputStream os = con.getOutputStream();
-        os.write(request.toJSON().getBytes());
-        os.flush();
+        ClientConfig config = new DefaultClientConfig();
+        config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
         
-        if (con.getResponseCode() != HttpURLConnection.HTTP_OK)
-        {
-            System.out.println("error");
-        }
-        else
-        {
-            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-
-            String output;
-            while ((output = br.readLine()) != null)
-            {
-                System.out.println(output);
-            }
-        }
-        
-        con.disconnect();
+        Client client = Client.create(config);
+        WebResource resource = client.resource("http://localhost:8080/cloudservice-1.0-SNAPSHOT/sentiment/analyze");
+        Response response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Response.class, request);
     }
 }

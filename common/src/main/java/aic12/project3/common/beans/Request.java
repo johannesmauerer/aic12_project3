@@ -77,9 +77,4 @@ public class Request
     {
         this.to = sdf.format(to);
     }
-    
-    public String toJSON()
-    {
-        return "{\"id\":" + id + ",\"companyName\":\"" + companyName + "\",\"minNoOfTweets\":" + minNoOfTweets + ",\"from\":\"" + from + "\",\"to\":\"" + to + "\"}";
-    }
 }
