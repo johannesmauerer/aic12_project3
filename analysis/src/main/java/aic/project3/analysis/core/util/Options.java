@@ -1,9 +1,10 @@
-package util;
+package aic.project3.analysis.core.util;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import classifier.WekaClassifier;
+import aic.project3.analysis.core.classifier.WekaClassifier;
+
 /**
  * class to manage training options
  */

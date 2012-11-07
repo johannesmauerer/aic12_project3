@@ -1,8 +1,7 @@
-package classifier;
+package aic.project3.analysis.core.classifier;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,13 +12,11 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import aic.project3.analysis.core.documents.DocumentsSet;
+import aic.project3.analysis.core.util.Options;
 
-import util.ArffFileCreator;
-import util.Options;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
-
-import documents.DocumentsSet;
 
 /**
  * The receiver class
@@ -47,33 +44,6 @@ public class ClassifierBuilder {
 	 */
 	public void setOpt(Options opt) {
 		this.opt = opt;
-	}
-	
-	/**
-	 * prepares data structures for classifier train
-	 * @throws IOException
-	 */
-	public void prepareTrain() throws IOException {
-		_ds.createFilePreprocessed("files/train.txt", "files/train_doc.txt", opt);
-		_ds.createIndexTrain("files/train_doc.txt");
-		if(this.opt.isSelectedFeaturesByFrequency())
-			_ds.getFeat().selectFeaturesByFrequency(2);
-		ArffFileCreator fc = new ArffFileCreator();
-		fc.setDs(_ds);
-		fc.createArff_train("files/train1.arff");
-	}
-	
-	/**
-	 * prepares data structures for classifier test
-	 * @throws IOException
-	 */
-	public void prepareTest() throws IOException {
-		_ds.createFilePreprocessed("files/test_base.txt", "files/test_doc.txt", opt);
-		_ds.createIndexTest("files/test_doc.txt");
-		ArffFileCreator fc = new ArffFileCreator();
-		fc.setDs(_ds);
-		fc.createArff_test("files/test1.arff");
-		
 	}
 	
 	/**
@@ -149,45 +119,5 @@ public class ClassifierBuilder {
 			int target = Integer.parseInt(myInput.readLine());
 			ist.setTarget(target);
 		}
-	}
-	
-	/**
-	 * calculates weighted majority classifier's precision
-	 * @throws Exception
-	 */
-	public void calculateWmPrecision() throws Exception {
-		List<IClassifier> wc = new LinkedList<IClassifier>();
-		for (String str : this.opt.getWmClassifiersName()) {
-			wc.add(this.retrieveClassifier(str));
-		}
-		WeightedMajority wm = new WeightedMajority(wc);
-		int i = 1;
-		float correct = 0;
-		float[] fun;
-		fun = new float[183];
-		Preprocesser pr = new Preprocesser();
-		Item temp;
-        FileInputStream fstream = new FileInputStream("files/test_base.txt");
-        DataInputStream in = new DataInputStream(fstream);
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        String strLine;
-        String str;
-        int pol;
-        while ((strLine = br.readLine()) != null) {
-    		String[] items = strLine.split(";;");
-    		str = items[5].toLowerCase();
-    		pol = Integer.parseInt(items[0]);
-    		temp = wm.weightedClassify(pr.preprocessDocument(str));
-    		temp.setTarget(pol);
-    		wm.setTarget(temp);
-    		if(temp.getPolarity() == temp.getTarget())
-    			correct++;
-    		System.out.println(correct/i);
-    		System.out.print(wm.get_cl2weight().get(1) + " ");
-    		System.out.print(wm.get_cl2weight().get(2) + " ");
-    		System.out.println(wm.get_cl2weight().get(3));
-    		fun[i-1] = correct/i;
-    		i++;
-        }
 	}
 }

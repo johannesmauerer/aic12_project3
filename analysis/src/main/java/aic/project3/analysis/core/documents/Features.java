@@ -1,4 +1,4 @@
-package documents;
+package aic.project3.analysis.core.documents;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

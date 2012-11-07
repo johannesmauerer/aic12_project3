@@ -1,4 +1,4 @@
-package documents;
+package aic.project3.analysis.core.documents;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import util.Options;
+import aic.project3.analysis.core.classifier.Preprocesser;
+import aic.project3.analysis.core.util.Options;
 
-import classifier.Preprocesser;
+
 
 /**
  * class representing a tweets' dataset

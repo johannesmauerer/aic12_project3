@@ -9,6 +9,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import aic.project3.analysis.core.classifier.ClassifierBuilder;
+import aic.project3.analysis.core.classifier.IClassifier;
+import aic.project3.analysis.core.classifier.WeightedMajority;
+import aic.project3.analysis.core.classifier.WekaClassifier;
+
 import com.sun.jersey.spi.resource.Singleton;
 
 import twitter4j.Query;
@@ -17,10 +22,6 @@ import twitter4j.Tweet;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import classifier.ClassifierBuilder;
-import classifier.IClassifier;
-import classifier.WeightedMajority;
-import classifier.WekaClassifier;
 
 @Singleton
 @Path("/sentiment")
@@ -30,6 +31,7 @@ public class SentimentService
     
     public SentimentService() throws Exception
     {
+        //Pre chaching of neural networks 
         List<IClassifier> classifiers = new LinkedList<IClassifier>();
         ClassifierBuilder cb = new ClassifierBuilder();
         WekaClassifier wc1 = cb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
@@ -39,6 +41,9 @@ public class SentimentService
         classifiers.add(wc2);
         classifiers.add(wc3);
         wm = new WeightedMajority(classifiers);
+        
+        //Running test classification for further caching
+        wm.weightedClassify("test");
     }
     
     @GET
@@ -46,6 +51,7 @@ public class SentimentService
     @Produces("text/plain")
     public Response analyze(@PathParam("param") String term)
     {
+        //TODO: query database for tweets
         try
         {
             int amount = 25;

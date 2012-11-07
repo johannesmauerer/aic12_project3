@@ -1,8 +1,9 @@
-package classifier;
+package aic.project3.analysis.core.classifier;
 
 import java.util.StringTokenizer;
 
-import util.Options;
+import aic.project3.analysis.core.util.Options;
+
 
 /**
  * class that preprocess a tweet
