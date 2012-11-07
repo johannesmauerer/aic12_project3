@@ -17,20 +17,13 @@ import aic12.project3.dao.tweetsManagement.TweetsDAO;
 import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.test.service.requestManagement.RequestAnalysisTestIF;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/aic12/project3/service/app-config.xml")
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations="/aic12/project3/service/app-config.xml")
 public class RequestAnalysisTest {
 	
-	@Autowired
-	private ApplicationContext ctx;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
 	@Test
 	public void newRequestNotEnoughTweetsTest() {
-		RequestAnalysisTestIF ra = ctx.getBean(RequestAnalysisTestIF.class);
+		RequestAnalysisTestIF ra = new RequestAnalysisImpl();
 		Request req = new Request();
 		req.setMinNoOfTweets(200);
 		
@@ -53,7 +46,7 @@ public class RequestAnalysisTest {
 	
 	@Test
 	public void newRequestAddToReadyQueueTest() {
-		RequestAnalysisTestIF ra = ctx.getBean(RequestAnalysisTestIF.class);
+		RequestAnalysisTestIF ra = new RequestAnalysisImpl();
 		Request req = new Request();
 		req.setMinNoOfTweets(10);
 		
