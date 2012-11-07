@@ -3,6 +3,14 @@ package aic12.project3.analysis.rest;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import com.sun.jersey.spi.resource.Singleton;
+
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Tweet;
@@ -14,16 +22,28 @@ import classifier.IClassifier;
 import classifier.WeightedMajority;
 import classifier.WekaClassifier;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
-
+@Singleton
 @Path("/sentiment")
 public class SentimentService
 {
+    private WeightedMajority wm;
+    
+    public SentimentService() throws Exception
+    {
+        List<IClassifier> classifiers = new LinkedList<IClassifier>();
+        ClassifierBuilder cb = new ClassifierBuilder();
+        WekaClassifier wc1 = cb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
+        WekaClassifier wc2 = cb.retrieveClassifier("weka.classifiers.trees.J48");
+        WekaClassifier wc3 = cb.retrieveClassifier("wlsvm.WLSVM");
+        classifiers.add(wc1);
+        classifiers.add(wc2);
+        classifiers.add(wc3);
+        wm = new WeightedMajority(classifiers);
+    }
+    
     @GET
     @Path("/{param}")
+    @Produces("text/plain")
     public Response analyze(@PathParam("param") String term)
     {
         try
@@ -35,16 +55,6 @@ public class SentimentService
             query.setLang("en");
             query.setRpp(amount);
             QueryResult result = twitter.search(query);
-
-            List<IClassifier> classifiers = new LinkedList<IClassifier>();
-            ClassifierBuilder cb = new ClassifierBuilder();
-            WekaClassifier wc1 = cb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
-            WekaClassifier wc2 = cb.retrieveClassifier("weka.classifiers.trees.J48");
-            WekaClassifier wc3 = cb.retrieveClassifier("wlsvm.WLSVM");
-            classifiers.add(wc1);
-            classifiers.add(wc2);
-            classifiers.add(wc3);
-            WeightedMajority wm = new WeightedMajority(classifiers);
 
             System.out.println("Creating sentiment analysis for term: '" + term + "' with " + amount + " tweets");
             System.out.println("------------------------------------------------");

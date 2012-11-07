@@ -33,9 +33,6 @@
         <configuration>
           <webXml>${project.build.outputDirectory}/WEB-INF/web.xml</webXml>
           <attachClasses>true</attachClasses>
-          <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
         </configuration>
       </plugin>
     </plugins>
@@ -63,13 +60,6 @@
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-stable</artifactId>
       <version>3.6.8</version>
-    </dependency>
-    <dependency>
-      <groupId>unknown</groupId>
-      <artifactId>wlsvm</artifactId>
-      <version>unknown</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/wlsvm.jar</systemPath>
     </dependency>
 
     <dependency>
