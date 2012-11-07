@@ -6,6 +6,7 @@ public class Request
 {
     private int id;
     private String companyName;
+    //TODO: not so sure what we need this for - should rather be decided centrally in the end and not on worker node level
     private int minNoOfTweets;
     private Date from;
     private Date to;
