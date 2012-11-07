@@ -32,12 +32,14 @@ public class RequestAnalysisTest {
 	public void newRequestNotEnoughTweetsTest() {
 		RequestAnalysisTestIF ra = ctx.getBean(RequestAnalysisTestIF.class);
 		Request req = new Request();
+		req.setMinNoOfTweets(200);
+		
 		// mock queue
 		RequestQueueReady queueMock = mock(RequestQueueReady.class);
 		ra.setRequestQueueReady(queueMock);
 		// mock tweetsDao
 		TweetsDAO daoMock = mock(TweetsDAO.class);
-		when(daoMock.getTweetsCount(any(Request.class))).thenReturn(false);
+		when(daoMock.getTweetsCount(any(Request.class))).thenReturn(100);
 		ra.setTweetsDAO(daoMock);
 		// mock downloadManager
 		DownloadManager dlMock = mock(DownloadManager.class);
@@ -53,12 +55,14 @@ public class RequestAnalysisTest {
 	public void newRequestAddToReadyQueueTest() {
 		RequestAnalysisTestIF ra = ctx.getBean(RequestAnalysisTestIF.class);
 		Request req = new Request();
+		req.setMinNoOfTweets(10);
+		
 		// mock queue
 		RequestQueueReady queueMock = mock(RequestQueueReady.class);
 		ra.setRequestQueueReady(queueMock);
 		// mock tweetsDao
 		TweetsDAO daoMock = mock(TweetsDAO.class);
-		when(daoMock.getTweetsCount(any(Request.class))).thenReturn(true);
+		when(daoMock.getTweetsCount(any(Request.class))).thenReturn(100);
 		ra.setTweetsDAO(daoMock);
 		// mock downloadManager
 		DownloadManager dlMock = mock(DownloadManager.class);

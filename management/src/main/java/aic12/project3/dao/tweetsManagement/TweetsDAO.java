@@ -4,6 +4,6 @@ import aic12.project3.common.beans.Request;
 
 public interface TweetsDAO {
 
-	boolean getTweetsCount(Request req);
+	int getTweetsCount(Request req);
 
 }

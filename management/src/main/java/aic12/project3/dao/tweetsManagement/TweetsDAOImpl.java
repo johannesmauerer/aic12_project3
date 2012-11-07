@@ -8,9 +8,9 @@ import aic12.project3.common.beans.Request;
 public class TweetsDAOImpl implements TweetsDAO {
 
 	@Override
-	public boolean getTweetsCount(Request req) {
+	public int getTweetsCount(Request req) {
 		// TODO Auto-generated method stub
-		return false;
+		return 0;
 	}
 
 }

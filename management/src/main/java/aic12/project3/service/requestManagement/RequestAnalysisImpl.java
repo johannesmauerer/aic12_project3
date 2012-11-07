@@ -21,7 +21,7 @@ public class RequestAnalysisImpl implements RequestAnalysis, RequestAnalysisTest
 
 	@Override
 	public void newRequest(Request req) {
-		if(tweetsDAO.getTweetsCount(req)) {
+		if(tweetsDAO.getTweetsCount(req) >= req.getMinNoOfTweets()) {
 			requestQueueReady.addRequest(req);
 		} else {
 			downloadManager.downloadEnoughTweets(req);
