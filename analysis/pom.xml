@@ -55,11 +55,9 @@
       <version>[2.2,)</version>
     </dependency>
     <dependency>
-      <groupId>tw.edu.ntu.csie</groupId>
+      <groupId>unknown</groupId>
       <artifactId>libsvm</artifactId>
       <version>unknown</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/libsvm.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>

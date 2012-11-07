@@ -66,7 +66,7 @@ public class SentimentService
             System.out.println("Overall polarity: " + (double) i / amount / 4);
             System.out.println("Time taken: " + (System.currentTimeMillis() - start) + " ms");
             
-            return Response.status(200).entity((double) i / amount / 4).build();
+            return Response.status(200).entity("" + (double) i / amount / 4).build();
         }
         catch (TwitterException te)
         {
