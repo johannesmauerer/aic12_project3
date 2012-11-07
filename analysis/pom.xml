@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>aic12.project3</groupId>
     <artifactId>cloudservice-parent</artifactId>
@@ -13,14 +14,28 @@
 
   <name>CloudService :: Sentiment Analysis</name>
 
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
 
   <build>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
       </resource>
+      <resource>
+        <directory>src/main/webapp</directory>
+      </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <webXml>${project.build.outputDirectory}/WEB-INF/web.xml</webXml>
+          <attachClasses>true</attachClasses>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
@@ -28,31 +43,43 @@
       <groupId>aic12.project3</groupId>
       <artifactId>cloudservice-common</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.twitter4j</groupId>
       <artifactId>twitter4j-core</artifactId>
       <version>[2.2,)</version>
     </dependency>
     <dependency>
-      <groupId>tw.edu.ntu.csie</groupId>
+      <groupId>unknown</groupId>
       <artifactId>libsvm</artifactId>
       <version>unknown</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/libsvm.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-stable</artifactId>
       <version>3.6.8</version>
     </dependency>
+
     <dependency>
-      <groupId>unknown</groupId>
-      <artifactId>wlsvm</artifactId>
-      <version>unknown</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/wlsvm.jar</systemPath>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-servlet</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${com.sun.jersey.version}</version>
     </dependency>
   </dependencies>
 </project>

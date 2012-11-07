@@ -20,7 +20,6 @@
       <groupId>aic12.project3</groupId>
       <artifactId>cloudservice-common</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
