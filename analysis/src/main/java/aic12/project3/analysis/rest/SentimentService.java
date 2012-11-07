@@ -1,5 +1,6 @@
 package aic12.project3.analysis.rest;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,10 +31,10 @@ import com.sun.jersey.spi.resource.Singleton;
 public class SentimentService
 {
     private WeightedMajority wm;
-    
+
     public SentimentService() throws Exception
     {
-        //Pre chaching of neural networks 
+        // Pre chaching of neural networks
         List<IClassifier> classifiers = new LinkedList<IClassifier>();
         ClassifierBuilder cb = new ClassifierBuilder();
         WekaClassifier wc1 = cb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
@@ -43,66 +44,69 @@ public class SentimentService
         classifiers.add(wc2);
         classifiers.add(wc3);
         wm = new WeightedMajority(classifiers);
-        
-        //Running test classification for further caching
+
+        // Running test classification for further caching
         wm.weightedClassify("test");
     }
-    
+
     @POST
     @Path("analyze")
     @Consumes("application/json")
     @Produces("application/json")
     public Response analyze(Request request)
     {
-        List<Tweet> tweets;
-        //TODO: query database for tweets
+        List<Tweet> tweets = new ArrayList<Tweet>();
+
+        // TODO: query database for tweets
         
-        try
+        //so far Twitter4J is used
         {
-            int amount = request.getMinNoOfTweets();
             Twitter twitter = new TwitterFactory().getInstance();
-            
+
             Query query = new Query(request.getCompanyName());
             query.setLang("en");
-            query.setRpp(amount);
-            QueryResult result = twitter.search(query);
+            query.setRpp(100);
+            
+            try
+            {
+                QueryResult result = twitter.search(query);
+                tweets = result.getTweets();
+            }
+            catch (TwitterException e)
+            {
+                throw new WebApplicationException(javax.ws.rs.core.Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve tweets").build());
+            }
+        }
+        
+        System.out.println("Creating sentiment analysis for: '" + request.getCompanyName() + "' with " + tweets.size() + " tweets");
+        System.out.println("------------------------------------------------");
 
-            System.out.println("Creating sentiment analysis for term: '" + request.getCompanyName() + "' with " + amount + " tweets");
-            System.out.println("------------------------------------------------");
-
+        try
+        {
+            //Iterating through and counting the result
             int i = 0;
-            long start = System.currentTimeMillis();
-            for (Tweet tweet : (List<Tweet>)result.getTweets())
+            for (Tweet tweet : tweets)
             {
                 System.out.println("Tweet from: " + tweet.getCreatedAt());
                 System.out.println(tweet.getText());
-
+    
                 int polarity = wm.weightedClassify(tweet.getText()).getPolarity();
                 System.out.println("Calculated polarity: " + polarity);
                 i += polarity;
                 System.out.println("------------------------------------------------");
             }
-
-            System.out.println("------------------------------------------------");
-            System.out.println("Overall polarity: " + (float) i / amount / 4);
-            System.out.println("Time taken: " + (System.currentTimeMillis() - start) + " ms");
             
+            System.out.println("------------------------------------------------");
+            System.out.println("Overall polarity: " + (float) i / tweets.size() / 4);
+    
             Response response = new Response();
-            response.setSentiment((float) i / amount / 4);
-            response.setNumberOfTweets(25);
+            response.setSentiment((float) i / tweets.size() / 4);
+            response.setNumberOfTweets(tweets.size());
             return response;
-        }
-        catch (TwitterException te)
-        {
-            te.printStackTrace();
-            System.out.println("Failed to search tweets: " + te.getMessage());
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            System.out.println("Failed to analyze tweets: " + e.getMessage());
+            throw new WebApplicationException(javax.ws.rs.core.Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to classify tweets").build());
         }
-
-        throw new WebApplicationException(javax.ws.rs.core.Response.status(Status.INTERNAL_SERVER_ERROR).entity("Exception occured").build());
     }
 }

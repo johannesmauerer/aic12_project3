@@ -1,18 +1,15 @@
 package aic12.project3.common.beans;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Request
 {
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    
     private int id;
     private String companyName;
+    //TODO: not so sure what we need this for - should rather be decided centrally in the end and not on worker node level
     private int minNoOfTweets;
-    private String from;
-    private String to;
+    private Date from;
+    private Date to;
     
     public int getId()
     {
@@ -46,35 +43,21 @@ public class Request
     
     public Date getFrom()
     {
-        try
-        {
-            return sdf.parse(from);
-        }
-        catch (ParseException e)
-        {
-            return null;
-        }
+        return from;
     }
     
     public void setFrom(Date from)
     {
-        this.from = sdf.format(from);
+        this.from = from;
     }
     
     public Date getTo()
     {
-        try
-        {
-            return sdf.parse(to);
-        }
-        catch (ParseException e)
-        {
-            return null;
-        }
+        return to;
     }
     
     public void setTo(Date to)
     {
-        this.to = sdf.format(to);
+        this.to = to;
     }
 }

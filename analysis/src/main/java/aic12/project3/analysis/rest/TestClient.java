@@ -20,7 +20,7 @@ public class TestClient
     {
         Request request = new Request();
         request.setId(1);
-        request.setCompanyName("affe");
+        request.setCompanyName("microsoft");
         request.setMinNoOfTweets(25);
         request.setFrom(new Date());
         request.setTo(new Date());
@@ -31,5 +31,6 @@ public class TestClient
         Client client = Client.create(config);
         WebResource resource = client.resource("http://localhost:8080/cloudservice-1.0-SNAPSHOT/sentiment/analyze");
         Response response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Response.class, request);
+        System.out.println("Amount: " + response.getNumberOfTweets() + " - Sentiment: " + response.getSentiment());
     }
 }
