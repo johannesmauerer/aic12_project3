@@ -8,5 +8,7 @@ public interface RequestQueueReady {
 	public void addRequest(Request req);
 
 	Request getNextRequest();
+	
+	int getNumberOfTweetsInQueue();
 
 }
