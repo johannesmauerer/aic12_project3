@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import aic12.project3.common.beans.Request;
 import aic12.project3.dao.tweetsManagement.TweetsDAO;
+import aic12.project3.test.service.requestManagement.RequestQueueReadyTestIF;
 
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations="/aic12/project3/service/app-config.xml")
