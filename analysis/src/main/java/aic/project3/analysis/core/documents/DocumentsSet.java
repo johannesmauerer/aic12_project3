@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import aic.project3.analysis.core.classifier.Preprocesser;
+import classifier.Preprocesser;
+
 import aic.project3.analysis.core.util.Options;
 
 

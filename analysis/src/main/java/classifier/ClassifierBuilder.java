@@ -1,4 +1,4 @@
-package aic.project3.analysis.core.classifier;
+package classifier;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -45,42 +45,6 @@ public class ClassifierBuilder {
 	public void setOpt(Options opt) {
 		this.opt = opt;
 	}
-	
-	/**
-	 * constructs and serializes a Weka classifier
-	 * @param classifier the classifier to construct
-	 * @return the constructed Weka classifier
-	 * @throws Exception
-	 */
-	public WekaClassifier constructClassifier(Classifier classifier) throws Exception {
-		WekaClassifier clas = new WekaClassifier();
-		clas.setClassifier(classifier);
-		if(this.opt.getNumFeatures()!=0)
-			clas.selectFeatures(opt.getNumFeatures());
-		System.out.println("inizio train");
-		clas.train();
-		ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("files/" + classifier.getClass().getName() + ".model"));
-		os.writeObject(clas);
-		this.opt.setConstructedClassifier(clas);
-		os.close();
-		return clas;
-	}
-	
-	/**
-	 * constructs and serializes a classifier whose name is in options
-	 * @throws Exception
-	 */
-	public void constructClassifierByName() throws Exception {
-		if(this.opt.getClassifierName().equals("weka.classifiers.functions.MultilayerPerceptron")) {
-			MultilayerPerceptron mp = (MultilayerPerceptron)Class.forName(this.opt.getClassifierName()).newInstance();
-			mp.setHiddenLayers("o");
-			mp.setTrainingTime(10);
-			this.constructClassifier(mp);
-		} else {
-			Classifier cl = (Classifier)Class.forName(this.opt.getClassifierName()).newInstance();
-			this.constructClassifier(cl);
-		}
-}
 	
 	/**
 	 * deserializes a classifier whose name is given

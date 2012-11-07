@@ -1,4 +1,4 @@
-package aic.project3.analysis.core.classifier;
+package classifier;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,7 +8,6 @@ import java.util.StringTokenizer;
 import weka.attributeSelection.InfoGainAttributeEval;
 import weka.attributeSelection.Ranker;
 import weka.classifiers.Classifier;
-import weka.classifiers.Evaluation;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -23,13 +22,10 @@ public class WekaClassifier implements IClassifier, Serializable {
 	private static final long serialVersionUID = 539728411811295588L;
 	private Classifier _cl;
 	private Instances _train;
-	private Instances _test;
-	
+		
 	public WekaClassifier() throws Exception {
-		DataSource source_train = new DataSource("files/train1.arff");
-		DataSource source_test = new DataSource("files/test1.arff");
+	    DataSource source_train = new DataSource(WekaClassifier.class.getClassLoader().getResourceAsStream("train1.arff"));
 		_train = source_train.getDataSet();
-		_test = source_test.getDataSet();
 	}
 	
 	/**
@@ -40,14 +36,6 @@ public class WekaClassifier implements IClassifier, Serializable {
 		_train = train;
 	}
 
-	/**
-	 * sets a given instances for test
-	 * @param test the test instances
-	 */
-	public void set_test(Instances test) {
-		_test = test;
-	}
-	
 	/**
 	 * sets a classifier for the class
 	 * @param classifier represented by class
@@ -100,33 +88,6 @@ public class WekaClassifier implements IClassifier, Serializable {
 		
 		return labeled.instance(0).value(unlabeled.numAttributes()-1) * 4;
 	}
-
-	
-	/**
-	 * evaluates the classifier 
-	 */
-	@Override
-	public void evaluate() throws Exception {
-		// evaluate classifier and print some statistics
-		if (_test.classIndex() == -1)
-			_test.setClassIndex(_test.numAttributes() - 1);
-		Evaluation eval = new Evaluation(_train);
-		eval.evaluateModel(_cl, _test);
-		System.out.println(eval.toSummaryString("\nResults\n======\n", false));
-		System.out.println(eval.toMatrixString());
-	}
-	
-	/**
-	 * trains the classifier
-	 */
-	@Override
-	public void train() throws Exception {
-		if (_train.classIndex() == -1)
-			_train.setClassIndex(_train.numAttributes() - 1);
-		_cl.buildClassifier(_train);
-		// evaluate classifier and print some statistics
-		evaluate();
-	}
 	
 	/**
 	 * 
@@ -143,8 +104,6 @@ public class WekaClassifier implements IClassifier, Serializable {
 	    filter.setSearch(search);
 	    filter.setInputFormat(_train);
 	    Instances newData = Filter.useFilter(_train, filter);
-	    Instances newData_test = Filter.useFilter(_test, filter);
 	    _train = newData;
-	    _test = newData_test;
 	}
 }

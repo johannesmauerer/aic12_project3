@@ -1,4 +1,4 @@
-package aic.project3.analysis.core.classifier;
+package classifier;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,14 +9,6 @@ import java.io.IOException;
  *
  */
 public interface IClassifier {
-	/**
-	 * trains the classifier
-	 */
-	public void train() throws Exception;
-	/**
-	 * evaluates the classifier
-	 */
-	public void evaluate() throws Exception;
 	/**
 	 * classifies a string
 	 * @param stringa the string to be classified

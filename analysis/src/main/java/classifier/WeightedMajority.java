@@ -1,4 +1,4 @@
-package aic.project3.analysis.core.classifier;
+package classifier;
 
 import java.util.HashMap;
 import java.util.List;

@@ -7,12 +7,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import aic.project3.analysis.core.classifier.ClassifierBuilder;
-import aic.project3.analysis.core.classifier.IClassifier;
-import aic.project3.analysis.core.classifier.WeightedMajority;
-import aic.project3.analysis.core.classifier.WekaClassifier;
+
+import classifier.ClassifierBuilder;
+import classifier.IClassifier;
+import classifier.WeightedMajority;
+import classifier.WekaClassifier;
 
 import com.sun.jersey.spi.resource.Singleton;
 
@@ -47,22 +50,29 @@ public class SentimentService
     }
     
     @GET
-    @Path("/{param}")
+    @Path("/{companyName}")
     @Produces("text/plain")
-    public Response analyze(@PathParam("param") String term)
+    public String analyze(@PathParam("companyName") String companyName)
     {
+        if (companyName == null || companyName.equals(""))
+        {
+            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("No companyName provided").build());
+        }
+        
+        List<Tweet> tweets;
         //TODO: query database for tweets
+        
         try
         {
             int amount = 25;
             Twitter twitter = new TwitterFactory().getInstance();
             
-            Query query = new Query(term);
+            Query query = new Query(companyName);
             query.setLang("en");
             query.setRpp(amount);
             QueryResult result = twitter.search(query);
 
-            System.out.println("Creating sentiment analysis for term: '" + term + "' with " + amount + " tweets");
+            System.out.println("Creating sentiment analysis for term: '" + companyName + "' with " + amount + " tweets");
             System.out.println("------------------------------------------------");
 
             int i = 0;
@@ -82,7 +92,7 @@ public class SentimentService
             System.out.println("Overall polarity: " + (double) i / amount / 4);
             System.out.println("Time taken: " + (System.currentTimeMillis() - start) + " ms");
             
-            return Response.status(200).entity("" + (double) i / amount / 4).build();
+            return "" + (double) i / amount / 4;
         }
         catch (TwitterException te)
         {
@@ -95,6 +105,6 @@ public class SentimentService
             System.out.println("Failed to analyze tweets: " + e.getMessage());
         }
 
-        return Response.status(500).entity("Exception occured").build();
+        throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Exception occured").build());
     }
 }
