@@ -47,5 +47,14 @@
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
-  </dependencies>
+
+
+   <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.14</version>
+      <scope>runtime</scope>
+   </dependency>
+   </dependencies>
+
 </project>
