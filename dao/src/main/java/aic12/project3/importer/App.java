@@ -1,7 +1,10 @@
 package aic12.project3.importer;
 
-import com.mongodb.DBCollection;
+import java.util.List;
 
+import aic12.project3.dao.ITweetDAO;
+import aic12.project3.dao.MongoTweetDAO;
+import aic12.project3.dto.TweetDTO;
 
 public class App {
 
@@ -11,19 +14,14 @@ public class App {
 	public static void main(String[] args) {
 		
 		iImporter importer = new Importer("example_tweets.txt","example_tweets.properties");
-		DBCollection collection = importer.connectToCollection("localhost", 44444, "sentimentanalysis", "tweets");
 		
-		importer.importTweets(collection);
+		ITweetDAO tweetDAO = new MongoTweetDAO();
 		
-		
-		
-		
-		/*DBCursor cursorDoc = collection.find();
-		while (cursorDoc.hasNext()) {
-			System.out.println(cursorDoc.next());
-		}*/
-		
-
+		importer.importTweets(tweetDAO);
+		List<TweetDTO> tweets = tweetDAO.getAllTweet();
+		for(TweetDTO t:tweets){
+			System.out.println(t);
+		}
 	}
 
 }

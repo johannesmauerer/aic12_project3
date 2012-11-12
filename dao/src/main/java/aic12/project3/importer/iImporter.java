@@ -1,14 +1,8 @@
 package aic12.project3.importer;
 
-import java.util.Date;
-
-import com.mongodb.DBCollection;
+import aic12.project3.dao.ITweetDAO;
 
 public interface iImporter {
 
-	public abstract void importTweets(DBCollection collection);
-
-	public abstract DBCollection connectToCollection(String host, int port,
-			String database, String Collection);
-	
+	public abstract void importTweets(ITweetDAO tweetDAO);	
 }
