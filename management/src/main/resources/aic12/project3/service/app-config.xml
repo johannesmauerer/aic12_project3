@@ -8,4 +8,8 @@
 		<!-- <context:property-placeholder location="classpath:com/bank/config/app.properties"/> -->
 
 	<context:component-scan base-package="aic12"/>
+<bean id="requestAnalysis"
+      class="aic12.project3.service.requestManagement.RequestAnalysis"/>
+<bean id="requestQueueReady"
+      class="aic12.project3.service.requestManagement.RequestQueueReady"/>
 </beans>
