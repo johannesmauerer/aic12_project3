@@ -18,6 +18,7 @@ import org.jclouds.openstack.nova.v2_0.features.ServerApi;
 import org.jclouds.openstack.v2_0.domain.Resource;
 import org.jclouds.rest.RestContext;
 
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
 
@@ -106,10 +107,10 @@ public class JCloudsNodeManager implements INodeManager{
 		for (String zone: zones) {
 
 			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);
-			serverApi.delete(id);
+			boolean deleted = serverApi.delete(id);
 
 			close();
-			return true;
+			return deleted;
 		}
 
 		close();
@@ -127,12 +128,10 @@ public class JCloudsNodeManager implements INodeManager{
 
 			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);
 
-			PagedIterable<? extends Server> list = serverApi.listInDetail();		
-			Iterator<?> iterator = list.iterator();
-		
-			while(iterator.hasNext()){
-				Resource res = (Server) iterator.next();
-				nodeList.add(new Node(res.getName(),res.getId()));
+			FluentIterable<? extends Server> list = serverApi.listInDetail().concat();	
+			
+			for(Server server: list){
+				nodeList.add(new Node(server.getName(),server.getId()));
 			}				
 		}
 

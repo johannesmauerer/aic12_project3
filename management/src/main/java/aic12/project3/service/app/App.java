@@ -1,5 +1,7 @@
 package aic12.project3.service.app;
 
+import org.hyperic.sigar.Cpu;
+import org.hyperic.sigar.CpuInfo;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
@@ -16,27 +18,41 @@ public class App {
 		RequestAnalysis ra = ctx.getBean(RequestAnalysis.class);
 		System.out.println(ra.getRequestQueueReady().some());*/
 
-		INodeManager nodeManager = new JCloudsNodeManager();
-		System.out.println("List Nodes:");
+		/*
+		 * GET NODE-MANAGER
+		 * 
+		 * INodeManager nodeManager = new JCloudsNodeManager();
+		 */
 
+		/*
+		 * LIST NODES
+		 * 
+		 * 
 		for(Node node: nodeManager.listNodes()){
 			System.out.println(node.getName() + ":" + node.getId());
-		}
+		}*/
 
-		System.out.println("Start Node:");
 
-		Node started = nodeManager.startNode("Cloudservice-Test");
+		/*
+		 * START NODE
+		 * 
+		 * Node started = nodeManager.startNode("Cloudservice-Test");
 
 		if(started != null){
 			System.out.println("Node started: " + started.getName() + ":" + started.getId());
 		} else {
-			System.out.println("Node has not been started!");
-		}
+			System.out.println("Not able to start node");
+		}*/
 		
-		System.out.println("List Nodes:");
-
-		for(Node node: nodeManager.listNodes()){
-			System.out.println(node.getName() + ":" + node.getId());
-		}
+		
+		/*
+		 * STOP NODE
+		 * 
+		 * 
+		if(nodeManager.stopNode("af61faac-eb7d-4c58-8f53-1f59aca6f97a")){
+			System.out.println("Node stopped");
+		} else {
+			System.out.println("Not able to stop node");
+		}*/
 	}
 }
