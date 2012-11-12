@@ -1,20 +1,23 @@
 package aic12.project3.service.nodeManagement;
 
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.jclouds.ContextBuilder;
+import org.jclouds.collect.PagedIterable;
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.ComputeServiceContext;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.NovaAsyncApi;
-import org.jclouds.openstack.nova.v2_0.domain.Image;
-import org.jclouds.openstack.nova.v2_0.features.ImageApi;
+import org.jclouds.openstack.nova.v2_0.domain.Server;
+import org.jclouds.openstack.nova.v2_0.domain.ServerCreated;
 import org.jclouds.openstack.nova.v2_0.features.ServerApi;
+import org.jclouds.openstack.v2_0.domain.Resource;
 import org.jclouds.rest.RestContext;
 
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
 
@@ -23,10 +26,10 @@ public class JCloudsNodeManager implements INodeManager{
 	private ComputeService compute;
 	private RestContext<NovaApi, NovaAsyncApi> nova;
 	private Set<String> zones;
-	
+
 	public JCloudsNodeManager(){
 	}
-	
+
 	private void init(){
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			public void uncaughtException(Thread t, Throwable e) {
@@ -51,54 +54,104 @@ public class JCloudsNodeManager implements INodeManager{
 		nova = context.unwrap();
 		zones = nova.getApi().getConfiguredZones();
 	}
-	
+
 	private void close() {
 		compute.getContext().close();
 	}
-	
+
 	@Override
-	public boolean startNode(String name) {
-		
+	public Node startNode(String name) {
+
+		if(name.isEmpty()){
+			return null;
+		}
+
 		init();
 		
-		if(name.isEmpty()){
-			close();
+		for (String zone: zones) {			
+
+			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);
+
+			OpenStackConfiguration config = new OpenStackConfiguration();		
+			ServerCreated created = serverApi.create(name, config.getImageId(), config.getFlavorId(),config.getCreateServerOptions());
+
+			if(created != null){
+				close();			
+				return new Node(created.getName(), created.getId());
+			}
+		}
+
+		close();
+		return null;
+	}
+
+	@Override
+	public boolean stopNode(String id) {
+
+		if(id.isEmpty()){
 			return false;
 		}
+
+		init();
 		
 		for (String zone: zones) {
-			
-			System.out.println("Zone: " + zone);
-			
+
 			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);
-			
-			OpenStackConfiguration config = new OpenStackConfiguration();		
-			serverApi.create(name, config.getImageId(), config.getFlavorId(),config.getCreateServerOptions());
-			
-			// TBD: Check if started
+			serverApi.delete(id);
+
 			close();
 			return true;
 		}
-		
+
 		close();
 		return false;
 	}
 
 	@Override
-	public boolean startNode(String name, int flavor, String image) {
-		// TODO Auto-generated method stub
-		return false;
+	public List<Node> listNodes() {
+
+		List<Node> nodeList = new ArrayList<Node>();
+		
+		init();
+		
+		for (String zone: zones) {		
+
+			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);
+
+			PagedIterable<? extends Server> list = serverApi.listInDetail();		
+			Iterator<?> iterator = list.iterator();
+		
+			while(iterator.hasNext()){
+				Resource res = (Server) iterator.next();
+				nodeList.add(new Node(res.getName(),res.getId()));
+			}				
+		}
+
+		close();
+		return nodeList;
 	}
 
 	@Override
-	public boolean stopNode(String name) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public Node startNode(String name, String flavor, String image) {
+		
+		if(name.isEmpty() || image.isEmpty() || flavor.isEmpty()){
+			return null;
+		}
 
-	@Override
-	public List<INode> listNodes() {
-		// TODO Auto-generated method stub
+		init();
+		
+		for (String zone: zones) {			
+
+			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);	
+			ServerCreated created = serverApi.create(name, image, flavor, null);
+
+			if(created != null){
+				close();			
+				return new Node(created.getName(), created.getId());
+			}
+		}
+
+		close();
 		return null;
 	}
 
