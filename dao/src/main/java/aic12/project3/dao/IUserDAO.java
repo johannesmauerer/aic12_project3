@@ -5,9 +5,9 @@ import java.util.List;
 import aic12.project3.dto.UserDTO;
 
 public interface IUserDAO {
-	public void storeUser(UserDTO user);
-	public void storeUser(List<UserDTO> users);
-	public List<UserDTO> searchUser(String userName);
-	public List<UserDTO> getAllUser(String userName);
+	public abstract void storeUser(UserDTO user);
+	public abstract void storeUser(List<UserDTO> users);
+	public abstract List<UserDTO> searchUser(String userName);
+	public abstract List<UserDTO> getAllUser(String userName);
 	
 }

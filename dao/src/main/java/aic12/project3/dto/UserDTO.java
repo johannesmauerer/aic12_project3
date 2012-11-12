@@ -34,4 +34,9 @@ public class UserDTO {
 	public void setPwHash(String pwHash) {
 		this.pwHash = pwHash;
 	}
+	
+	@Override
+	public String toString() {
+		return "UserDTO [userName=" + userName + ", companyName=" + companyName + "]";
+	}
 }
