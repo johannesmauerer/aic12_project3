@@ -10,7 +10,7 @@ public class App {
 	public static void main(String[] args) {
 		ApplicationContext ctx = new GenericXmlApplicationContext("aic12/service/app-config.xml");
 		
-		RequestAnalysis ra = ctx.getBean(RequestAnalysis.class);
+		RequestAnalysis ra = (RequestAnalysis) ctx.getBean("requestAnalysis");
 		System.out.println(ra.getRequestQueueReady().some());
 	}
 }
