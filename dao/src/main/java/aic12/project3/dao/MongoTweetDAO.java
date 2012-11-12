@@ -36,4 +36,9 @@ public class MongoTweetDAO implements ITweetDAO{
 	public List<TweetDTO> searchTweet(String company, Date fromDate, Date toDate) {
 		return mongoOperation.find(new Query(Criteria.where("date").gte(fromDate).lte(toDate).and("text").regex("\\b"+company+"\\b")),TweetDTO.class, "tweets");
 	}
+
+	@Override
+	public List<TweetDTO> getAllTweet() {
+		return mongoOperation.findAll(TweetDTO.class, "tweets");
+	}
 }

@@ -8,5 +8,6 @@ public interface IUserDAO {
 	public void storeUser(UserDTO user);
 	public void storeUser(List<UserDTO> users);
 	public List<UserDTO> searchUser(String userName);
+	public List<UserDTO> getAllUser(String userName);
 	
 }

@@ -11,4 +11,6 @@ public interface ITweetDAO {
 	
 	//Search all Tweets in a specified timeframe which contain the company name
 	public List<TweetDTO> searchTweet(String company, Date fromDate, Date toDate);
+	
+	public List<TweetDTO> getAllTweet();
 }

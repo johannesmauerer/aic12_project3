@@ -36,4 +36,9 @@ public class MongoUserDAO implements IUserDAO{
 		return mongoOperation.find(new Query(Criteria.where("userName").is(userName)),UserDTO.class, "users");		
 	}
 
+	@Override
+	public List<UserDTO> getAllUser(String userName) {
+		return mongoOperation.findAll(UserDTO.class, "users");
+	}
+
 }
