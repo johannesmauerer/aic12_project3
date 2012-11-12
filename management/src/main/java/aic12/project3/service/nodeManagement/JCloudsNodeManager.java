@@ -59,8 +59,12 @@ public class JCloudsNodeManager implements INodeManager{
 	@Override
 	public boolean startNode(String name) {
 		
-		if(name.isEmpty())
+		init();
+		
+		if(name.isEmpty()){
+			close();
 			return false;
+		}
 		
 		for (String zone: zones) {
 			
@@ -69,11 +73,14 @@ public class JCloudsNodeManager implements INodeManager{
 			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);
 			
 			OpenStackConfiguration config = new OpenStackConfiguration();		
-			serverApi.create(name, config.getFlavorId(), config.getImageId(), config.getCreateServerOptions());
+			serverApi.create(name, config.getImageId(), config.getFlavorId(),config.getCreateServerOptions());
 			
 			// TBD: Check if started
+			close();
 			return true;
 		}
+		
+		close();
 		return false;
 	}
 

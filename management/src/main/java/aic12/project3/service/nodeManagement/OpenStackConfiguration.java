@@ -4,8 +4,8 @@ import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
 
 public class OpenStackConfiguration{
 	
-	private final String imageId = "";
-	private final String flavorId = "";
+	private final String imageId = "91d5e341-f190-48ce-ae80-a578461fe652";	// Ubuntu 12.04 LTS amd64
+	private final String flavorId = "1";	// m1.tiny
 	private final CreateServerOptions [] createServerOptions;
 	
 	public OpenStackConfiguration(){
