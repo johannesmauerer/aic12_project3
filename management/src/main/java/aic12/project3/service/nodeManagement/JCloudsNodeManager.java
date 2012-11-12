@@ -65,15 +65,24 @@ public class JCloudsNodeManager implements INodeManager{
 		if(name.isEmpty()){
 			return null;
 		}
+		
+		OpenStackConfiguration config = new OpenStackConfiguration();
+		return startNode(name, config.getImageId(),config.getFlavorId());
+	}
+	
+	@Override
+	public Node startNode(String name, String image, String flavor) {
+		
+		if(name.isEmpty() || image.isEmpty() || flavor.isEmpty()){
+			return null;
+		}
 
 		init();
 		
 		for (String zone: zones) {			
 
-			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);
-
-			OpenStackConfiguration config = new OpenStackConfiguration();		
-			ServerCreated created = serverApi.create(name, config.getImageId(), config.getFlavorId(),config.getCreateServerOptions());
+			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);	
+			ServerCreated created = serverApi.create(name, image, flavor, null);
 
 			if(created != null){
 				close();			
@@ -130,29 +139,4 @@ public class JCloudsNodeManager implements INodeManager{
 		close();
 		return nodeList;
 	}
-
-	@Override
-	public Node startNode(String name, String flavor, String image) {
-		
-		if(name.isEmpty() || image.isEmpty() || flavor.isEmpty()){
-			return null;
-		}
-
-		init();
-		
-		for (String zone: zones) {			
-
-			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);	
-			ServerCreated created = serverApi.create(name, image, flavor, null);
-
-			if(created != null){
-				close();			
-				return new Node(created.getName(), created.getId());
-			}
-		}
-
-		close();
-		return null;
-	}
-
 }
