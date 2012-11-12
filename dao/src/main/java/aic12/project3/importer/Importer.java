@@ -1,4 +1,4 @@
-package com.tuwien.sentimentanalyis.importer;
+package aic12.project3.importer;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,6 +15,8 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+
+import aic12.project3.dto.TweetDTO;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;

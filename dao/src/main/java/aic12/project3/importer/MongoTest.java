@@ -1,4 +1,4 @@
-package com.tuwien.sentimentanalyis.importer;
+package aic12.project3.importer;
 
 import java.net.UnknownHostException;
 import java.util.Date;
