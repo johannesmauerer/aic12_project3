@@ -31,6 +31,9 @@ public class TestClient
         Client client = Client.create(config);
         WebResource resource = client.resource("http://localhost:8080/cloudservice-analysis-1.0-SNAPSHOT/sentiment/analyze");
         Response response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Response.class, request);
-        System.out.println("Amount: " + response.getNumberOfTweets() + " - Sentiment: " + response.getSentiment());
+        
+        double interval = 1.96 * Math.sqrt(response.getSentiment() * (1 - response.getSentiment()) / (response.getNumberOfTweets() - 1));
+        
+        System.out.println("Amount: " + response.getNumberOfTweets() + " - Sentiment: (" + (response.getSentiment() - interval) + " < " + response.getSentiment() + " < " + (response.getSentiment() + interval) + ")"); 
     }
 }
