@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import twitter4j.Query;
@@ -17,8 +18,8 @@ import twitter4j.Tweet;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import aic12.project3.common.beans.Request;
-import aic12.project3.common.beans.Response;
+import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.SentimentResponse;
 import classifier.ClassifierBuilder;
 import classifier.IClassifier;
 import classifier.WeightedMajority;
@@ -53,7 +54,7 @@ public class SentimentService
     @Path("analyze")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response analyze(Request request)
+    public SentimentResponse analyze(SentimentRequest request)
     {
         List<Tweet> tweets = new ArrayList<Tweet>();
 
@@ -74,7 +75,7 @@ public class SentimentService
             }
             catch (TwitterException e)
             {
-                throw new WebApplicationException(javax.ws.rs.core.Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve tweets").build());
+                throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve tweets").build());
             }
         }
         
@@ -99,14 +100,14 @@ public class SentimentService
             System.out.println("------------------------------------------------");
             System.out.println("Overall polarity: " + (float) i / tweets.size() / 4);
     
-            Response response = new Response();
+            SentimentResponse response = new SentimentResponse();
             response.setSentiment((float) i / tweets.size() / 4);
             response.setNumberOfTweets(tweets.size());
             return response;
         }
         catch (Exception e)
         {
-            throw new WebApplicationException(javax.ws.rs.core.Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to classify tweets").build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to classify tweets").build());
         }
     }
 }
