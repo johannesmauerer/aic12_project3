@@ -8,6 +8,10 @@ public class TweetDTO{
 	private Date date;
 	private Integer sentiment;
 	
+	public TweetDTO(){
+		
+	}
+	
 	public TweetDTO(String text, Date date){
 		this.text = text;
 		this.date = date;
@@ -29,7 +33,6 @@ public class TweetDTO{
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
 	public Integer getSentiment() {
 		return sentiment;
 	}
