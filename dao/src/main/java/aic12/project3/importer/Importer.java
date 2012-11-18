@@ -74,8 +74,8 @@ public class Importer implements iImporter {
 
 					String text = (String) jsonObject.get("text");
 					String date = (String) jsonObject.get("created_at");
-
-					TweetDTO tweet = new TweetDTO(text, this.parseDate(date));
+					Long twitterId = Long.parseLong((String)jsonObject.get("id_str"));
+					TweetDTO tweet = new TweetDTO(twitterId,text, this.parseDate(date));
 
 					tweetDAO.storeTweet(tweet);
 

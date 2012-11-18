@@ -23,11 +23,12 @@ public class Test
     {
         List<TweetDTO> tweetList = new ArrayList<TweetDTO>();
         TweetDTO tweet1 = new TweetDTO();
+        tweet1.setTwitterId(new Long(123));
         tweet1.setText("test ABC test");
         tweet1.setSentiment(1);
         tweet1.setDate(new Date(System.currentTimeMillis()-400000));
-        TweetDTO tweet2 = new TweetDTO("test2 ABC test", new Date(System.currentTimeMillis()-200000));
-        TweetDTO tweet3 = new TweetDTO("test3 ABC test", new Date(System.currentTimeMillis()));
+        TweetDTO tweet2 = new TweetDTO(new Long(123), "test2 ABC test", new Date(System.currentTimeMillis()-200000));
+        TweetDTO tweet3 = new TweetDTO(new Long(124), "test3 ABC test", new Date(System.currentTimeMillis()));
         
         tweetList.add(tweet1);
         tweetList.add(tweet2);

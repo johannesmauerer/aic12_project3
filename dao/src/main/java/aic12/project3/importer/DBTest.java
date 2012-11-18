@@ -25,7 +25,7 @@ import com.mongodb.util.JSON;
 
 public class DBTest {
 	public static void main(String[] args) { 
-			TweetDTO tweet = new TweetDTO("test ABC xyz", new Date(System.currentTimeMillis()));
+			TweetDTO tweet = new TweetDTO(new Long(1),"test ABC xyz", new Date(System.currentTimeMillis()));
 			MongoTweetDAO mongoDAO = new MongoTweetDAO();
 			mongoDAO.storeTweet(tweet);List<TweetDTO> result = mongoDAO.searchTweet("ABC", new Date(System.currentTimeMillis()-1000000000), new Date(System.currentTimeMillis()));
 			for(TweetDTO t : result){

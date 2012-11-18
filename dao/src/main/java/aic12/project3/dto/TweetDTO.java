@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class TweetDTO{
 
+	private Long twitterId;
 	private String text;
 	private Date date;
 	private Integer sentiment;
@@ -12,10 +13,19 @@ public class TweetDTO{
 		
 	}
 	
-	public TweetDTO(String text, Date date){
+	public TweetDTO(Long twitterId, String text, Date date){
+		this.twitterId = twitterId;
 		this.text = text;
 		this.date = date;
 		this.sentiment = null;
+	}
+
+	public Long getTwitterId() {
+		return twitterId;
+	}
+
+	public void setTwitterId(Long twitterId) {
+		this.twitterId = twitterId;
 	}
 
 	public String getText() {
