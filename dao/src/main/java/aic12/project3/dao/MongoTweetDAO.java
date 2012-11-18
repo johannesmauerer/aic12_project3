@@ -9,6 +9,7 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import aic12.project3.dto.TweetDTO;
 
@@ -24,12 +25,26 @@ public class MongoTweetDAO implements ITweetDAO{
 	
 	@Override
 	public void storeTweet(TweetDTO tweet) {
-		mongoOperation.insert(tweet, "tweets");
+		
+		TweetDTO t = mongoOperation.findOne(new Query(Criteria.where("twitterId").is(tweet.getTwitterId())),TweetDTO.class, "tweets");
+
+		if(t==null){
+			mongoOperation.insert(tweet,"tweets");
+		}else{
+			updateSentiment(tweet);
+		}
+	}
+	
+	public void updateSentiment(TweetDTO tweet){
+		mongoOperation.updateFirst(new Query(Criteria.where("twitterId").is(tweet.getTwitterId())),new Update().set("sentiment", tweet.getSentiment()),"tweets");
 	}
 
 	@Override
 	public void storeTweet(List<TweetDTO> tweets) {
-		mongoOperation.insert(tweets, "tweets");
+		for(TweetDTO t:tweets){
+			storeTweet(t);
+		}
+		
 	}
 
 	@Override

@@ -53,6 +53,6 @@ public class TweetDTO{
 
 	@Override
 	public String toString() {
-		return "TweetDTO [text=" + text + ", date=" + date + ", sentiment=" + (sentiment==null?sentiment:"null") +"]";
+		return "TweetDTO [id="+twitterId+", text=" + text + ", date=" + date + ", sentiment=" + (sentiment!=null?sentiment:"null") +"]";
 	}
 }
