@@ -8,6 +8,6 @@ public interface IUserDAO {
 	public abstract void storeUser(UserDTO user);
 	public abstract void storeUser(List<UserDTO> users);
 	public abstract List<UserDTO> searchUser(String userName);
-	public abstract List<UserDTO> getAllUser(String userName);
+	public abstract List<UserDTO> getAllUser();
 	
 }

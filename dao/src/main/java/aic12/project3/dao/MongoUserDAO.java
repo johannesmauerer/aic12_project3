@@ -36,7 +36,7 @@ public class MongoUserDAO implements IUserDAO{
 	}
 
 	@Override
-	public List<UserDTO> getAllUser(String userName) {
+	public List<UserDTO> getAllUser() {
 		return mongoOperation.findAll(UserDTO.class, "users");
 	}
 }

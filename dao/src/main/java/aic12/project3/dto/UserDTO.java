@@ -5,6 +5,10 @@ public class UserDTO {
 	private String companyName;
 	private String pwHash;
 	
+	public UserDTO(){
+		
+	}
+	
 	public UserDTO (String userName, String companyName, String pwHash){
 		this.userName = userName;
 		this.companyName = companyName;
