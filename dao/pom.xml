@@ -13,7 +13,7 @@
 
   <name>CloudService :: DAO</name>
 
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   
   <dependencies>
     <dependency>
@@ -48,6 +48,27 @@
 		<artifactId>json-simple</artifactId>
 		<version>1.1</version>
 	</dependency>
+	
+	<dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-servlet</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
 	
 	
     <dependency>
