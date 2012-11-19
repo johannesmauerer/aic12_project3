@@ -30,7 +30,7 @@ public class LoadBalancer {
 		ApplicationContext ctx = new GenericXmlApplicationContext("aic12/service/app-config.xml");
 		
 		RequestAnalysis ra = (RequestAnalysis) ctx.getBean("requestAnalysis");
-		return ra.getRequestQueueReady().some();
+		return "";
 	}
 
 }
