@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import aic.project3.service.test.DownloadManagerServiceTestIF;
 import aic12.project3.common.beans.SentimentRequest;

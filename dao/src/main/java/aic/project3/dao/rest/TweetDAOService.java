@@ -12,6 +12,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import aic12.project3.dao.MongoTweetDAO;
 import aic12.project3.dto.TweetDTO;
@@ -22,12 +24,9 @@ import com.sun.jersey.spi.resource.Singleton;
 @Path("/tweetdao")
 public class TweetDAOService
 {
+	@Autowired
     private MongoTweetDAO mongoDAO;
 
-    public TweetDAOService()
-    {
-    	this.mongoDAO = new MongoTweetDAO();
-    }
 
     @POST
     @Path("insert")
