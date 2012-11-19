@@ -22,49 +22,41 @@ import aic12.project3.test.service.requestManagement.RequestAnalysisTestIF;
 public class RequestAnalysisTest {
 	
 	@Test
-	public void newRequestNotEnoughTweetsTest() {
+	public void newRequestNotAllTweetsDownloadedTest() {
 		RequestAnalysisTestIF ra = new RequestAnalysisImpl();
 		Request req = new Request();
-		req.setMinNoOfTweets(200);
 		
 		// mock queue
 		RequestQueueReady queueMock = mock(RequestQueueReady.class);
 		ra.setRequestQueueReady(queueMock);
-		// mock tweetsDao
-		TweetsDAO daoMock = mock(TweetsDAO.class);
-		when(daoMock.getTweetsCount(any(Request.class))).thenReturn(100);
-		ra.setTweetsDAO(daoMock);
 		// mock downloadManager
 		DownloadManager dlMock = mock(DownloadManager.class);
+		when(dlMock.isInitialDownloadFinished(any(Request.class))).thenReturn(false);
 		ra.setDownloadManager(dlMock);
 		
 		ra.newRequest(req);
 		
 		verify(queueMock, never()).addRequest(req);
-		verify(dlMock, times(1)).downloadEnoughTweets(req);
+		verify(dlMock, times(1)).notifyOnInitialDownloadFinished(req);
 	}
 	
 	@Test
 	public void newRequestAddToReadyQueueTest() {
 		RequestAnalysisTestIF ra = new RequestAnalysisImpl();
 		Request req = new Request();
-		req.setMinNoOfTweets(10);
 		
 		// mock queue
 		RequestQueueReady queueMock = mock(RequestQueueReady.class);
 		ra.setRequestQueueReady(queueMock);
-		// mock tweetsDao
-		TweetsDAO daoMock = mock(TweetsDAO.class);
-		when(daoMock.getTweetsCount(any(Request.class))).thenReturn(100);
-		ra.setTweetsDAO(daoMock);
 		// mock downloadManager
 		DownloadManager dlMock = mock(DownloadManager.class);
+		when(dlMock.isInitialDownloadFinished(any(Request.class))).thenReturn(true);
 		ra.setDownloadManager(dlMock);
 		
 		ra.newRequest(req);
 		
 		verify(queueMock, times(1)).addRequest(req);
-		verify(dlMock, never()).downloadEnoughTweets(req);
+		verify(dlMock, never()).notifyOnInitialDownloadFinished(req);
 	}
 
 }

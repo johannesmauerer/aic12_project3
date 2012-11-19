@@ -14,28 +14,21 @@ public class RequestAnalysisImpl implements RequestAnalysis, RequestAnalysisTest
 	@Autowired
 	private RequestQueueReady requestQueueReady;
 	@Autowired
-	private TweetsDAO tweetsDAO;
-	@Autowired
 	private DownloadManager downloadManager;
 
 
 	@Override
 	public void newRequest(Request req) {
-		if(tweetsDAO.getTweetsCount(req) >= req.getMinNoOfTweets()) {
+		if(downloadManager.isInitialDownloadFinished(req)) {
 			requestQueueReady.addRequest(req);
 		} else {
-			downloadManager.downloadEnoughTweets(req);
+			downloadManager.notifyOnInitialDownloadFinished(req);
 		}
 	}
 
 	@Override
 	public void setRequestQueueReady(RequestQueueReady queue) {
 		requestQueueReady = queue;
-	}
-
-	@Override
-	public void setTweetsDAO(TweetsDAO dao) {
-		tweetsDAO = dao;
 	}
 
 	@Override

@@ -4,6 +4,8 @@ import aic12.project3.common.beans.Request;
 
 public interface DownloadManager {
 
-	void downloadEnoughTweets(Request req);
+	void notifyOnInitialDownloadFinished(Request req);
+
+	boolean isInitialDownloadFinished(Request req);
 
 }

@@ -8,9 +8,15 @@ import aic12.project3.common.beans.Request;
 public class DownloadManagerImpl implements DownloadManager {
 
 	@Override
-	public void downloadEnoughTweets(Request req) {
+	public void notifyOnInitialDownloadFinished(Request req) {
 		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public boolean isInitialDownloadFinished(Request req) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

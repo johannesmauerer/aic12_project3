@@ -8,7 +8,5 @@ import aic12.project3.service.requestManagement.RequestQueueReady;
 public interface RequestAnalysisTestIF extends RequestAnalysis {
 	public void setRequestQueueReady(RequestQueueReady queue);
 
-	public void setTweetsDAO(TweetsDAO tweetsDAO);
-
 	public void setDownloadManager(DownloadManager downloadManager);
 }
