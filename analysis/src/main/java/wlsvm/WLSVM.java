@@ -202,7 +202,7 @@ public class WLSVM extends Classifier implements WeightedInstancesHandler {
 	 */
 	
 	public void setDegree(double degree) {
-		param.degree = degree;
+		param.degree = (int) degree;
 	}
 	
 	/**
@@ -443,7 +443,7 @@ public class WLSVM extends Classifier implements WeightedInstancesHandler {
 		
 		String degreeString = Utils.getOption('D', options);
 		if (degreeString.length() != 0) {
-			param.degree = (new Double(degreeString)).doubleValue();
+			param.degree = (int) (new Double(degreeString)).doubleValue();
 		} else {
 			param.degree = 3;
 		}

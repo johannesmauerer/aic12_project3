@@ -27,7 +27,7 @@ public class LoadBalancer {
 	}
 	
 	public String callRequest(){
-		ApplicationContext ctx = new GenericXmlApplicationContext("aic12/service/app-config.xml");
+		ApplicationContext ctx = new GenericXmlApplicationContext("aic12/project3/service/app-config.xml");
 		
 		RequestAnalysis ra = (RequestAnalysis) ctx.getBean("requestAnalysis");
 		return "";

@@ -9,7 +9,18 @@
 
 	<context:component-scan base-package="aic12"/>
 <bean id="requestAnalysis"
-      class="aic12.project3.service.requestManagement.RequestAnalysis"/>
+      class="aic12.project3.service.requestManagement.RequestAnalysisImpl"/>
 <bean id="requestQueueReady"
-      class="aic12.project3.service.requestManagement.RequestQueueReady"/>
+      class="aic12.project3.service.requestManagement.RequestQueueReadyImpl"/>
+<bean id="log4jInitialization"
+ class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+   <property name="targetClass"
+      value="org.springframework.util.Log4jConfigurer" />
+   <property name="targetMethod" value="initLogging" />
+   <property name="arguments">
+      <list>
+         <value>src/main/java/log4j.properties</value>
+      </list>
+   </property>
+</bean>
 </beans>

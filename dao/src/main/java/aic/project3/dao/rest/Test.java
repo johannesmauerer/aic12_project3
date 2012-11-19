@@ -42,7 +42,7 @@ public class Test
         String result = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, tweetList);
         System.out.println("Result: "+result);*/
         
-        String serveruri = "http://localhost:8080/cloudservice-1.0-SNAPSHOT/tweetdao/find?company=ABC&fromdate="+
+        String serveruri = "http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/find?company=ABC&fromdate="+
         		(new Date(System.currentTimeMillis()-40000000)).getTime()+"&todate="+(new Date(System.currentTimeMillis())).getTime();
         		
         WebResource resource = client.resource(serveruri);
