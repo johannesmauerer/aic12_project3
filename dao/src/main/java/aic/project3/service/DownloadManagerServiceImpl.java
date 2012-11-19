@@ -2,7 +2,9 @@ package aic.project3.service;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import aic.project3.dao.rest.DownloadManagerRestInterface;
 import aic.project3.service.test.DownloadManagerServiceTestIF;
@@ -21,6 +23,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	private Map<SentimentRequest, DownloadThread> initialDownloadsMap = 
 			Collections.synchronizedMap(
 					new HashMap<SentimentRequest, DownloadThread>());
+	private Set<SentimentRequest> notifyOnDownloadFinishSet = Collections.synchronizedSet(new HashSet<SentimentRequest>());
 
 	private DownloadManagerServiceImpl() {
 	}
@@ -54,8 +57,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 
 	@Override
 	public void notifyOnInitialDownloadFinished(SentimentRequest req) {
-		// TODO Auto-generated method stub
-		
+		notifyOnDownloadFinishSet.add(req);
 	}
 	
 	/**
@@ -81,6 +83,11 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	@Override
 	public void setInitialDownloadsMap(Map<SentimentRequest, DownloadThread> dlMap) {
 		initialDownloadsMap = dlMap;
+	}
+
+	@Override
+	public void setNotifyOnDownloadFinishSet(Set<SentimentRequest> notifySet) {
+		notifyOnDownloadFinishSet = notifySet;
 	}
 
 }

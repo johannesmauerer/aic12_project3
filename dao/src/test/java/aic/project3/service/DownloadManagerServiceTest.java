@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.is;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,6 @@ public class DownloadManagerServiceTest {
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
 		dlService.setInitialDownloadsMap(dlMap);
-		when(dlMap.put(eq(req), any(DownloadThread.class))).thenReturn(null); // shouldn't be a problem...
 
 		dlService.startInitialDownload(req);
 		
@@ -68,6 +68,19 @@ public class DownloadManagerServiceTest {
 		boolean actual = dlService.isInitialDownloadFinished(req);
 		
 		assertThat(actual, is(true));
+	}
+	
+	@Test
+	public void test_notifyOnInitialDownloadFinished() {
+		SentimentRequest req = new SentimentRequest();
+		
+		// mock set of req to notify on
+		Set<SentimentRequest> notifySet = mock(Set.class);
+		dlService.setNotifyOnDownloadFinishSet(notifySet);
+		
+		dlService.notifyOnInitialDownloadFinished(req);
+		
+		verify(notifySet, times(1)).add(req);
 	}
 
 }
