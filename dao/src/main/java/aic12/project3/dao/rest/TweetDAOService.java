@@ -13,6 +13,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dao.MongoTweetDAO;
 import aic12.project3.dto.TweetDTO;
 
@@ -45,6 +46,17 @@ public class TweetDAOService
     public Response find(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate)
     {
         List<TweetDTO> tweetList = mongoDAO.searchTweet(company, new Date(fromDate), new Date(toDate));
+        GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
+        return Response.ok(entity).build();
+    }
+    
+    @POST
+    @Path("getallforrequest")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response getAllForRequest(SentimentRequest request)
+    {
+    	List<TweetDTO> tweetList = mongoDAO.searchTweet(request.getCompanyName(), request.getFrom(),request.getTo());
         GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
         return Response.ok(entity).build();
     }
