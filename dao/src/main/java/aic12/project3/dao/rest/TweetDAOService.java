@@ -12,6 +12,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
 
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dao.MongoTweetDAO;
@@ -25,9 +28,9 @@ public class TweetDAOService
 {
     private MongoTweetDAO mongoDAO;
 
-    public TweetDAOService()
-    {
-    	this.mongoDAO = new MongoTweetDAO();
+    public TweetDAOService() {
+        ApplicationContext ctx = new GenericXmlApplicationContext("app-config.xml");
+        mongoDAO = ctx.getBean(MongoTweetDAO.class);
     }
 
     @POST

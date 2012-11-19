@@ -10,5 +10,16 @@
     <servlet-name>jersey-servlet</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
+  
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:/app-config*.xml</param-value>
+</context-param>
+
+<listener>
+   <listener-class>
+        org.springframework.web.context.ContextLoaderListener
+   </listener-class>
+</listener> 
 
 </web-app>
