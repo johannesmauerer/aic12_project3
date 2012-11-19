@@ -1,4 +1,4 @@
-package aic.project3.dao.rest;
+package aic12.project3.dao.rest;
 
 import java.util.Date;
 import java.util.List;
@@ -12,40 +12,40 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
-import aic12.project3.dao.MongoUserDAO;
+
+import aic12.project3.dao.MongoTweetDAO;
 import aic12.project3.dto.TweetDTO;
-import aic12.project3.dto.UserDTO;
 
 import com.sun.jersey.spi.resource.Singleton;
 
 @Singleton
-@Path("/userdao")
-public class UserDAOService
+@Path("/tweetdao")
+public class TweetDAOService
 {
-    private MongoUserDAO mongoDAO;
+    private MongoTweetDAO mongoDAO;
 
-    public UserDAOService()
+    public TweetDAOService()
     {
-    	this.mongoDAO = new MongoUserDAO();
+    	this.mongoDAO = new MongoTweetDAO();
     }
 
     @POST
     @Path("insert")
     @Consumes("application/json")
     @Produces("application/json")
-    public String insert(List<UserDTO> user)
+    public String insert(List<TweetDTO> tweet)
     {
-        mongoDAO.storeUser(user);
+        mongoDAO.storeTweet(tweet);
         return "yay";
     }
     
     @GET
     @Path("find")
     @Produces("application/json")
-    public Response find(@QueryParam("user")String user)
+    public Response find(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate)
     {
-        List<UserDTO> userList = mongoDAO.searchUser(user);
-        GenericEntity<List<UserDTO>> entity = new GenericEntity<List<UserDTO>>(userList) {};
+        List<TweetDTO> tweetList = mongoDAO.searchTweet(company, new Date(fromDate), new Date(toDate));
+        GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
         return Response.ok(entity).build();
     }
     
@@ -54,9 +54,9 @@ public class UserDAOService
     @Produces("application/json")
     public Response getAll()
     {
-        List<UserDTO> userList = mongoDAO.getAllUser();
+        List<TweetDTO> tweetList = mongoDAO.getAllTweet();
         
-        GenericEntity<List<UserDTO>> entity = new GenericEntity<List<UserDTO>>(userList) {};
+        GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
         return Response.ok(entity).build();
     }
 }

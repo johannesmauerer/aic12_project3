@@ -1,4 +1,4 @@
-package aic.project3.dao.rest;
+package aic12.project3.dao.rest;
 
 import java.util.ArrayList;
 import java.util.Date;
