@@ -5,7 +5,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import aic.project3.service.DownloadManagerServiceImpl;
+import aic.project3.service.DownloadManagerService;
 import aic12.project3.common.beans.SentimentRequest;
 import com.sun.jersey.spi.resource.Singleton;
 
@@ -13,6 +13,9 @@ import com.sun.jersey.spi.resource.Singleton;
 @Path("/downloadmanager")
 public class DownloadManagerRestInterface {
 
+	//@Autowired
+	private DownloadManagerService dlManagerService;
+	
 	public DownloadManagerRestInterface() {
     }
 	
@@ -23,7 +26,7 @@ public class DownloadManagerRestInterface {
     @Produces("application/json")
     public boolean isInitialDownloadFinished(SentimentRequest req) {
     	System.out.println("isinitialdownloadfinished");
-		return DownloadManagerServiceImpl.getInstance().isInitialDownloadFinished(req);
+		return dlManagerService.isInitialDownloadFinished(req);
 	}
 	
     @POST
@@ -31,6 +34,6 @@ public class DownloadManagerRestInterface {
     @Consumes("application/json")
     public void notifyOnInitialDownloadFinished (SentimentRequest req) {
     	System.out.println("notifyoninitialdownloadfinished");
-    	DownloadManagerServiceImpl.getInstance().notifyOnInitialDownloadFinished(req);
+    	dlManagerService.notifyOnInitialDownloadFinished(req);
 	}
 }

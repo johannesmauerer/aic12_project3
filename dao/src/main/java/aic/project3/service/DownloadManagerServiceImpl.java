@@ -6,16 +6,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.stereotype.Component;
+
 import aic.project3.dao.rest.DownloadManagerRestInterface;
 import aic.project3.service.test.DownloadManagerServiceTestIF;
 import aic12.project3.common.beans.SentimentRequest;
 
 
 /**
- * Singleton
  * @author haja
  *
  */
+@Component
 public class DownloadManagerServiceImpl implements DownloadManagerService, 
 		DownloadManagerServiceTestIF {
 
@@ -24,21 +26,6 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 			Collections.synchronizedMap(
 					new HashMap<SentimentRequest, DownloadThread>());
 	private Set<SentimentRequest> notifyOnDownloadFinishSet = Collections.synchronizedSet(new HashSet<SentimentRequest>());
-
-	private DownloadManagerServiceImpl() {
-	}
-	
-	/**
-	 * @return instance of this class. has to be created first via
-	 * {@link #createInstance(DownloadManagerRestInterface)}.
-	 */
-	public static DownloadManagerServiceImpl getInstance() {
-		if(instance == null) {
-			instance = new DownloadManagerServiceImpl();
-		}
-		return instance;
-	}
-	
 
 	@Override
 	public void startInitialDownload(SentimentRequest req) {

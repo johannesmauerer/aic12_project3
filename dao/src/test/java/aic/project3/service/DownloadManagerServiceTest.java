@@ -26,7 +26,7 @@ public class DownloadManagerServiceTest {
 	@Before
 	public void setUp() {
 		//dlRestIF = mock(DownloadManagerRestInterface.class);
-		dlService = DownloadManagerServiceImpl.getInstance();
+		dlService = new DownloadManagerServiceImpl();
 	}
 
 	@Test

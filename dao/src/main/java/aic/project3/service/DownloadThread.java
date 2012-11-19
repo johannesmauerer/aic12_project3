@@ -17,11 +17,14 @@ public class DownloadThread extends Thread {
 	private ITweetDAO tweetDao;
 //	@Autowired
 	private TwitterAPI twitter;
+	//@Autowired
+	private DownloadManagerService dlManagerService;
 	
 	public DownloadThread(SentimentRequest req) {
 		ApplicationContext ctx = new GenericXmlApplicationContext("app-config.xml");
 		tweetDao = ctx.getBean(ITweetDAO.class);
 		twitter = ctx.getBean(TwitterAPI.class);
+		dlManagerService = ctx.getBean(DownloadManagerService.class);
 		request = req;
 	}
 
@@ -34,8 +37,7 @@ public class DownloadThread extends Thread {
 		tweetDao.storeTweet(tweets);
 		
 		// notify DownloadManagerService when finished and terminate
-		DownloadManagerServiceImpl.getInstance()
-			.initialDownloadFinished(request, this);
+		dlManagerService.initialDownloadFinished(request, this);
 	}
 
 }
