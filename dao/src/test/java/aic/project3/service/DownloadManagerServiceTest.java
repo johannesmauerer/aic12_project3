@@ -47,8 +47,6 @@ public class DownloadManagerServiceTest {
 	public void test_isInitialDownloadFinished_notFinished() {
 		SentimentRequest req = new SentimentRequest();
 		
-		@SuppressWarnings("unused")
-		DownloadThread thread = new DownloadThread(req);
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
 		dlService.setInitialDownloadsMap(dlMap);
@@ -63,8 +61,6 @@ public class DownloadManagerServiceTest {
 	public void test_isInitialDownloadFinished_isFinished() {
 		SentimentRequest req = new SentimentRequest();
 		
-		@SuppressWarnings("unused")
-		DownloadThread thread = new DownloadThread(req);
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
 		dlService.setInitialDownloadsMap(dlMap);
