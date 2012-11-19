@@ -5,6 +5,8 @@ import java.util.List;
 
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dto.TweetDTO;
+import aic12.project3.service.TwitterAPI;
+import aic12.project3.service.TwitterAPIImpl;
 
 public class TwitterAPITest {
 

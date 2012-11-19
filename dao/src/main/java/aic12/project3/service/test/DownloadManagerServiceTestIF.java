@@ -1,12 +1,12 @@
-package aic.project3.service.test;
+package aic12.project3.service.test;
 
 import java.util.Map;
 import java.util.Set;
 
-import aic.project3.dao.rest.DownloadManagerRestInterface;
-import aic.project3.service.DownloadManagerService;
-import aic.project3.service.DownloadThread;
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.dao.rest.DownloadManagerRestInterface;
+import aic12.project3.service.DownloadManagerService;
+import aic12.project3.service.DownloadThread;
 
 public interface DownloadManagerServiceTestIF extends DownloadManagerService {
 

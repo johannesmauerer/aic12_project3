@@ -1,4 +1,4 @@
-package aic.project3.service;
+package aic12.project3.service;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import aic.project3.dao.rest.DownloadManagerRestInterface;
-import aic.project3.service.test.DownloadManagerServiceTestIF;
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.dao.rest.DownloadManagerRestInterface;
+import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 
 /**
