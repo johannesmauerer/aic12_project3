@@ -1,17 +1,17 @@
 package aic12.project3.service.app;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import org.apache.log4j.Logger;
 
-import aic12.project3.service.requestManagement.RequestAnalysis;
+import aic12.project3.service.loadBalancing.LoadBalancer;
 
 public class App {
 
+	private static Logger logger = Logger.getRootLogger();
+	
 	public static void main(String[] args) {
-		ApplicationContext ctx = new GenericXmlApplicationContext("aic12/service/app-config.xml");
 		
-		RequestAnalysis ra = ctx.getBean(RequestAnalysis.class);
-		// other method to get bean, if bean is explicitly stated in app-config.xml
-		RequestAnalysis ra2 = (RequestAnalysis) ctx.getBean("requestAnalysis");
+		logger.info(LoadBalancer.getInstance().callRequest());
+		
+		//System.out.println(LoadBalancer.getInstance().callRequest());
 	}
 }
