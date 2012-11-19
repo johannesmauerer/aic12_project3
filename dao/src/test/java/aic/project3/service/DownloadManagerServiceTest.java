@@ -87,5 +87,25 @@ public class DownloadManagerServiceTest {
 		
 		verify(notifySet, times(1)).add(req);
 	}
+	
+    @Test
+    public void test_initialDownloadFinished_noNotify() {
+        SentimentRequest req = new SentimentRequest();
 
+        DownloadThread thread = new DownloadThread(req);
+        // mock download threads map
+        Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
+        dlService.setInitialDownloadsMap(dlMap);
+        when(dlMap.get(req)).thenReturn(thread);
+        // mock notifyOnDownloadFinishSet
+        Set<SentimentRequest> notifySet = mock(Set.class);
+        dlService.setNotifyOnDownloadFinishSet(notifySet);
+
+        when(notifySet.contains(req)).thenReturn(false);
+
+        dlService.initialDownloadFinished(req, thread);
+
+        verify(dlMap, times(1)).remove(req);
+        verify(notifySet, times(1)).contains(req);
+    }
 }

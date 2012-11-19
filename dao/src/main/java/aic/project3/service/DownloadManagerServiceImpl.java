@@ -49,13 +49,18 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 
 	@Override
 	public void initialDownloadFinished(SentimentRequest req, DownloadThread thread) {
-		// TODO implement
-		
 		// check if we got the same reference to thread object
+		if(initialDownloadsMap.get(req) != thread) {
+			return; // some thing bad may happen otherwise...
+		}
 		
 		// remove from initalDownloadMap
+		initialDownloadsMap.remove(req);
 		
-		// check if we need to notify about finishing (foward to some RESTclient?)
+		// check if we need to notify about finishing
+		if(notifyOnDownloadFinishSet.contains(req)) {
+			// TODO notify that download is finished
+		}
 	}
 
 	
