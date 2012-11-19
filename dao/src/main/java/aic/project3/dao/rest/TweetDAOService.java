@@ -13,6 +13,8 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 
 import aic12.project3.dao.MongoTweetDAO;
@@ -24,9 +26,13 @@ import com.sun.jersey.spi.resource.Singleton;
 @Path("/tweetdao")
 public class TweetDAOService
 {
-	@Autowired
     private MongoTweetDAO mongoDAO;
 
+    public TweetDAOService() {
+    	ApplicationContext ctx = new GenericXmlApplicationContext("app-config.xml");
+    	mongoDAO = ctx.getBean(MongoTweetDAO.class);
+    }
+    
 
     @POST
     @Path("insert")

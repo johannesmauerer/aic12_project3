@@ -11,10 +11,14 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import aic.project3.service.test.DownloadManagerServiceTestIF;
 import aic12.project3.common.beans.SentimentRequest;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath:/app-config.xml")
 public class DownloadManagerServiceTest {
 	
 	private DownloadManagerServiceTestIF dlService;
