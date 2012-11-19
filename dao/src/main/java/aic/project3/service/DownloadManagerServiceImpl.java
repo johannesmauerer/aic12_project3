@@ -59,12 +59,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	public void notifyOnInitialDownloadFinished(SentimentRequest req) {
 		notifyOnDownloadFinishSet.add(req);
 	}
-	
-	/**
-	 * this method should only be called by the thread which was downloading these initial tweets.
-	 * @param req
-	 * @param thread thread which downloaded tweets
-	 */
+
 	@Override
 	public void initialDownloadFinished(SentimentRequest req, DownloadThread thread) {
 		// TODO implement
@@ -73,11 +68,9 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		
 		// remove from initalDownloadMap
 		
-		// check if we need to notify about finishing
+		// check if we need to notify about finishing (foward to some RESTclient?)
 	}
 
-	
-	
 	
 	// TEST IF methods
 	@Override

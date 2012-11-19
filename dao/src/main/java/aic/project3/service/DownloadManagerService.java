@@ -11,6 +11,11 @@ public interface DownloadManagerService {
 
 	public void notifyOnInitialDownloadFinished(SentimentRequest req);
 
+	/**
+	 * this method should only be called by the thread which was downloading these initial tweets.
+	 * @param req
+	 * @param thread thread which downloaded tweets
+	 */
 	void initialDownloadFinished(SentimentRequest req, DownloadThread thread);
 
 }

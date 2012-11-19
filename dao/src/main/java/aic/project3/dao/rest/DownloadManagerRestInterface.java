@@ -13,7 +13,7 @@ import com.sun.jersey.spi.resource.Singleton;
 @Path("/downloadmanager")
 public class DownloadManagerRestInterface {
 
-	private DownloadManagerRestInterface() {
+	public DownloadManagerRestInterface() {
     }
 	
 	
