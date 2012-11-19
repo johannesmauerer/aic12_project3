@@ -31,10 +31,11 @@ public class DownloadThread extends Thread {
 		List<TweetDTO> tweets = twitter.getAllTweets(request);
 		
 		// save to dao
-		
+		tweetDao.storeTweet(tweets);
 		
 		// notify DownloadManagerService when finished and terminate
-
+		DownloadManagerServiceImpl.getInstance()
+			.initialDownloadFinished(request, this);
 	}
 
 }
