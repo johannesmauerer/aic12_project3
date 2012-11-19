@@ -6,7 +6,7 @@ import java.util.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import aic12.project3.common.beans.Request;
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dao.tweetsManagement.TweetsDAO;
 import aic12.project3.test.service.requestManagement.RequestQueueReadyTestIF;
 
@@ -14,24 +14,24 @@ import aic12.project3.test.service.requestManagement.RequestQueueReadyTestIF;
 @Component
 public class RequestQueueReadyImpl implements RequestQueueReady, RequestQueueReadyTestIF {
 
-	private Queue<Request> readyQueue = new LinkedList<Request>();
+	private Queue<SentimentRequest> readyQueue = new LinkedList<SentimentRequest>();
 	@Autowired
 	private TweetsDAO tweetsDAO;
 
 	@Override
-	public void addRequest(Request req) {
+	public void addRequest(SentimentRequest req) {
 		readyQueue.add(req);
 	}
 
 	@Override
-	public Request getNextRequest() {
+	public SentimentRequest getNextRequest() {
 		return readyQueue.poll();
 	}
 
 	@Override
 	public int getNumberOfTweetsInQueue() {
 		int result = 0;
-		for(Request req : readyQueue) {
+		for(SentimentRequest req : readyQueue) {
 			result += tweetsDAO.getTweetsCount(req);
 		}
 		return result;
@@ -43,7 +43,7 @@ public class RequestQueueReadyImpl implements RequestQueueReady, RequestQueueRea
 	//
 	
 	@Override
-	public void setQueue(Queue<Request> queue) {
+	public void setQueue(Queue<SentimentRequest> queue) {
 		readyQueue = queue;
 	}
 	

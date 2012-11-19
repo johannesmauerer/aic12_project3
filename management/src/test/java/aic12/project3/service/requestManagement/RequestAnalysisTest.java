@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import aic12.project3.common.beans.Request;
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dao.tweetsManagement.DownloadManager;
 import aic12.project3.dao.tweetsManagement.TweetsDAO;
 import aic12.project3.service.requestManagement.RequestQueueReady;
@@ -24,14 +24,14 @@ public class RequestAnalysisTest {
 	@Test
 	public void newRequestNotAllTweetsDownloadedTest() {
 		RequestAnalysisTestIF ra = new RequestAnalysisImpl();
-		Request req = new Request();
+		SentimentRequest req = new SentimentRequest();
 		
 		// mock queue
 		RequestQueueReady queueMock = mock(RequestQueueReady.class);
 		ra.setRequestQueueReady(queueMock);
 		// mock downloadManager
 		DownloadManager dlMock = mock(DownloadManager.class);
-		when(dlMock.isInitialDownloadFinished(any(Request.class))).thenReturn(false);
+		when(dlMock.isInitialDownloadFinished(any(SentimentRequest.class))).thenReturn(false);
 		ra.setDownloadManager(dlMock);
 		
 		ra.newRequest(req);
@@ -43,14 +43,14 @@ public class RequestAnalysisTest {
 	@Test
 	public void newRequestAddToReadyQueueTest() {
 		RequestAnalysisTestIF ra = new RequestAnalysisImpl();
-		Request req = new Request();
+		SentimentRequest req = new SentimentRequest();
 		
 		// mock queue
 		RequestQueueReady queueMock = mock(RequestQueueReady.class);
 		ra.setRequestQueueReady(queueMock);
 		// mock downloadManager
 		DownloadManager dlMock = mock(DownloadManager.class);
-		when(dlMock.isInitialDownloadFinished(any(Request.class))).thenReturn(true);
+		when(dlMock.isInitialDownloadFinished(any(SentimentRequest.class))).thenReturn(true);
 		ra.setDownloadManager(dlMock);
 		
 		ra.newRequest(req);

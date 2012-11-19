@@ -17,7 +17,7 @@ import twitter4j.Tweet;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import aic12.project3.common.beans.Request;
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.Response;
 import classifier.ClassifierBuilder;
 import classifier.IClassifier;
@@ -53,7 +53,7 @@ public class SentimentService
     @Path("analyze")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response analyze(Request request)
+    public Response analyze(SentimentRequest request)
     {
         List<Tweet> tweets = new ArrayList<Tweet>();
 

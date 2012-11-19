@@ -5,7 +5,7 @@ import java.util.Date;
 
 import javax.ws.rs.core.MediaType;
 
-import aic12.project3.common.beans.Request;
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.Response;
 
 import com.sun.jersey.api.client.Client;
@@ -18,7 +18,7 @@ public class TestClient
 {
     public static void main(String[] args) throws IOException
     {
-        Request request = new Request();
+        SentimentRequest request = new SentimentRequest();
         request.setId(1);
         request.setCompanyName("microsoft");
         request.setMinNoOfTweets(25);

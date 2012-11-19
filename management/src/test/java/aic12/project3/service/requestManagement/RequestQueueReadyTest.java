@@ -14,7 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import aic12.project3.common.beans.Request;
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dao.tweetsManagement.TweetsDAO;
 import aic12.project3.test.service.requestManagement.RequestQueueReadyTestIF;
 
@@ -26,9 +26,9 @@ public class RequestQueueReadyTest {
 	public void addRequestTest() {
 		RequestQueueReadyTestIF rqr = new RequestQueueReadyImpl();
 		
-		Request req = new Request();
+		SentimentRequest req = new SentimentRequest();
 		// mock queue
-		Queue<Request> queueMock = mock(Queue.class);
+		Queue<SentimentRequest> queueMock = mock(Queue.class);
 		rqr.setQueue(queueMock);
 		
 		rqr.addRequest(req);
@@ -40,13 +40,13 @@ public class RequestQueueReadyTest {
 	public void getNextRequestTest() throws Exception {
 		RequestQueueReadyTestIF rqr = new RequestQueueReadyImpl();
 		
-		Request expected = new Request();
+		SentimentRequest expected = new SentimentRequest();
 		// mock queue
-		Queue<Request> queueMock = mock(Queue.class);
+		Queue<SentimentRequest> queueMock = mock(Queue.class);
 		when(queueMock.poll()).thenReturn(expected);
 		rqr.setQueue(queueMock);
 		
-		Request actual = rqr.getNextRequest();
+		SentimentRequest actual = rqr.getNextRequest();
 		assertThat(actual, is(expected));
 	}
 	
@@ -55,7 +55,7 @@ public class RequestQueueReadyTest {
 		RequestQueueReadyTestIF rqr = new RequestQueueReadyImpl();
 		
 		//add one request
-		Request req = new Request();
+		SentimentRequest req = new SentimentRequest();
 		rqr.addRequest(req);
 		
 		//mock dao
@@ -74,9 +74,9 @@ public class RequestQueueReadyTest {
 		RequestQueueReadyTestIF rqr = new RequestQueueReadyImpl();
 		
 		//add two request
-		Request req1 = new Request();
+		SentimentRequest req1 = new SentimentRequest();
 		rqr.addRequest(req1);
-		Request req2 = new Request();
+		SentimentRequest req2 = new SentimentRequest();
 		rqr.addRequest(req2);
 		
 		//mock dao

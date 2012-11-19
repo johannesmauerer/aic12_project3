@@ -2,7 +2,7 @@ package aic12.project3.common.beans;
 
 import java.util.Date;
 
-public class Request
+public class SentimentRequest
 {
     private int id;
     private String companyName;
