@@ -12,6 +12,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <org.springframework.version>3.1.2.RELEASE</org.springframework.version>
+    <com.sun.jersey.version>1.14</com.sun.jersey.version>
     <jdk.version>1.6</jdk.version>
     <mvn.version>3.0</mvn.version>
   </properties>
@@ -33,7 +34,7 @@
   </scm>
   
   <build>
-    <finalName>cloudservice-${version}</finalName>
+    <finalName>${project.artifactId}-${project.version}</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -46,6 +47,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5</version>
         <configuration>
           <source>${jdk.version}</source>
           <target>${jdk.version}</target>
@@ -57,6 +59,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.1.1</version>
         <executions>
           <execution>
             <id>enforce-maven</id>

@@ -5,6 +5,7 @@ import java.util.List;
 import aic12.project3.dao.ITweetDAO;
 import aic12.project3.dao.MongoTweetDAO;
 import aic12.project3.dto.TweetDTO;
+import aic12.project3.importer.iImporter;
 
 public class App {
 

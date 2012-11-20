@@ -10,9 +10,11 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Component;
 
 import aic12.project3.dto.TweetDTO;
 
+@Component
 public class MongoTweetDAO implements ITweetDAO{
 
 	private MongoOperations mongoOperation;
