@@ -3,18 +3,23 @@ package aic12.project3.service.rest;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.Produces;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.sun.jersey.spi.resource.Singleton;
+import aic12.project3.service.communication.CommunicationService;
 
-@Singleton
+
+
+@Component
 @Path("/request")
 public class RequestService {
 	
-	ServiceRestComm serv = new ServiceRestComm();
+	@Autowired
+	CommunicationService serv;
 	
 	 @GET
 	 @Path("test")

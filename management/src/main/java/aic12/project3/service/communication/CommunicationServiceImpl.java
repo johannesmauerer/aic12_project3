@@ -1,12 +1,14 @@
-package aic12.project3.service.rest;
+package aic12.project3.service.communication;
 
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.service.requestManagement.RequestAnalysis;
 
-public class ServiceRestComm {
+public class CommunicationServiceImpl implements CommunicationService {
 	
 	private RequestAnalysis ra;
 	
@@ -34,6 +36,10 @@ public class ServiceRestComm {
 			 return false;
 		 }
 		
+	}
+	
+	public String test(){
+		return "All good";
 	}
 
 }

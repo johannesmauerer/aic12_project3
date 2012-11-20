@@ -1,11 +1,11 @@
 package aic12.project3.service.requestManagement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dao.tweetsManagement.DownloadManager;
 import aic12.project3.test.service.requestManagement.RequestAnalysisTestIF;
-
 
 public class RequestAnalysisImpl implements RequestAnalysis, RequestAnalysisTestIF {
 
