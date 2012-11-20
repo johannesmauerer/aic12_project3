@@ -59,6 +59,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		
 		// check if we need to notify about finishing
 		if(notifyOnDownloadFinishSet.contains(req)) {
+			notifyOnDownloadFinishSet.remove(req);
 			// TODO notify that download is finished
 		}
 	}
