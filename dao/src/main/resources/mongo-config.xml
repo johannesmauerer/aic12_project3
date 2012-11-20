@@ -10,8 +10,8 @@
           http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
  
-	<mongo:mongo host="localhost" port="27017" />
-	<mongo:db-factory dbname="project3" />
+		  <mongo:db-factory host="localhost" port="27017" dbname="sentimentanalysis" />
+		  <!--<mongo:db-factory host="10.99.0.26" port="44444" dbname="sentimentanalysis" /> -->
  
 	<bean id="mongoOperation" 
                 class="org.springframework.data.mongodb.core.MongoTemplate">
