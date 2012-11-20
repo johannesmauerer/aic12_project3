@@ -48,4 +48,8 @@ public class SentimentRequest
     {
         this.to = to;
     }
+    
+    public void sendRequest(){
+    	
+    }
 }
