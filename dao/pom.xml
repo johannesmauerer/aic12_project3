@@ -13,15 +13,63 @@
 
   <name>CloudService :: DAO</name>
 
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   
   <dependencies>
     <dependency>
       <groupId>aic12.project3</groupId>
       <artifactId>cloudservice-common</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
+    <dependency>
+		<groupId>org.mongodb</groupId>
+		<artifactId>mongo-java-driver</artifactId>
+		<version>2.9.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-core</artifactId>
+		<version>3.1.2.RELEASE</version>
+	  </dependency>
+ 
+	  <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context</artifactId>
+		<version>3.1.2.RELEASE</version>
+	  </dependency>
+	<dependency>
+		<groupId>org.springframework.data</groupId>
+		<artifactId>spring-data-mongodb</artifactId>
+		<version>1.0.3.RELEASE</version>
+	  </dependency>
+	 <dependency>
+		<groupId>com.googlecode.json-simple</groupId>
+		<artifactId>json-simple</artifactId>
+		<version>1.1</version>
+	</dependency>
+	
+	<dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-servlet</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+	
+	
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

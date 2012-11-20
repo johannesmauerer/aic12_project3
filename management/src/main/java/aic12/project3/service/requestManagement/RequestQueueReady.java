@@ -1,12 +1,21 @@
 package aic12.project3.service.requestManagement;
 
-import org.springframework.stereotype.Component;
+import java.beans.PropertyChangeListener;
+import java.util.Queue;
 
-@Component
-public class RequestQueueReady {
+import aic12.project3.common.beans.SentimentRequest;
 
-	public String some() {
-		return "some";
-	}
+
+public interface RequestQueueReady {
+
+	public void addRequest(SentimentRequest req);
+
+	SentimentRequest getNextRequest();
+	
+	int getNumberOfTweetsInQueue();
+	
+	public void addChangeListener(PropertyChangeListener newListener);
+	
+	public Queue<SentimentRequest> getRequestQueue();
 
 }

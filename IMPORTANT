@@ -1,0 +1,3 @@
+In order to get this running you need to execute the following command in the project root folder:
+
+mvn install:install-file -Dfile="analysis/lib/libsvm.jar" -DgroupId=unknown -DartifactId=libsvm -Dversion=unknown -Dpackaging=jar
