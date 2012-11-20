@@ -1,0 +1,1 @@
+you have to provide your own acces token and -secret in src/main/resources/twitter4j.properties to be able to consume the twitter stream
