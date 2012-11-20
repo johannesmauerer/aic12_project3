@@ -1,7 +1,5 @@
 package aic12.project3.analysis.rest;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -58,7 +56,7 @@ public class SentimentService
     @Path("analyze")
     @Consumes("application/json")
     @Produces("application/json")
-    public SentimentResponse analyze(SentimentRequest request) throws FileNotFoundException, IOException
+    public SentimentResponse analyze(SentimentRequest request)
     {
         try
         {
@@ -73,26 +71,14 @@ public class SentimentService
             WebResource resource = client.resource(properties.getProperty("databaseServerUrl"));
             TweetList response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
 
-            System.out.println("Creating sentiment analysis for: '" + request.getCompanyName() + "' with " + response.getList().size() + " tweets");
-            System.out.println("------------------------------------------------");
-
             try
             {
                 // Iterate through and counting the result
                 int i = 0;
                 for (TweetDTO tweet : response.getList())
                 {
-                    System.out.println("Tweet from: " + tweet.getDate());
-                    System.out.println(tweet.getText());
-
-                    int polarity = wm.weightedClassify(tweet.getText()).getPolarity();
-                    System.out.println("Calculated polarity: " + polarity);
-                    i += polarity;
-                    System.out.println("------------------------------------------------");
+                    i += wm.weightedClassify(tweet.getText()).getPolarity();
                 }
-
-                System.out.println("------------------------------------------------");
-                System.out.println("Overall polarity: " + (float) i / response.getList().size() / 4);
 
                 SentimentResponse resp = new SentimentResponse();
                 resp.setSentiment((float) i / response.getList().size() / 4);
