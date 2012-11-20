@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:c="http://java.sun.com/jsp/jstl/core"     
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="templates/default.xhtml">
+                
+        <ui:define name="title">
+                <h:outputText value="Sample Web Application" />
+        </ui:define>
+        
+        <ui:define name="headerLogoTopNav">
+                <!-- Logo + Top Nav -->
+                <div id="top">
+                        <h1>Advanced Internet Computing - Cloud Twitter Sentiment Analysis</h1>
+                </div>
+                <!-- End Logo + Top Nav -->
+        </ui:define>
+        
+        <ui:define name="content">
+                
+                <!-- Main -->
+                <div id="main">
+                                <!-- Box -->
+                                <div class="box" style=" margin: auto; width: 400px;">
+                                        
+                                        <!-- Box Head -->
+                                        <div class="box-head">
+                                                <h2>Login</h2>
+                                        </div>
+                                        <!-- End Box Head -->
+
+                                        <h:form id="formLogin" prependId="false">
+                                        <!-- Form -->
+                                                <div class="form">
+                                                                <p><p:message  for="formLogin" />  </p>
+                                                                <p>
+                                                                        <label>Company Name <span>(Required Field)</span></label>
+                                                                        <h:inputText id="j_username" label="User Name" value="#{loginBean.userName}"  required="true" class="field size1" style=" width: 96%;" />
+                                                                        <label><p:message  for="j_username" /></label>
+                                                                </p>
+                                                                <p>
+                                                                        <label>Password <span>(Required Field)</span></label>
+                                                                        <h:inputSecret id="j_password" label="Password" value="#{loginBean.password}" required="true" class="field size1" style=" width: 96%;" />
+                                                                        <label><p:message  for="j_password" /></label>
+                                                                </p> 
+                                                        
+                                                </div>
+                                                <!-- End Form -->
+                                                
+                                                <!-- Form Buttons -->
+                                                <div class="buttons">
+                                                        <p:commandButton   type="submit" id="login"   action="#{loginBean.login}" 
+                                                                value="Login" icon="ui-icon-person" />
+                                                </div>
+                                                <!-- Test Buttons -->
+                                                <div class="testButtons">
+                                                        <p:commandButton   type="submit" id="test1"   action="#{SentimentRequest.sendRequest}" 
+                                                                value="Test 1" />
+                                                        <p:commandButton   type="submit" id="test2"   action="#{SentimentRequest.sendRequest}" 
+                                                                value="Test 2" />
+                                                </div>
+                                                <!-- End Form Buttons -->
+                                                <!--  <h:inputHidden value="#{loginBean.logoutHidden}" /> -->
+                                        </h:form>
+                                </div>
+                                <!-- End Box -->
+                
+                </div>
+                <!-- Main -->
+        </ui:define>
+</ui:composition>
+</html>
