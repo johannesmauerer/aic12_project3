@@ -3,7 +3,7 @@ package aic12.project3.dao;
 import java.util.Date;
 import java.util.List;
 
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.common.dto.TweetDTO;
 
 public interface ITweetDAO {
 	public abstract void storeTweet(TweetDTO tweet);

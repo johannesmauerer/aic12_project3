@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.dao.ITweetDAO;
-import aic12.project3.dto.TweetDTO;
 import aic12.project3.importer.iImporter;
 
 public class Importer implements iImporter {
@@ -76,7 +76,7 @@ public class Importer implements iImporter {
 					String text = (String) jsonObject.get("text");
 					String date = (String) jsonObject.get("created_at");
 					Long twitterId = Long.parseLong((String)jsonObject.get("id_str"));
-					TweetDTO tweet = new TweetDTO(twitterId,text, this.parseDate(date));
+					TweetDTO tweet = new TweetDTO(twitterId, text, this.parseDate(date));
 
 					tweetDAO.storeTweet(tweet);
 
