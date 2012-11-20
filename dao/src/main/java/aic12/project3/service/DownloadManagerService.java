@@ -1,7 +1,7 @@
 package aic12.project3.service;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dao.rest.DownloadManagerRestInterface;
+import aic12.project3.service.rest.DownloadManagerRestInterface;
 
 public interface DownloadManagerService {
 

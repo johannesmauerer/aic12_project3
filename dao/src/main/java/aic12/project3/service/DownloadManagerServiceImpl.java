@@ -9,7 +9,7 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dao.rest.DownloadManagerRestInterface;
+import aic12.project3.service.rest.DownloadManagerRestInterface;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 
@@ -59,6 +59,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		
 		// check if we need to notify about finishing
 		if(notifyOnDownloadFinishSet.contains(req)) {
+			notifyOnDownloadFinishSet.remove(req);
 			// TODO notify that download is finished
 		}
 	}
