@@ -1,4 +1,4 @@
-package aic.project3.service;
+package aic12.project3.service;
 
 import static org.junit.Assert.*;
 

@@ -28,26 +28,15 @@ import aic12.project3.dto.TweetDTO;
 @Component
 public class TwitterAPIImpl implements TwitterAPI {
 	
+	private static final int TWEETS_CACHE_SIZE = 20;
+	
 	private TwitterStream stream;
 	private List<String> trackedCompanies = new LinkedList<String>();
 
 	public TwitterAPIImpl() {
 		stream = new TwitterStreamFactory().getInstance();
-		
-		// TODO dummy status listener
-		StatusListener listener = new StatusListener(){
-	        public void onStatus(Status status) {
-	        	System.out.println(status.getUser().getName() + " : " + status.getText());
-	        }
-	        public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {}
-	        public void onTrackLimitationNotice(int numberOfLimitedStatuses) {}
-	        public void onException(Exception ex) {
-	            ex.printStackTrace();
-	        }
-			public void onScrubGeo(long arg0, long arg1) {}
-	    };
-	    
-	    stream.addListener(listener);
+			    
+	    stream.addListener(new WriteCachedToDaoStreamListener(TWEETS_CACHE_SIZE));
 	}
 
 	@Override

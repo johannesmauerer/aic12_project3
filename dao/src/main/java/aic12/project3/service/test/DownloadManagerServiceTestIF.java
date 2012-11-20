@@ -7,7 +7,6 @@ import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.service.DownloadManagerService;
 import aic12.project3.service.DownloadThread;
 import aic12.project3.service.TwitterAPI;
-import aic12.project3.service.rest.DownloadManagerRestInterface;
 
 public interface DownloadManagerServiceTestIF extends DownloadManagerService {
 
