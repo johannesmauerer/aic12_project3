@@ -1,5 +1,7 @@
 package aic12.project3.service.rest;
 
+import java.util.Date;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -41,6 +43,12 @@ public class RequestService {
 	 public String createRequest(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate){
 		 
 		 return serv.createRequest(company, fromDate, toDate) ? "OK" : "Error";
+	 }
+	 
+	 @GET
+	 @Path("createtest")
+	 public String createTestRequest(){
+		 return serv.createRequest("ABC", new Date(System.currentTimeMillis()-40000000).getTime(), new Date(System.currentTimeMillis()).getTime()) ? "OK" : "Error";
 	 }
 
 

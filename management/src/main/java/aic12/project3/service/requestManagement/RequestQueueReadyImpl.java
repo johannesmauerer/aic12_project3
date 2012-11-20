@@ -12,7 +12,6 @@ import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dao.tweetsManagement.TweetsDAO;
 import aic12.project3.test.service.requestManagement.RequestQueueReadyTestIF;
 
-@Component
 public class RequestQueueReadyImpl extends Observable implements RequestQueueReady, RequestQueueReadyTestIF {
 
 	private static RequestQueueReadyImpl instance = new RequestQueueReadyImpl();
