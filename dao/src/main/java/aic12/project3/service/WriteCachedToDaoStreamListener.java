@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
@@ -16,6 +17,7 @@ import twitter4j.StatusListener;
 
 public class WriteCachedToDaoStreamListener implements StatusListener {
 
+//	@Autowired
 	private ITweetDAO tweetDao;
 	private int cacheSize;
 	private List<TweetDTO> tweetsCache;
@@ -39,6 +41,7 @@ public class WriteCachedToDaoStreamListener implements StatusListener {
 		tweetsCache.add(new TweetDTO(id, text, date));
 		
 		// TODO write to dao if enough tweets are cached
+		// synchronize this writeout?
 		
 		// TODO clean cache
 	}
