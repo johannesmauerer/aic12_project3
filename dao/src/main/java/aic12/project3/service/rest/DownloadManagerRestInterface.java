@@ -1,4 +1,4 @@
-package aic12.project3.dao.rest;
+package aic12.project3.service.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

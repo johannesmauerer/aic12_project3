@@ -9,7 +9,7 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dao.rest.DownloadManagerRestInterface;
+import aic12.project3.service.rest.DownloadManagerRestInterface;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 
