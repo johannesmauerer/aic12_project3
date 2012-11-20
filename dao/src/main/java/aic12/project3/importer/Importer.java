@@ -20,7 +20,7 @@ import aic12.project3.dto.TweetDTO;
 
 public class Importer implements iImporter {
 
-	private float state;
+	private long state;
 	private String tweetFile;
 	private Properties properties;
 	private String propertiesFile;
@@ -98,7 +98,7 @@ public class Importer implements iImporter {
 	private void saveState() {
 		// save state to property file.
 
-		properties.setProperty("readlines", Float.toString(state));
+		properties.setProperty("readlines", Long.toString(state));
 		try {
 			properties.store(new FileOutputStream(this.propertiesFile), null);
 		} catch (FileNotFoundException e) {
@@ -111,7 +111,7 @@ public class Importer implements iImporter {
 	}
 
 	private void loadState() {
-		this.state = Float.parseFloat(this.properties.getProperty("readlines"));
+		this.state = Long.parseLong(this.properties.getProperty("readlines"));
 	}
 
 	private Date parseDate(String date) {

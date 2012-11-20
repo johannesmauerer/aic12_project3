@@ -18,10 +18,10 @@ public class App {
 		ITweetDAO tweetDAO = new MongoTweetDAO();
 		
 		importer.importTweets(tweetDAO);
-		List<TweetDTO> tweets = tweetDAO.getAllTweet();
+		/*List<TweetDTO> tweets = tweetDAO.getAllTweet();
 		for(TweetDTO t:tweets){
 			System.out.println(t);
-		}
+		}*/
 	}
 
 }
