@@ -50,8 +50,8 @@ public class UserBean {
 		this.password = password;
 	}
 
-	public LoginStatus login(String login, String password){
-        if(login.equals("IBM") && password.equals("ibm")){
+	public LoginStatus loginUser(){
+        if(this.login.equals("IBM") && this.password.equals("ibm")){
         	return LoginStatus.SUCCESS;
 		}
 		else{

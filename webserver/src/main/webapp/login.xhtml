@@ -10,13 +10,13 @@
 <ui:composition template="templates/default.xhtml">
                 
         <ui:define name="title">
-                <h:outputText value="Sample Web Application" />
+                <h:outputText value="Twitter Sentiment Analysis - Login" />
         </ui:define>
         
         <ui:define name="headerLogoTopNav">
                 <!-- Logo + Top Nav -->
                 <div id="top">
-                        <h1>Advanced Internet Computing - Cloud Twitter Sentiment Analysis</h1>
+                        <h1>Advanced Internet Computing - Cloud Computing - Twitter Sentiment Analysis</h1>
                 </div>
                 <!-- End Logo + Top Nav -->
         </ui:define>
@@ -40,7 +40,7 @@
                                                                 <p><p:message  for="formLogin" />  </p>
                                                                 <p>
                                                                         <label>Company Name <span>(Required Field)</span></label>
-                                                                        <h:inputText id="j_username" label="User Name" value="#{loginBean.userName}"  required="true" class="field size1" style=" width: 96%;" />
+                                                                        <h:inputText id="j_username" label="User Name" value="#{loginBean.login}"  required="true" class="field size1" style=" width: 96%;" />
                                                                         <label><p:message  for="j_username" /></label>
                                                                 </p>
                                                                 <p>
@@ -51,12 +51,7 @@
                                                         
                                                 </div>
                                                 <!-- End Form -->
-                                                
-                                                <!-- Form Buttons -->
-                                                <div class="buttons">
-                                                        <p:commandButton   type="submit" id="login"   action="#{loginBean.login}" 
-                                                                value="Login" icon="ui-icon-person" />
-                                                </div>
+                                              
                                                 <!-- Test Buttons -->
                                                 <div class="testButtons">
                                                         <p:commandButton   type="submit" id="test1"   action="#{SentimentRequest.sendRequest}" 
