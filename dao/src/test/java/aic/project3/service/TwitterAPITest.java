@@ -18,8 +18,9 @@ public class TwitterAPITest {
 		req.setFrom(new Date(System.currentTimeMillis() - 84600000)); // minus one day
 		req.setTo(new Date());
 		
-		List<TweetDTO> tweets = api.getAllTweets(req);
-		System.out.println(tweets);
-		System.out.println(tweets.size());
+//		List<TweetDTO> tweets = api.getAllTweets(req);
+//		System.out.println(tweets);
+//		System.out.println(tweets.size());
+		api.registerForTwitterStream(req);
 	}
 }

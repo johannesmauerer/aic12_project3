@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.service.DownloadManagerServiceImpl;
 import aic12.project3.service.DownloadThread;
+import aic12.project3.service.TwitterAPI;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -105,5 +106,17 @@ public class DownloadManagerServiceTest {
 
         verify(dlMap, times(1)).remove(req);
         verify(notifySet, times(1)).contains(req);
+    }
+    
+    @Test
+    public void test_registerForTwitterStream() {
+    	SentimentRequest req = new SentimentRequest();
+    	
+    	TwitterAPI twitterMock = mock(TwitterAPI.class);
+    	dlService.setTwitterAPI(twitterMock);
+    	
+    	dlService.registerForTwitterStream(req);
+    	
+    	verify(twitterMock, times(1)).registerForTwitterStream(req);
     }
 }

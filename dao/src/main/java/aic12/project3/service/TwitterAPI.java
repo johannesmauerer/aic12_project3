@@ -9,4 +9,6 @@ public interface TwitterAPI {
 
 	List<TweetDTO> getAllTweets(SentimentRequest req);
 
+	void registerForTwitterStream(SentimentRequest req);
+
 }

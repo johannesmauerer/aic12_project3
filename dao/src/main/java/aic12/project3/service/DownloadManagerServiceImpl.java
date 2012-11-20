@@ -9,7 +9,6 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.service.rest.DownloadManagerRestInterface;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 
@@ -26,12 +25,18 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 			Collections.synchronizedMap(
 					new HashMap<SentimentRequest, DownloadThread>());
 	private Set<SentimentRequest> notifyOnDownloadFinishSet = Collections.synchronizedSet(new HashSet<SentimentRequest>());
+	private TwitterAPI twitterAPI;
 
 	@Override
 	public void startInitialDownload(SentimentRequest req) {
 		DownloadThread thread = new DownloadThread(req);
 		initialDownloadsMap.put(req, thread);
 		thread.start();
+	}
+	
+	@Override
+	public void registerForTwitterStream(SentimentRequest req) {
+		twitterAPI.registerForTwitterStream(req);
 	}
 
 	/**
@@ -74,6 +79,11 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	@Override
 	public void setNotifyOnDownloadFinishSet(Set<SentimentRequest> notifySet) {
 		notifyOnDownloadFinishSet = notifySet;
+	}
+
+	@Override
+	public void setTwitterAPI(TwitterAPI twitterAPI) {
+		this.twitterAPI = twitterAPI;
 	}
 
 }

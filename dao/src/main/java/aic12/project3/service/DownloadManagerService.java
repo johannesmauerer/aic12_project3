@@ -18,4 +18,6 @@ public interface DownloadManagerService {
 	 */
 	void initialDownloadFinished(SentimentRequest req, DownloadThread thread);
 
+	void registerForTwitterStream(SentimentRequest req);
+
 }

@@ -5,22 +5,50 @@ import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.springframework.stereotype.Component;
 
+import twitter4j.FilterQuery;
 import twitter4j.Query;
 import twitter4j.QueryResult;
+import twitter4j.Status;
+import twitter4j.StatusDeletionNotice;
+import twitter4j.StatusListener;
+import twitter4j.StatusStream;
 import twitter4j.Tweet;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
 
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dto.TweetDTO;
 
 @Component
 public class TwitterAPIImpl implements TwitterAPI {
+	
+	private TwitterStream stream;
+	private List<String> trackedCompanies = new LinkedList<String>();
+
+	public TwitterAPIImpl() {
+		stream = new TwitterStreamFactory().getInstance();
+		
+		// TODO dummy status listener
+		StatusListener listener = new StatusListener(){
+	        public void onStatus(Status status) {
+	        	System.out.println(status.getUser().getName() + " : " + status.getText());
+	        }
+	        public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {}
+	        public void onTrackLimitationNotice(int numberOfLimitedStatuses) {}
+	        public void onException(Exception ex) {
+	            ex.printStackTrace();
+	        }
+			public void onScrubGeo(long arg0, long arg1) {}
+	    };
+	    
+	    stream.addListener(listener);
+	}
 
 	@Override
 	public List<TweetDTO> getAllTweets(SentimentRequest req) {
@@ -58,11 +86,25 @@ public class TwitterAPIImpl implements TwitterAPI {
         catch (TwitterException e)
         {
             throw new WebApplicationException(Response.status(
-            		Status.INTERNAL_SERVER_ERROR)
+            		javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
             			.entity("Failed to retrieve tweets").build());
         }
 		
 		return tweetDTOs;
+	}
+	
+	@Override
+	public void registerForTwitterStream(SentimentRequest req) {
+		if(!validReqeuest(req)) {
+			return;
+		}
+		/* TODO WARNING streamingAPI might
+			not compatible with google app engine (maybe this has changed)
+		 */
+		
+		trackedCompanies.add(req.getCompanyName());
+		FilterQuery query = new FilterQuery().track(trackedCompanies.toArray(new String[trackedCompanies.size()]));
+		stream.filter(query);
 	}
 
 	private boolean validReqeuest(SentimentRequest req) {
