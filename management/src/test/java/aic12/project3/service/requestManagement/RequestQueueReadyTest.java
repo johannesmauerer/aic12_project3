@@ -24,7 +24,7 @@ public class RequestQueueReadyTest {
 	
 	@Test
 	public void addRequestTest() {
-		RequestQueueReadyTestIF rqr = new RequestQueueReadyImpl();
+		RequestQueueReadyTestIF rqr = RequestQueueReadyImpl.getInstance();
 		
 		SentimentRequest req = new SentimentRequest();
 		// mock queue
@@ -38,7 +38,7 @@ public class RequestQueueReadyTest {
 	
 	@Test
 	public void getNextRequestTest() throws Exception {
-		RequestQueueReadyTestIF rqr = new RequestQueueReadyImpl();
+		RequestQueueReadyTestIF rqr = RequestQueueReadyImpl.getInstance();
 		
 		SentimentRequest expected = new SentimentRequest();
 		// mock queue
@@ -52,7 +52,7 @@ public class RequestQueueReadyTest {
 	
 	@Test
 	public void getTweetsInQueueOneRequestTest() throws Exception {
-		RequestQueueReadyTestIF rqr = new RequestQueueReadyImpl();
+		RequestQueueReadyTestIF rqr = RequestQueueReadyImpl.getInstance();
 		
 		//add one request
 		SentimentRequest req = new SentimentRequest();
@@ -71,7 +71,7 @@ public class RequestQueueReadyTest {
 	
 	@Test
 	public void getTweetsInQueueTwoRequestsTest() throws Exception {
-		RequestQueueReadyTestIF rqr = new RequestQueueReadyImpl();
+		RequestQueueReadyTestIF rqr = RequestQueueReadyImpl.getInstance();
 		
 		//add two request
 		SentimentRequest req1 = new SentimentRequest();

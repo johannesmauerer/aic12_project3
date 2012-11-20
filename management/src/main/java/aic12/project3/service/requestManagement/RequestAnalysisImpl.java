@@ -17,11 +17,11 @@ public class RequestAnalysisImpl implements RequestAnalysis, RequestAnalysisTest
 
 	@Override
 	public void newRequest(SentimentRequest req) {
-		if(downloadManager.isInitialDownloadFinished(req)) {
+		//if(downloadManager.isInitialDownloadFinished(req)) {
 			requestQueueReady.addRequest(req);
-		} else {
-			downloadManager.notifyOnInitialDownloadFinished(req);
-		}
+		//} else {
+		//	downloadManager.notifyOnInitialDownloadFinished(req);
+		//}
 	}
 	
 	public String test(){
