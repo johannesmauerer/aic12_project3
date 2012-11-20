@@ -56,6 +56,7 @@ public class MyApplication extends Application {
         final Set<Class<?>> classes = new HashSet<Class<?>>();
         // register root resource
         classes.add(LoadBalancingService.class);
+        classes.add(RequestService.class);
         return classes;
     }
 }

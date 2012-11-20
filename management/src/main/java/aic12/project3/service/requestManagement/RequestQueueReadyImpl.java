@@ -1,6 +1,5 @@
 package aic12.project3.service.requestManagement;
 
-import java.util.LinkedList;
 import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import aic12.project3.test.service.requestManagement.RequestQueueReadyTestIF;
 @Component
 public class RequestQueueReadyImpl implements RequestQueueReady, RequestQueueReadyTestIF {
 
-	private Queue<SentimentRequest> readyQueue = new LinkedList<SentimentRequest>();
+	private Queue<SentimentRequest> readyQueue = RequestQueue.getInstance().getRequests();
 	@Autowired
 	private TweetsDAO tweetsDAO;
 

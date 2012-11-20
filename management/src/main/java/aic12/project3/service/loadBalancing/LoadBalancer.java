@@ -1,8 +1,6 @@
 package aic12.project3.service.loadBalancing;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import aic12.project3.service.requestManagement.RequestAnalysis;
 
 /**
@@ -15,6 +13,7 @@ import aic12.project3.service.requestManagement.RequestAnalysis;
 public class LoadBalancer {
 	
 	private static LoadBalancer instance = new LoadBalancer();
+	private RequestAnalysis ra;
 	
 	private LoadBalancer(){}
 	
@@ -26,11 +25,14 @@ public class LoadBalancer {
 		return instance;
 	}
 	
+	@Autowired
+	public void setRa(RequestAnalysis ra){
+		this.ra = ra;
+	}
+	
 	public String callRequest(){
-		ApplicationContext ctx = new GenericXmlApplicationContext("aic12/project3/service/app-config.xml");
 		
-		RequestAnalysis ra = (RequestAnalysis) ctx.getBean("requestAnalysis");
-		return "";
+			return ra.test();
 	}
 
 }

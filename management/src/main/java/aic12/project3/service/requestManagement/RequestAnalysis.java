@@ -6,4 +6,6 @@ import aic12.project3.common.beans.SentimentRequest;
 public interface RequestAnalysis {
 
 	public void newRequest(SentimentRequest req);
+	
+	public String test();
 }
