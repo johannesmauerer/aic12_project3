@@ -2,9 +2,9 @@ package aic12.project3.importer;
 
 import java.util.List;
 
+import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.dao.ITweetDAO;
 import aic12.project3.dao.MongoTweetDAO;
-import aic12.project3.dto.TweetDTO;
 import aic12.project3.importer.iImporter;
 
 public class App {
@@ -19,10 +19,10 @@ public class App {
 		ITweetDAO tweetDAO = new MongoTweetDAO();
 		
 		importer.importTweets(tweetDAO);
-		List<TweetDTO> tweets = tweetDAO.getAllTweet();
+		/*List<TweetDTO> tweets = tweetDAO.getAllTweet();
 		for(TweetDTO t:tweets){
 			System.out.println(t);
-		}
+		}*/
 	}
 
 }

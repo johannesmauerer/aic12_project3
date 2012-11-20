@@ -15,13 +15,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.dao.ITweetDAO;
-import aic12.project3.dto.TweetDTO;
 import aic12.project3.importer.iImporter;
 
 public class Importer implements iImporter {
 
-	private float state;
+	private long state;
 	private String tweetFile;
 	private Properties properties;
 	private String propertiesFile;
@@ -76,7 +76,7 @@ public class Importer implements iImporter {
 					String text = (String) jsonObject.get("text");
 					String date = (String) jsonObject.get("created_at");
 					Long twitterId = Long.parseLong((String)jsonObject.get("id_str"));
-					TweetDTO tweet = new TweetDTO(twitterId,text, this.parseDate(date));
+					TweetDTO tweet = new TweetDTO(twitterId, text, this.parseDate(date));
 
 					tweetDAO.storeTweet(tweet);
 
@@ -99,7 +99,7 @@ public class Importer implements iImporter {
 	private void saveState() {
 		// save state to property file.
 
-		properties.setProperty("readlines", Float.toString(state));
+		properties.setProperty("readlines", Long.toString(state));
 		try {
 			properties.store(new FileOutputStream(this.propertiesFile), null);
 		} catch (FileNotFoundException e) {
@@ -112,7 +112,7 @@ public class Importer implements iImporter {
 	}
 
 	private void loadState() {
-		this.state = Float.parseFloat(this.properties.getProperty("readlines"));
+		this.state = Long.parseLong(this.properties.getProperty("readlines"));
 	}
 
 	private Date parseDate(String date) {

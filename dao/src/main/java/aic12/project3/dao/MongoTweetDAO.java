@@ -3,7 +3,6 @@ package aic12.project3.dao;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -12,7 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.common.dto.TweetDTO;
 
 @Component
 public class MongoTweetDAO implements ITweetDAO{

@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import aic12.project3.dto.UserDTO;
+import aic12.project3.common.dto.UserDTO;
 
 public class MongoUserDAO implements IUserDAO{
 
@@ -31,8 +31,8 @@ public class MongoUserDAO implements IUserDAO{
 	}
 
 	@Override
-	public List<UserDTO> searchUser(String userName) {
-		return mongoOperation.find(new Query(Criteria.where("userName").is(userName)),UserDTO.class, "users");		
+	public UserDTO searchUser(String userName) {
+		return mongoOperation.find(new Query(Criteria.where("userName").is(userName)),UserDTO.class, "users").get(0);		
 	}
 
 	@Override

@@ -15,10 +15,10 @@ import javax.ws.rs.core.Response;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
-
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.TweetList;
+import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.dao.MongoTweetDAO;
-import aic12.project3.dto.TweetDTO;
 
 import com.sun.jersey.spi.resource.Singleton;
 
@@ -46,6 +46,7 @@ public class TweetDAOService
     @GET
     @Path("find")
     @Produces("application/json")
+    @Deprecated
     public Response find(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate)
     {
         List<TweetDTO> tweetList = mongoDAO.searchTweet(company, new Date(fromDate), new Date(toDate));
@@ -57,21 +58,16 @@ public class TweetDAOService
     @Path("getallforrequest")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response getAllForRequest(SentimentRequest request)
+    public TweetList getAllForRequest(SentimentRequest request)
     {
-    	List<TweetDTO> tweetList = mongoDAO.searchTweet(request.getCompanyName(), request.getFrom(),request.getTo());
-        GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
-        return Response.ok(entity).build();
+    	return new TweetList(mongoDAO.searchTweet(request.getCompanyName(), request.getFrom(),request.getTo()));
     }
     
     @GET
     @Path("getall")
     @Produces("application/json")
-    public Response getAll()
+    public TweetList getAll()
     {
-        List<TweetDTO> tweetList = mongoDAO.getAllTweet();
-        
-        GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
-        return Response.ok(entity).build();
+        return new TweetList(mongoDAO.getAllTweet());
     }
 }

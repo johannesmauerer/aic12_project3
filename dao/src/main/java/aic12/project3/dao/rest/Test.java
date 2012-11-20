@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.common.beans.TweetList;
+import aic12.project3.common.dto.TweetDTO;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -43,11 +43,11 @@ public class Test
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
         
         Client client = Client.create(config);
-        /*WebResource resource = client.resource("http://localhost:8080/cloudservice-1.0-SNAPSHOT/tweetdao/insert");
+        /*WebResource resource = client.resource("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/insert");
         String result = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, tweetList);
         System.out.println("Result: "+result);*/
         
-        String serveruri = "http://localhost:8080/cloudservice-1.0-SNAPSHOT/tweetdao/find?company=ABC&fromdate="+
+        String serveruri = "http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/find?company=ABC&fromdate="+
         		(new Date(System.currentTimeMillis()-40000000)).getTime()+"&todate="+(new Date(System.currentTimeMillis())).getTime();
         		
         WebResource resource = client.resource(serveruri);
@@ -70,9 +70,8 @@ public class Test
         
         Client client = Client.create(config);
         WebResource resource = client.resource("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/getall");
-        ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, request);
-        List<TweetDTO> tweetResponse = response.getEntity(new GenericType<List<TweetDTO>>(){}); 
-        for(TweetDTO t : tweetResponse){
+        TweetList response = resource.accept(MediaType.APPLICATION_JSON).get(TweetList.class);
+        for(TweetDTO t : response.getList()){
         	System.out.println(t);
         }
     }

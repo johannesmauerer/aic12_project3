@@ -7,8 +7,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.dao.ITweetDAO;
-import aic12.project3.dto.TweetDTO;
 
 public class DownloadThread extends Thread {
 

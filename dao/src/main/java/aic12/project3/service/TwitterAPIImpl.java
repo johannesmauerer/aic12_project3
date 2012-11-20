@@ -17,7 +17,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.common.dto.TweetDTO;
 
 @Component
 public class TwitterAPIImpl implements TwitterAPI {
@@ -49,8 +49,8 @@ public class TwitterAPIImpl implements TwitterAPI {
 				List<Tweet> tweets = result.getTweets();
 				// map to TweetDTO
 				for(Tweet t : tweets) {
-					TweetDTO tweetDTO = new TweetDTO(t.getId(), t.getText(),
-							t.getCreatedAt()); //TODO getId() is this the right ID?
+                    TweetDTO tweetDTO = new TweetDTO(t.getId(), t.getText(),
+                            t.getCreatedAt()); //TODO getId() is this the right ID?
 					tweetDTOs.add(tweetDTO);
 				}
 			}
