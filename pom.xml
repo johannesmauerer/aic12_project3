@@ -13,6 +13,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <org.springframework.version>3.1.2.RELEASE</org.springframework.version>
     <com.sun.jersey.version>1.14</com.sun.jersey.version>
+	<org.twitter4j.version>2.2.6</org.twitter4j.version>
     <jdk.version>1.6</jdk.version>
     <mvn.version>3.0</mvn.version>
   </properties>
