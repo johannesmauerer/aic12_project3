@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import twitter4j.FilterQuery;
@@ -25,18 +26,25 @@ import twitter4j.TwitterStreamFactory;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.dto.TweetDTO;
 
-@Component
 public class TwitterAPIImpl implements TwitterAPI {
 	
 	private static final int TWEETS_CACHE_SIZE = 20;
+
+	private static Logger log = Logger.getLogger(TwitterAPIImpl.class);
+
+	private static TwitterAPIImpl instance = new TwitterAPIImpl();
 	
 	private TwitterStream stream;
 	private List<String> trackedCompanies = new LinkedList<String>();
 
-	public TwitterAPIImpl() {
+	private TwitterAPIImpl() {
 		stream = new TwitterStreamFactory().getInstance();
-			    
 	    stream.addListener(new WriteCachedToDaoStreamListener(TWEETS_CACHE_SIZE));
+	}
+	
+	public static TwitterAPIImpl getInstance() {
+		log.debug("getInstance()");
+		return instance;
 	}
 
 	@Override

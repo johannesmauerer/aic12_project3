@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -16,13 +17,15 @@ import twitter4j.StatusListener;
 
 
 public class WriteCachedToDaoStreamListener implements StatusListener {
-
-//	@Autowired
+	private static Logger log = Logger.getLogger(WriteCachedToDaoStreamListener.class);
+	
+	@Autowired
 	private ITweetDAO tweetDao;
 	private int cacheSize;
 	private List<TweetDTO> tweetsCache;
 
 	public WriteCachedToDaoStreamListener(int tweetsCacheSize) {
+		log.debug("constr");
 		// TODO this doesn't work (at least when running JUnit tests) why-o-WHY??!
 //		ApplicationContext ctx = new GenericXmlApplicationContext("app-config.xml");
 //		tweetDao = ctx.getBean(ITweetDAO.class);

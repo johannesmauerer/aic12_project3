@@ -16,7 +16,7 @@ public class App {
 		
 		iImporter importer = new Importer("example_tweets.txt","example_tweets.properties");
 		
-		ITweetDAO tweetDAO = new MongoTweetDAO();
+		ITweetDAO tweetDAO = MongoTweetDAO.getInstance();
 		
 		importer.importTweets(tweetDAO);
 		List<TweetDTO> tweets = tweetDAO.getAllTweet();

@@ -8,6 +8,7 @@ import static org.hamcrest.CoreMatchers.is;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,12 @@ public class DownloadManagerServiceTest {
 	@Before
 	public void setUp() {
 		//dlRestIF = mock(DownloadManagerRestInterface.class);
-		dlService = new DownloadManagerServiceImpl();
+		dlService = DownloadManagerServiceImpl.getInstance();
+	}
+	
+	@After
+	public void tearDown() {
+		DownloadManagerServiceImpl.recreateInstance();
 	}
 
 	@Test

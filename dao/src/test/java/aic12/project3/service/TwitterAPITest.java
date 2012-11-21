@@ -11,7 +11,7 @@ import aic12.project3.service.TwitterAPIImpl;
 public class TwitterAPITest {
 
 	public static void main(String args[]) {
-		TwitterAPI api = new TwitterAPIImpl();
+		TwitterAPI api = TwitterAPIImpl.getInstance();
 		
 		SentimentRequest req = new SentimentRequest();
 		req.setCompanyName("linux");
