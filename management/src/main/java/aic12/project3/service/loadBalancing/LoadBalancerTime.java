@@ -1,11 +1,31 @@
 package aic12.project3.service.loadBalancing;
 
-public class LoadBalancerTime implements LoadBalancer {
+
+import java.util.Observable;
+
+import aic12.project3.common.enums.RequestQueueState;
+
+public class LoadBalancerTime extends LoadBalancer {
+	
+	private static LoadBalancerTime instance = new LoadBalancerTime();
+
+	private LoadBalancerTime(){}
+	
+	/**
+	 * Return the singleton LoadBalancer
+	 * @return
+	 */
+	public static LoadBalancerTime getInstance(){
+		return instance;
+	}
 
 	@Override
-	public boolean update() {
-		// TODO Auto-generated method stub
-		return false;
+	protected void updateInQueue(RequestQueueState state) {
+		logger.info("QueueUpdate: " + state.toString());
+		logger.info(stats.toString());
+		logger.info(nm.listNodes().toString());
+		
 	}
+
 
 }

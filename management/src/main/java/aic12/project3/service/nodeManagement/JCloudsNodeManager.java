@@ -24,11 +24,15 @@ import com.google.inject.Module;
 
 public class JCloudsNodeManager implements INodeManager{
 
+	private static JCloudsNodeManager instance = new JCloudsNodeManager();
 	private ComputeService compute;
 	private RestContext<NovaApi, NovaAsyncApi> nova;
 	private Set<String> zones;
 
-	public JCloudsNodeManager(){
+	private JCloudsNodeManager(){}
+	
+	public static JCloudsNodeManager getInstance(){
+		return instance;
 	}
 
 	private void init(){

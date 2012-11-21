@@ -4,19 +4,12 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
-
-import aic12.project3.service.nodeManagement.INodeManager;
-import aic12.project3.service.nodeManagement.JCloudsNodeManager;
-import aic12.project3.service.nodeManagement.Node;
-import aic12.project3.service.requestManagement.RequestAnalysis;
-
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.service.communication.CommunicationServiceImpl;
-import aic12.project3.service.loadBalancing.LoadBalancerCost;
+import aic12.project3.service.loadBalancing.LoadBalancer;
 import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.service.requestManagement.RequestQueueReadyImpl;
 
@@ -73,8 +66,8 @@ public class App {
 		ApplicationContext ctx = new GenericXmlApplicationContext("applicationContext.xml");
 		BeanFactory factory = ctx;
 		
-		LoadBalancerCost load = (LoadBalancerCost) factory.getBean("loadBalancer");
-		logger.info(load.callRequest());
+		LoadBalancer load = (LoadBalancer) factory.getBean("loadBalancer");
+		//logger.info(load.callRequest());
 		
 		RequestQueueReady rq = (RequestQueueReady) factory.getBean("requestQueueReady");
 		((RequestQueueReadyImpl) rq).addObserver(load);

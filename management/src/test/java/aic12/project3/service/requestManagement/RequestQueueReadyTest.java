@@ -24,7 +24,12 @@ public class RequestQueueReadyTest {
 	}
 
 	@Test
-	public void testGetNextRequest() {
+	public void testGetRequestQueueSize() {
+		rqr.clearRequestQueue();
+		rqr.addRequest(new SentimentRequest());
+		rqr.addRequest(new SentimentRequest());
+		rqr.addRequest(new SentimentRequest());
+		assertEquals(rqr.getRequestQueueSize(),3);
 		//fail("Not yet implemented");
 	}
 

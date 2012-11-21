@@ -1,23 +1,18 @@
 package aic12.project3.service.requestManagement;
 
-import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
-import java.util.Observable;
 import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.enums.RequestQueueState;
 import aic12.project3.dao.tweetsManagement.TweetsDAO;
-import aic12.project3.test.service.requestManagement.RequestQueueReadyTestIF;
 
-public class RequestQueueReadyImpl extends Observable implements RequestQueueReady, RequestQueueReadyTestIF {
+public class RequestQueueReadyImpl extends RequestQueueReady {
 
 	private static RequestQueueReadyImpl instance = new RequestQueueReadyImpl();
-	private Queue<SentimentRequest> readyQueue = new LinkedList<SentimentRequest>();
-	@Autowired
-	private TweetsDAO tweetsDAO;
+	@Autowired private TweetsDAO tweetsDAO;
 
 	private RequestQueueReadyImpl(){}
 	
@@ -27,8 +22,9 @@ public class RequestQueueReadyImpl extends Observable implements RequestQueueRea
 	
 	@Override
 	public void addRequest(SentimentRequest req) {
-		notifyObservers(null);
 		readyQueue.add(req);
+		super.setChanged();
+		super.notifyObservers(RequestQueueState.NEW_REQUEST);
 	}
 
 	@Override
@@ -45,28 +41,10 @@ public class RequestQueueReadyImpl extends Observable implements RequestQueueRea
 		return result;
 	}
 
-
-	//
-	// TEST IF helper methods
-	//
-	
 	  public Queue<SentimentRequest> getRequestQueue(){
 		  return readyQueue;
 	  }
-	@Override
-	public void setQueue(Queue<SentimentRequest> queue) {
-		readyQueue = queue;
-	}
-	
-	@Override
-	public void setTweetsDAO(TweetsDAO tweetsDAO) {
-		this.tweetsDAO = tweetsDAO;
-	}
+	  
 
-	@Override
-	public void addChangeListener(PropertyChangeListener newListener) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

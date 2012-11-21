@@ -1,21 +1,34 @@
 package aic12.project3.service.requestManagement;
 
-import java.beans.PropertyChangeListener;
+import java.util.LinkedList;
+import java.util.Observable;
 import java.util.Queue;
+
+import org.apache.log4j.Logger;
 
 import aic12.project3.common.beans.SentimentRequest;
 
 
-public interface RequestQueueReady {
+public abstract class RequestQueueReady extends Observable {
 
-	public void addRequest(SentimentRequest req);
+	protected static Logger logger = Logger.getRootLogger();
+	
+	protected Queue<SentimentRequest> readyQueue = new LinkedList<SentimentRequest>();
+	
+	public abstract void addRequest(SentimentRequest req);
 
-	SentimentRequest getNextRequest();
+	abstract SentimentRequest getNextRequest();
 	
-	int getNumberOfTweetsInQueue();
+	abstract int getNumberOfTweetsInQueue();
 	
-	public void addChangeListener(PropertyChangeListener newListener);
+	public abstract Queue<SentimentRequest> getRequestQueue();
+
+	public int getRequestQueueSize() {
+		return readyQueue.size();
+	}
 	
-	public Queue<SentimentRequest> getRequestQueue();
+	public void clearRequestQueue(){
+		this.readyQueue.clear();
+	}
 
 }
