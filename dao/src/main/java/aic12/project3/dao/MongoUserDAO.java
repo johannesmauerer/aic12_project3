@@ -12,12 +12,18 @@ import aic12.project3.dto.UserDTO;
 
 public class MongoUserDAO implements IUserDAO{
 
+	private static MongoUserDAO instance = new MongoUserDAO();
+	
 	private MongoOperations mongoOperation;
 	
-	public MongoUserDAO(){
+	private MongoUserDAO(){
 		super();
 		ApplicationContext ctx = new GenericXmlApplicationContext("mongo-config.xml");
 		mongoOperation = (MongoOperations)ctx.getBean("mongoOperation");
+	}
+	
+	public static MongoUserDAO getInstance() {
+		return instance;
 	}
 	
 	@Override

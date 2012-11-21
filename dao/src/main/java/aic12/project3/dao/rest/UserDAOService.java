@@ -24,7 +24,7 @@ public class UserDAOService
 
     public UserDAOService()
     {
-    	this.mongoDAO = new MongoUserDAO();
+    	this.mongoDAO = MongoUserDAO.getInstance();
     }
 
     @POST
