@@ -28,7 +28,7 @@ import aic12.project3.dto.TweetDTO;
 
 public class TwitterAPIImpl implements TwitterAPI {
 	
-	private static final int TWEETS_CACHE_SIZE = 20;
+	private static final int TWEETS_CACHE_SIZE = 5;
 
 	private static Logger log = Logger.getLogger(TwitterAPIImpl.class);
 
@@ -92,7 +92,9 @@ public class TwitterAPIImpl implements TwitterAPI {
 	
 	@Override
 	public void registerForTwitterStream(SentimentRequest req) {
+		log.debug("registerForTwitterStream");
 		if(!validReqeuest(req)) {
+			log.debug("invalid reqest");
 			return;
 		}
 		/* TODO WARNING streamingAPI might

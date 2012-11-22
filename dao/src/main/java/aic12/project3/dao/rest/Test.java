@@ -61,7 +61,7 @@ public class Test
     public static void postRequest(){
     	SentimentRequest request = new SentimentRequest();
     	request.setId(1);
-    	request.setCompanyName("ABC");
+    	request.setCompanyName("microsoft");
     	request.setFrom(new Date(System.currentTimeMillis()-new Long("4000000000")));
     	request.setTo(new Date(System.currentTimeMillis()));
     	
@@ -69,11 +69,14 @@ public class Test
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
         
         Client client = Client.create(config);
-        WebResource resource = client.resource("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/getall");
-        ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, request);
-        List<TweetDTO> tweetResponse = response.getEntity(new GenericType<List<TweetDTO>>(){}); 
-        for(TweetDTO t : tweetResponse){
-        	System.out.println(t);
-        }
+        
+        System.out.println("sending post request: " + request);
+        WebResource resource = client.resource
+        		("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/" +
+        				"registerfortwitterstream");
+        ClientResponse response = resource.accept(MediaType.APPLICATION_JSON)
+        		.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,
+        				request);
+        System.out.println("got: " + response);
     }
 }

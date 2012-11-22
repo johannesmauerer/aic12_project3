@@ -37,12 +37,15 @@ public class MongoTweetDAO implements ITweetDAO{
 	
 	@Override
 	public void storeTweet(TweetDTO tweet) {
+		log.debug("storeTweet");
 		
 		TweetDTO t = mongoOperation.findOne(new Query(Criteria.where("twitterId").is(tweet.getTwitterId())),TweetDTO.class, "tweets");
 
 		if(t==null){
+			log.debug("storing new tweet");
 			mongoOperation.insert(tweet,"tweets");
 		}else{
+			log.debug("updating sentiment only");
 			updateSentiment(tweet);
 		}
 	}

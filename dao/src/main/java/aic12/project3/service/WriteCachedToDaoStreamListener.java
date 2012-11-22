@@ -1,15 +1,15 @@
 package aic12.project3.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 
 import aic12.project3.dao.ITweetDAO;
+import aic12.project3.dao.MongoTweetDAO;
 import aic12.project3.dto.TweetDTO;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
@@ -19,19 +19,17 @@ import twitter4j.StatusListener;
 public class WriteCachedToDaoStreamListener implements StatusListener {
 	private static Logger log = Logger.getLogger(WriteCachedToDaoStreamListener.class);
 	
-	@Autowired
+//	@Autowired // AUTOWIRE doesn't work here, why ever...
 	private ITweetDAO tweetDao;
 	private int cacheSize;
 	private List<TweetDTO> tweetsCache;
 
 	public WriteCachedToDaoStreamListener(int tweetsCacheSize) {
-		log.debug("constr");
-		// TODO this doesn't work (at least when running JUnit tests) why-o-WHY??!
-//		ApplicationContext ctx = new GenericXmlApplicationContext("app-config.xml");
-//		tweetDao = ctx.getBean(ITweetDAO.class);
+		log.debug("constr; cacheSize: " + tweetsCacheSize);
 		
 		cacheSize = tweetsCacheSize;
-		tweetsCache = new ArrayList<TweetDTO>(cacheSize);
+		tweetsCache = Collections.synchronizedList(new ArrayList<TweetDTO>(cacheSize));
+		tweetDao = MongoTweetDAO.getInstance(); // spring should manage this instead
 	}
 	
 	@Override
@@ -41,12 +39,21 @@ public class WriteCachedToDaoStreamListener implements StatusListener {
 		String text = status.getText();
 		Date date = status.getCreatedAt();
 		
-		tweetsCache.add(new TweetDTO(id, text, date));
+//		log.debug("tweet; cached tweets: " + tweetsCache.size() + " DAO: " + tweetDao);
 		
-		// TODO write to dao if enough tweets are cached
-		// synchronize this writeout?
+		TweetDTO tweet = new TweetDTO(id, text, date);
 		
-		// TODO clean cache
+		tweetsCache.add(tweet);
+//		
+//		// write to dao if enough tweets are cached
+		synchronized (tweetsCache) {
+			if(tweetsCache.size() >= cacheSize) {
+				log.debug("*** writing" + tweetsCache.size()
+						+ " tweets to db");
+				tweetDao.storeTweet(tweetsCache);
+				tweetsCache.clear();
+			}
+		}
 	}
 
 	@Override

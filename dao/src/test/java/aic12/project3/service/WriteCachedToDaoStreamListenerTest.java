@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import twitter4j.Status;
+
 import aic12.project3.dao.ITweetDAO;
 import aic12.project3.service.WriteCachedToDaoStreamListener;
 
@@ -31,8 +33,8 @@ public class WriteCachedToDaoStreamListenerTest {
 //		ITweetDAO daoMock = mock(ITweetDAO.class);
 //		listener.setTweetDao(daoMock);
 //		
-//		listener.onStatus(new StatusDummy());
-//		listener.onStatus(new StatusDummy());
+//		listener.onStatus(mock(Status.class));
+//		listener.onStatus(mock(Status.class));
 //		
 //		verify(daoMock, times(1)).storeTweet(anyList()); // TODO check that this list contains those 2 tweets
 	}
