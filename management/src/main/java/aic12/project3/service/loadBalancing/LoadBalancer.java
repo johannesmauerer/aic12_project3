@@ -1,36 +1,33 @@
 package aic12.project3.service.loadBalancing;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import java.util.Observable;
+import java.util.Observer;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import aic12.project3.common.enums.RequestQueueState;
+import aic12.project3.service.nodeManagement.INodeManager;
 import aic12.project3.service.requestManagement.RequestAnalysis;
+import aic12.project3.service.requestManagement.RequestQueueReady;
+import aic12.project3.service.statistics.Statistics;
 
-/**
- * LoadBalancer class to handle loads across whole project.
- * Tasks of the LoadBalancer are to calculate the Runtime of requests,
- * start and stop nodes depending on Statistics.
- * @author Johannes
- *
- */
-public class LoadBalancer {
-	
-	private static LoadBalancer instance = new LoadBalancer();
-	
-	private LoadBalancer(){}
-	
+public abstract class LoadBalancer implements Observer
+{
+	@Autowired protected RequestAnalysis ra;
+	@Autowired protected RequestQueueReady rqr;
+	@Autowired protected Statistics stats;
+	@Autowired protected INodeManager nm;
+	protected static Logger logger = Logger.getRootLogger();
+
 	/**
-	 * Return the singleton LoadBalancer
-	 * @return
+	 * Receive Update
 	 */
-	public static LoadBalancer getInstance(){
-		return instance;
+	public void update(Observable arg0, Object arg1) {
+		this.updateInQueue((RequestQueueState) arg1);
 	}
 	
-	public String callRequest(){
-		ApplicationContext ctx = new GenericXmlApplicationContext("aic12/service/app-config.xml");
-		
-		RequestAnalysis ra = (RequestAnalysis) ctx.getBean("requestAnalysis");
-		return ra.getRequestQueueReady().some();
-	}
+	protected abstract void updateInQueue(RequestQueueState state);
+
 
 }

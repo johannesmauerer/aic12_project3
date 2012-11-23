@@ -48,4 +48,8 @@ public class SentimentRequest
     {
         this.to = to;
     }
+    
+    public String toString(){
+    	return this.getCompanyName() + " - from: " + this.getFrom().toString() + " to: " + this.getTo().toString() + " with ID: " + this.getId(); 
+    }
 }
