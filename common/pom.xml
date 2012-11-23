@@ -15,4 +15,11 @@
 
   <packaging>jar</packaging>
   
+  <dependencies>
+  <dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>2.1.7</version>
+		</dependency>
+  </dependencies>
 </project>

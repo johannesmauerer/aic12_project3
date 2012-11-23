@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE faces-config PUBLIC
-  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
-  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
-
-<faces-config>
-	<managed-bean>
-		<managed-bean-name>UserBean</managed-bean-name>
-		<managed-bean-class>aic12.project3.common.beans.UserBean
-		</managed-bean-class>
-		<managed-bean-scope>request</managed-bean-scope>
-	</managed-bean>
-	<navigation-rule>
-		<from-view-id>/login.xhtml</from-view-id>
-		<navigation-case>
-	       	<from-action>#{UserBean.login}
-			</from-action>
-	       	<from-outcome>LoginStatus.SUCCESS</from-outcome>
-	       	<to-view-id>resultforsuccess.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-action>#{UserBean.login}</from-action>
-			<from-outcome>LoginStatus.FAIL</from-outcome>
-			<to-view-id>resultforfail.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
+<faces-config
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+    http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+    version="2.0">
+    <managed-bean>
+	  <managed-bean-name>user</managed-bean-name>
+	  <managed-bean-class> aic12.project3.common.beans.UserBean</managed-bean-class>
+	  <managed-bean-scope>session</managed-bean-scope>
+     </managed-bean>
 </faces-config>
