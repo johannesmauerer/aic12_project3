@@ -26,16 +26,16 @@ public class WriteCachedToDaoStreamListenerTest {
 	
 	@Test
 	public void test_onStatus_verifyWriteToDao() {
-//		int cacheSize = 2;
-//		WriteCachedToDaoStreamListener listener = new WriteCachedToDaoStreamListener(cacheSize);
-//		
-//		//mock dao
-//		ITweetDAO daoMock = mock(ITweetDAO.class);
-//		listener.setTweetDao(daoMock);
-//		
-//		listener.onStatus(mock(Status.class));
-//		listener.onStatus(mock(Status.class));
-//		
-//		verify(daoMock, times(1)).storeTweet(anyList()); // TODO check that this list contains those 2 tweets
+		int cacheSize = 2;
+		WriteCachedToDaoStreamListener listener = new WriteCachedToDaoStreamListener(cacheSize);
+		
+		//mock dao
+		ITweetDAO daoMock = mock(ITweetDAO.class);
+		listener.setTweetDao(daoMock);
+		
+		listener.onStatus(mock(Status.class));
+		listener.onStatus(mock(Status.class));
+		
+		verify(daoMock, times(1)).storeTweet(anyList()); // TODO check that this list contains those 2 tweets
 	}
 }
