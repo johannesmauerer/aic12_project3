@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import aic12.project3.common.beans.SentimentRequest;
 
 @Component
-public class DownloadManagerImpl implements DownloadManager {
+public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 
 	@Override
 	public void notifyOnInitialDownloadFinished(SentimentRequest req) {

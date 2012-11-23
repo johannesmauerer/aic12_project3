@@ -2,7 +2,7 @@ package aic12.project3.dao.tweetsManagement;
 
 import aic12.project3.common.beans.SentimentRequest;
 
-public interface DownloadManager {
+public interface DownloadManagerClient {
 
 	void notifyOnInitialDownloadFinished(SentimentRequest req);
 
