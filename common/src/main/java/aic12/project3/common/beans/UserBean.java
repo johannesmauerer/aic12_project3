@@ -7,47 +7,14 @@ import java.io.Serializable;
 @ManagedBean
 @SessionScoped
 public class UserBean implements Serializable {
- 
-	private static final long serialVersionUID = 1L;
-	 
-	private String companyName;
+  	
+	private String name;
  
 	public String getName() {
-		return companyName;
+		return name;
 	}
  
 	public void setName(String name) {
-		this.companyName = name;
+		this.name = name;
 	}
- 
-	/*public enum LoginStatus {
-		   SUCCESS, FAIL
-		 }
-	
-	
-	 * User identifier
-	 
-	Integer id;
-	
-	public UserBean(){
-		
-	}
-	
-	public int getId(){
-		return id;
-	}
-
-	public void setId(Integer id){
-		this.id = id;
-		
-		public LoginStatus loginUser(){
-        if(this.login.equals("IBM") && this.password.equals("ibm")){
-        	return LoginStatus.SUCCESS;
-		}
-		else{
-			return LoginStatus.FAIL;
-		}
-	}
-	*/
-	
 }
