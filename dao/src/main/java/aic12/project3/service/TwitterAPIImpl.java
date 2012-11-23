@@ -64,7 +64,7 @@ public class TwitterAPIImpl implements TwitterAPI {
 			int pagesStartWith = 1;
 			for(int pageToGet = pagesStartWith; pageToGet <= maxPages; pageToGet++) {
 
-				// TODO respect fromDate and toDate here?
+				// we must not respect toDate and fromDate here, twitter4j might not get us any tweets at all otherwise
 				Query query = new Query(req.getCompanyName());
 				query.setLang("en");
 				query.setRpp(100);
@@ -107,6 +107,6 @@ public class TwitterAPIImpl implements TwitterAPI {
 	}
 
 	private boolean validReqeuest(SentimentRequest req) {
-		return req.getCompanyName() != null; // TODO respect fromDate and toDate?
+		return req.getCompanyName() != null; // we must not respect dates here
 	}
 }
