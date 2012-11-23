@@ -1,4 +1,4 @@
-package aic.project3.service;
+package aic12.project3.service;
 
 import static org.junit.Assert.*;
 
@@ -8,6 +8,7 @@ import static org.hamcrest.CoreMatchers.is;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.service.DownloadManagerServiceImpl;
 import aic12.project3.service.DownloadThread;
+import aic12.project3.service.TwitterAPI;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,7 +30,12 @@ public class DownloadManagerServiceTest {
 	@Before
 	public void setUp() {
 		//dlRestIF = mock(DownloadManagerRestInterface.class);
-		dlService = new DownloadManagerServiceImpl();
+		dlService = DownloadManagerServiceImpl.getInstance();
+	}
+	
+	@After
+	public void tearDown() {
+		DownloadManagerServiceImpl.recreateInstance();
 	}
 
 	@Test
@@ -105,5 +112,17 @@ public class DownloadManagerServiceTest {
 
         verify(dlMap, times(1)).remove(req);
         verify(notifySet, times(1)).contains(req);
+    }
+    
+    @Test
+    public void test_registerForTwitterStream() {
+    	SentimentRequest req = new SentimentRequest();
+    	
+    	TwitterAPI twitterMock = mock(TwitterAPI.class);
+    	dlService.setTwitterAPI(twitterMock);
+    	
+    	dlService.registerForTwitterStream(req);
+    	
+    	verify(twitterMock, times(1)).registerForTwitterStream(req);
     }
 }

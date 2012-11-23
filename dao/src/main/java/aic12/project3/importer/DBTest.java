@@ -10,7 +10,7 @@ public class DBTest {
 	public static void main(String[] args) { 
 			TweetDTO tweet = new TweetDTO(new Long(3),"test ABC xyz", new Date(System.currentTimeMillis()));
 			tweet.setSentiment(3);
-			MongoTweetDAO mongoDAO = new MongoTweetDAO();
+			MongoTweetDAO mongoDAO = MongoTweetDAO.getInstance();
 			mongoDAO.storeTweet(tweet);
 			List<TweetDTO> result = mongoDAO.getAllTweet();
 			for(TweetDTO t : result){

@@ -7,17 +7,24 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Component;
 
 import aic12.project3.common.dto.UserDTO;
 
 public class MongoUserDAO implements IUserDAO{
 
+	private static MongoUserDAO instance = new MongoUserDAO();
+	
 	private MongoOperations mongoOperation;
 	
-	public MongoUserDAO(){
+	private MongoUserDAO(){
 		super();
 		ApplicationContext ctx = new GenericXmlApplicationContext("mongo-config.xml");
 		mongoOperation = (MongoOperations)ctx.getBean("mongoOperation");
+	}
+	
+	public static MongoUserDAO getInstance() {
+		return instance;
 	}
 	
 	@Override

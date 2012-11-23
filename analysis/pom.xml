@@ -46,6 +46,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.twitter4j</groupId>
+      <artifactId>twitter4j-core</artifactId>
+	  <version>${org.twitter4j.version}</version>
+    </dependency>
+    <dependency>
       <groupId>unknown</groupId>
       <artifactId>libsvm</artifactId>
       <version>unknown</version>

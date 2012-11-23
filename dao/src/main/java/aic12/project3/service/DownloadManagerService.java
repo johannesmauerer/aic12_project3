@@ -1,7 +1,6 @@
 package aic12.project3.service;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.service.rest.DownloadManagerRestInterface;
 
 public interface DownloadManagerService {
 
@@ -17,5 +16,7 @@ public interface DownloadManagerService {
 	 * @param thread thread which downloaded tweets
 	 */
 	void initialDownloadFinished(SentimentRequest req, DownloadThread thread);
+
+	void registerForTwitterStream(SentimentRequest req);
 
 }

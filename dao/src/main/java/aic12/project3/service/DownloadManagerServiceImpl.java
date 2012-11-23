@@ -6,32 +6,56 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.service.rest.DownloadManagerRestInterface;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 
 /**
+ * Singelton
  * @author haja
  *
  */
-@Component
 public class DownloadManagerServiceImpl implements DownloadManagerService, 
 		DownloadManagerServiceTestIF {
 
-	private static DownloadManagerServiceImpl instance;
+	private static DownloadManagerServiceImpl instance = new DownloadManagerServiceImpl();
 	private Map<SentimentRequest, DownloadThread> initialDownloadsMap = 
 			Collections.synchronizedMap(
 					new HashMap<SentimentRequest, DownloadThread>());
 	private Set<SentimentRequest> notifyOnDownloadFinishSet = Collections.synchronizedSet(new HashSet<SentimentRequest>());
+	
+	@Autowired
+	private TwitterAPI twitterAPI;
+	
+	private static Logger log;
+	
+	private DownloadManagerServiceImpl() {
+		 log = Logger.getLogger(DownloadManagerServiceImpl.class);
+		 log.debug("constr");
+	}
+	
+	public static DownloadManagerServiceImpl getInstance() {
+		log.debug("getInstance()");
+		return instance;
+	}
 
 	@Override
 	public void startInitialDownload(SentimentRequest req) {
 		DownloadThread thread = new DownloadThread(req);
 		initialDownloadsMap.put(req, thread);
 		thread.start();
+	}
+	
+	@Override
+	public void registerForTwitterStream(SentimentRequest req) {
+		twitterAPI.registerForTwitterStream(req);
 	}
 
 	/**
@@ -74,6 +98,17 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	@Override
 	public void setNotifyOnDownloadFinishSet(Set<SentimentRequest> notifySet) {
 		notifyOnDownloadFinishSet = notifySet;
+	}
+
+	@Override
+	public void setTwitterAPI(TwitterAPI twitterAPI) {
+		this.twitterAPI = twitterAPI;
+	}
+
+	
+	public static void recreateInstance() {
+		log.debug("recreateInstance()");
+		instance = new DownloadManagerServiceImpl();
 	}
 
 }
