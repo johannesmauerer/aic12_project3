@@ -70,7 +70,7 @@ public class Test
         
         Client client = Client.create(config);
         
-        System.out.println("sending post request: " + request);
+        System.out.println("sending post request (registerfortwitterstream): " + request);
         WebResource resource = client.resource
         		("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/" +
         				"registerfortwitterstream");
@@ -78,5 +78,14 @@ public class Test
         		.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,
         				request);
         System.out.println("got: " + response);
+        
+//        System.out.println("sending post request (initial download): " + request);
+//        WebResource resource2 = client.resource
+//        		("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/" +
+//        				"startinitialdownload");
+//        ClientResponse response2 = resource2.accept(MediaType.APPLICATION_JSON)
+//        		.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,
+//        				request);
+//        System.out.println("got: " + response2);
     }
 }
