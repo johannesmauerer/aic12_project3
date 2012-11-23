@@ -6,13 +6,15 @@
 	xmlns:h="http://java.sun.com/jsf/html">
 
 <h:head>
-	<title>JSF 2.0 Hello World</title>
+	<title>Advanced Internet Computing 2012</title>
 </h:head>
 <h:body>
-	<h3>JSF 2.0 Hello World Example - hello.xhtml</h3>
+	<h3>Cloud Computing - Twitter based Sentiment Analysis</h3>
 	<h:form>
-		<h:inputText value="#{user.name}"></h:inputText>
-		<h:commandButton value="Welcome Me"></h:commandButton>
+		<h:inputText label="Enter your company name:" value="#{user.name}"></h:inputText>
+		<h:commandButton value="Login" action="#{sentimentRequest.companyName}" ></h:commandButton>
+    	<f:param name="name" value="#{user.name}" />
+		
 	</h:form>
 </h:body>
 </html>

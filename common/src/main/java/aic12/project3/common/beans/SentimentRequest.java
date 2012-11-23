@@ -2,9 +2,16 @@ package aic12.project3.common.beans;
 
 import java.util.Date;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+
+@ManagedBean
+@RequestScoped
 public class SentimentRequest
 {
     private int id;
+    
     private String companyName;
     private Date from;
     private Date to;
