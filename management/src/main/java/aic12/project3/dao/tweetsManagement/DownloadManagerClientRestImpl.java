@@ -17,11 +17,13 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 
 	private Client client;
 	// TODO read this from properties
-	private final static String SERVER_URI = "http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/";
+	private final static String SERVER_URI = "http://localhost:8080" +
+			"/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/";
 
 	public DownloadManagerClientRestImpl() {
 		ClientConfig config = new DefaultClientConfig();
-        config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+        config.getFeatures()
+        	.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
         client = Client.create(config);
 	}
 	
@@ -35,7 +37,16 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 		WebResource resource = client.resource(SERVER_URI + 
 				"isinitaldownloadfinished");
         
-        return resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Boolean.class, req);
+        return resource.accept(MediaType.APPLICATION_JSON)
+        		.type(MediaType.APPLICATION_JSON).post(Boolean.class, req);
+	}
+
+	@Override
+	public void startInitialDownload(SentimentRequest req) {
+		WebResource ressource = client.resource(SERVER_URI +
+				"startinitialdownload");
+		ressource.accept(MediaType.APPLICATION_JSON)
+			.type(MediaType.APPLICATION_JSON).post(req);
 	}
 
 }

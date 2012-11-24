@@ -11,7 +11,8 @@ public class DownloadManagerTest {
 		DownloadManagerClient client = new DownloadManagerClientRestImpl();
 		SentimentRequest req = new SentimentRequest(0);
 		req.setCompanyName("microsoft");
-		System.out.println(client.isInitialDownloadFinished(req));
+//		System.out.println(client.isInitialDownloadFinished(req));
+		client.startInitialDownload(req);
 	}
 
 }

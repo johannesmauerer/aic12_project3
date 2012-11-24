@@ -8,4 +8,6 @@ public interface DownloadManagerClient {
 
 	boolean isInitialDownloadFinished(SentimentRequest req);
 
+	void startInitialDownload(SentimentRequest req);
+
 }
