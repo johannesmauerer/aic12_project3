@@ -11,10 +11,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.service.SpringTest;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/applicationContext.xml"})
-public class RequestQueueReadyTest {
+public class RequestQueueReadyTest extends SpringTest {
 
 	@Autowired RequestQueueReady rqr;
 	@Test

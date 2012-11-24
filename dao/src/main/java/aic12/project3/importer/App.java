@@ -2,9 +2,9 @@ package aic12.project3.importer;
 
 import java.util.List;
 
+import aic12.project3.common.beans.TweetDTO;
 import aic12.project3.dao.ITweetDAO;
 import aic12.project3.dao.MongoTweetDAO;
-import aic12.project3.dto.TweetDTO;
 
 public class App {
 

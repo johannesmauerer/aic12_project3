@@ -1,4 +1,4 @@
-package aic12.project3.dto;
+package aic12.project3.common.beans;
 import java.util.Date;
 
 

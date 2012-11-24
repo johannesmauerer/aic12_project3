@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import aic12.project3.common.beans.TweetDTO;
 import aic12.project3.dao.ITweetDAO;
-import aic12.project3.dto.TweetDTO;
 
 public class Importer implements iImporter {
 

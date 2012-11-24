@@ -1,13 +1,15 @@
 package aic.project3.dao.rest;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.common.beans.TweetDTO;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -21,7 +23,7 @@ public class Test
 {
     public static void main(String[] args)
     {
-        List<TweetDTO> tweetList = new ArrayList<TweetDTO>();
+       /* List<TweetDTO> tweetList = new ArrayList<TweetDTO>();
         TweetDTO tweet1 = new TweetDTO();
         tweet1.setTwitterId(new Long(123));
         tweet1.setText("test ABC test");
@@ -45,11 +47,13 @@ public class Test
         String serveruri = "http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/find?company=ABC&fromdate="+
         		(new Date(System.currentTimeMillis()-40000000)).getTime()+"&todate="+(new Date(System.currentTimeMillis())).getTime();
         		
-        WebResource resource = client.resource(serveruri);
+
+
+       /* WebResource resource = client.resource(serveruri);
         ClientResponse response = resource.accept("application/json").get(ClientResponse.class);
         List<TweetDTO> tweetResponse = response.getEntity(new GenericType<List<TweetDTO>>(){}); 
         for(TweetDTO t : tweetResponse){
         	System.out.println(t);
-        }
+        }*/
     }
 }

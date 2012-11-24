@@ -4,19 +4,20 @@ import java.util.Date;
 
 public class SentimentRequest
 {
-    private int id;
+    private String id;
     private String companyName;
     private Date from;
     private Date to;
+    private int numberOfTweets;
 
-    public int getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(int id)
+    public void setId(String string)
     {
-        this.id = id;
+        this.id = string;
     }
 
     public String getCompanyName()
@@ -52,4 +53,18 @@ public class SentimentRequest
     public String toString(){
     	return this.getCompanyName() + " - from: " + this.getFrom().toString() + " to: " + this.getTo().toString() + " with ID: " + this.getId(); 
     }
+
+	/**
+	 * @return the numberOfTweets
+	 */
+	public int getNumberOfTweets() {
+		return numberOfTweets;
+	}
+
+	/**
+	 * @param numberOfTweets the numberOfTweets to set
+	 */
+	public void setNumberOfTweets(int numberOfTweets) {
+		this.numberOfTweets = numberOfTweets;
+	}
 }

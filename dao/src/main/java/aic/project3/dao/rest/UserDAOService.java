@@ -13,8 +13,8 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import aic12.project3.common.beans.TweetDTO;
 import aic12.project3.dao.MongoUserDAO;
-import aic12.project3.dto.TweetDTO;
 import aic12.project3.dto.UserDTO;
 
 import com.sun.jersey.spi.resource.Singleton;

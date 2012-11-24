@@ -11,8 +11,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import aic12.project3.common.beans.TweetDTO;
 import aic12.project3.dao.MongoTweetDAO;
-import aic12.project3.dto.TweetDTO;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;

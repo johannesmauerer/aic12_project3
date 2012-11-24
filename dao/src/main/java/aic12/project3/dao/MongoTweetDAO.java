@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.common.beans.TweetDTO;
 
 public class MongoTweetDAO implements ITweetDAO{
 
