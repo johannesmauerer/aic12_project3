@@ -10,4 +10,6 @@ public interface DownloadManagerClient {
 
 	void startInitialDownload(SentimentRequest req);
 
+	void registerForTwitterStream(SentimentRequest req);
+
 }

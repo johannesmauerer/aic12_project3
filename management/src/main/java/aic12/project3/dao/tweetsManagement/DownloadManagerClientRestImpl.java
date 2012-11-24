@@ -48,5 +48,13 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 		ressource.accept(MediaType.APPLICATION_JSON)
 			.type(MediaType.APPLICATION_JSON).post(req);
 	}
+	
+	@Override
+	public void registerForTwitterStream(SentimentRequest req) {
+		WebResource ressource = client.resource(SERVER_URI +
+				"registerfortwitterstream");
+		ressource.accept(MediaType.APPLICATION_JSON)
+			.type(MediaType.APPLICATION_JSON).post(req);
+	}
 
 }

@@ -12,7 +12,8 @@ public class DownloadManagerTest {
 		SentimentRequest req = new SentimentRequest(0);
 		req.setCompanyName("microsoft");
 //		System.out.println(client.isInitialDownloadFinished(req));
-		client.startInitialDownload(req);
+//		client.startInitialDownload(req);
+		client.registerForTwitterStream(req);
 	}
 
 }
