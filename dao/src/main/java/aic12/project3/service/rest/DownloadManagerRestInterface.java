@@ -62,4 +62,9 @@ public class DownloadManagerRestInterface {
     	log.info("registerForTwitterStream");
     	dlManagerService.registerForTwitterStream(req);
     }
+
+
+	public void setDlManagerService(DownloadManagerService dlManagerService2) {
+		dlManagerService = dlManagerService2;
+	}
 }
