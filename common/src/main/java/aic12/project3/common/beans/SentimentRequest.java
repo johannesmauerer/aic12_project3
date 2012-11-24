@@ -56,7 +56,7 @@ public class SentimentRequest
     }
     
     public String toString(){
-    	return this.getCompanyName() + " - from: " + this.getFrom().toString() + " to: " + this.getTo().toString() + " with ID: " + this.getId(); 
+    	return this.getCompanyName() + " - from: " + this.getFrom() + " to: " + this.getTo() + " with ID: " + this.getId(); 
     }
 
 	@Override
