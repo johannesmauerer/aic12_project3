@@ -2,6 +2,8 @@ package aic12.project3.common.beans;
 
 import java.util.Date;
 
+import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
+
 public class SentimentRequest
 {
     private String id;
@@ -9,6 +11,7 @@ public class SentimentRequest
     private Date from;
     private Date to;
     private int numberOfTweets;
+    private REQUEST_QUEUE_STATE state;
 
     public String getId()
     {
@@ -66,5 +69,19 @@ public class SentimentRequest
 	 */
 	public void setNumberOfTweets(int numberOfTweets) {
 		this.numberOfTweets = numberOfTweets;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public REQUEST_QUEUE_STATE getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(REQUEST_QUEUE_STATE state) {
+		this.state = state;
 	}
 }

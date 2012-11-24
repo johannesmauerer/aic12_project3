@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.service.communication.CommunicationService;
 
 
@@ -23,19 +24,16 @@ public class RequestService {
 	@Autowired
 	CommunicationService serv;
 	
-	 @GET
-	 @Path("test")
-	 @Produces("text/plain")
-	    public String getMessage(){
-		 return "Hello";
-	 }
+
+	@POST
+	@Path("analysisResult")
+	public void analysisResult(SentimentRequest req){
+		// TODO
+	}
+	
 	 
 	 /**
-	  * Create a request and pass on to RequestHandler
-	  * @param company
-	  * @param fromDate
-	  * @param toDate
-	  * @return
+	  * FOR TESTING
 	  */
 	 @POST
 	 @Path("create")
@@ -49,6 +47,13 @@ public class RequestService {
 	 @Path("createtest")
 	 public String createTestRequest(){
 		 return serv.createRequest("ABC", new Date(System.currentTimeMillis()-40000000).getTime(), new Date(System.currentTimeMillis()).getTime()) ? "OK" : "Error";
+	 }
+	 
+	 @GET
+	 @Path("test")
+	 @Produces("text/plain")
+	    public String getMessage(){
+		 return "Hello";
 	 }
 
 

@@ -8,7 +8,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.common.beans.TweetDTO;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -26,7 +26,7 @@ public class Test
     }
     
     public static void getRequest(){
-    	List<TweetDTO> tweetList = new ArrayList<TweetDTO>();
+    	List<TweetDTO> tweetList = new ArrayList<aic12.project3.common.beans.TweetDTO>();
         TweetDTO tweet1 = new TweetDTO();
         tweet1.setTwitterId(new Long(123));
         tweet1.setText("test ABC test");
@@ -60,7 +60,7 @@ public class Test
     
     public static void postRequest(){
     	SentimentRequest request = new SentimentRequest();
-    	request.setId(1);
+    	request.setId("1");
     	request.setCompanyName("ABC");
     	request.setFrom(new Date(System.currentTimeMillis()-new Long("4000000000")));
     	request.setTo(new Date(System.currentTimeMillis()));

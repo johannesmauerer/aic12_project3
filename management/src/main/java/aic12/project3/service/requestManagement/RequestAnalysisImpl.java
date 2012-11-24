@@ -21,6 +21,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.TweetDTO;
 import aic12.project3.dao.tweetsManagement.DownloadManager;
+import aic12.project3.service.loadBalancing.LoadBalancer;
 
 public class RequestAnalysisImpl implements RequestAnalysis {
 
@@ -28,6 +29,8 @@ public class RequestAnalysisImpl implements RequestAnalysis {
 	private RequestQueueReady requestQueueReady;
 	@Autowired
 	private DownloadManager downloadManager;
+	@Autowired
+	private LoadBalancer loadBalancer;
 
 
 	@Override
@@ -80,6 +83,18 @@ public class RequestAnalysisImpl implements RequestAnalysis {
 	        List<TweetDTO> tweetResponse = response.getEntity(new GenericType<List<TweetDTO>>() {}); 
 	        
 		return tweetResponse.size();
+	}
+
+	@Override
+	public void updateRequest(SentimentRequest req) {
+		// Received request from Outside to update
+		// 1. TODO - Store in Database
+		
+		// Send result back to User?
+		
+		// Let LoadBalancer know via RequestQueueReady
+	
+		
 	}
 
 

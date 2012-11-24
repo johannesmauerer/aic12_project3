@@ -14,8 +14,8 @@ import javax.ws.rs.core.Response;
 
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.TweetDTO;
 import aic12.project3.dao.MongoTweetDAO;
-import aic12.project3.dto.TweetDTO;
 
 import com.sun.jersey.spi.resource.Singleton;
 

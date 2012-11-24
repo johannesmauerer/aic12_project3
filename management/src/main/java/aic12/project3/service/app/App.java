@@ -76,10 +76,7 @@ public class App {
 		logger.info(s.createRequest("ABC", (new Date(System.currentTimeMillis()-40000000)).getTime(), (new Date(System.currentTimeMillis())).getTime()));
 		
 		
-		
-		for( SentimentRequest sr : rq.getRequestQueue() ){
-			logger.info(sr.toString());
-		}
+	
 		
 		
 		

@@ -1,6 +1,10 @@
 package aic12.project3.service.loadBalancing;
 
 
+import java.util.LinkedList;
+import java.util.Queue;
+
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.nodeManagement.Node;
@@ -8,6 +12,7 @@ import aic12.project3.service.nodeManagement.Node;
 public class LoadBalancerTime extends LoadBalancer {
 	
 	private static LoadBalancerTime instance;
+	private Queue<SentimentRequest> requestQueue = new LinkedList<SentimentRequest>();
 
 	private LoadBalancerTime(){
 	}
@@ -27,25 +32,28 @@ public class LoadBalancerTime extends LoadBalancer {
 	}
 
 	@Override
-	protected void updateInQueue(REQUEST_QUEUE_STATE state) {
-		logger.info("QueueUpdate: " + state.toString());
+	protected void updateInQueue(String id) {
+		logger.info("QueueUpdate: " + id + " is " + rqr.getRequest(id).getState().toString());
 		logger.info(stats.toString());
 		for (Node n : nm.listNodes()){
 			logger.info(n.getName() + " - " + n.getId());
 		}
 		
-		switch (state){
-		case NEW_REQUEST:
+		switch (rqr.getRequest(id).getState()){
+		case NEW:
 			// Call method to send request to Node
-			sendRequestToNode();
+			sendRequestToNode(id);
 			break;
-			
+		
+		case FINISHED:
+			sendRequestToNode(requestQueue.poll().getId());
+			break;
 			
 		}
 		
 	}
 
-	private void sendRequestToNode() {
+	private void sendRequestToNode(String id) {
 		
 		// Check if Node is available
 					String nextNode = this.getMostAvailableNode();
@@ -60,6 +68,8 @@ public class LoadBalancerTime extends LoadBalancer {
 						}
 						
 						// Node is now available, request can be put on it
+						// Also save assignment
+						//request_nodes.put(key, value)
 						// TODO
 					}
 		

@@ -20,21 +20,21 @@ import aic12.project3.service.statistics.Statistics;
 
 public abstract class LoadBalancer implements Observer
 {
-	@Autowired protected RequestAnalysis ra;
 	@Autowired protected RequestQueueReady rqr;
 	@Autowired protected Statistics stats;
 	@Autowired protected INodeManager nm;
 	protected static Logger logger = Logger.getRootLogger();
 	protected HashMap<String, NODE_STATUS> nodes = new HashMap<String,NODE_STATUS> ();
+	protected HashMap<String, String> request_nodes = new HashMap<String, String> ();
 
 	/**
 	 * Receive Update
 	 */
 	public void update(Observable arg0, Object arg1) {
-		this.updateInQueue((REQUEST_QUEUE_STATE) arg1);
+		this.updateInQueue((String) arg1);
 	}
 	
-	protected abstract void updateInQueue(REQUEST_QUEUE_STATE state);
+	protected abstract void updateInQueue(String id);
 	
 	protected void init(){
 		
