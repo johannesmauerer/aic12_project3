@@ -59,7 +59,7 @@ public class DownloadManagerServiceTest {
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
 		dlService.setInitialDownloadsMap(dlMap);
-		when(dlMap.containsKey(req)).thenReturn(false);
+		when(dlMap.containsKey(req)).thenReturn(true);
 
 		boolean actual = dlService.isInitialDownloadFinished(req);
 		
@@ -73,7 +73,7 @@ public class DownloadManagerServiceTest {
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
 		dlService.setInitialDownloadsMap(dlMap);
-		when(dlMap.containsKey(req)).thenReturn(true);
+		when(dlMap.containsKey(req)).thenReturn(false);
 
 		boolean actual = dlService.isInitialDownloadFinished(req);
 		

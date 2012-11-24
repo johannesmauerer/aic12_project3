@@ -63,7 +63,8 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	 */
 	@Override
 	public boolean isInitialDownloadFinished(SentimentRequest req) {
-		return initialDownloadsMap.containsKey(req);
+		log.debug("isInitialDownloadFinished; req: " + req);
+		return ! initialDownloadsMap.containsKey(req);
 	}
 
 	@Override
@@ -73,8 +74,10 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 
 	@Override
 	public void initialDownloadFinished(SentimentRequest req, DownloadThread thread) {
+		log.debug("initialDownloadFinished with request " + req);
 		// check if we got the same reference to thread object
 		if(initialDownloadsMap.get(req) != thread) {
+			log.warn("initialDownloadFinished called with wrong thread reference!");
 			return; // some thing bad may happen otherwise...
 		}
 		
