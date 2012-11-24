@@ -20,8 +20,7 @@ public class DownloadManagerRestTest {
 
 	public static void main(String[] args)
 	{
-		request = new SentimentRequest();
-		request.setId(1);
+		request = new SentimentRequest(0);
 		request.setCompanyName("microsoft");
 		request.setFrom(new Date(System.currentTimeMillis()-new Long("4000000000")));
 		request.setTo(new Date(System.currentTimeMillis()));
@@ -32,7 +31,7 @@ public class DownloadManagerRestTest {
 		client = Client.create(config);
 
 		postRequestInitialDownload();
-		postRequestRegisterForStream();
+//		postRequestRegisterForStream();
 
 	}
 

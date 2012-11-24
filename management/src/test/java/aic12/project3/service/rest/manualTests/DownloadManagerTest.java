@@ -9,7 +9,7 @@ public class DownloadManagerTest {
 	public static void main(String[] args) {
 		
 		DownloadManagerClient client = new DownloadManagerClientRestImpl();
-		SentimentRequest req = new SentimentRequest();
+		SentimentRequest req = new SentimentRequest(0);
 		req.setCompanyName("microsoft");
 		System.out.println(client.isInitialDownloadFinished(req));
 	}
