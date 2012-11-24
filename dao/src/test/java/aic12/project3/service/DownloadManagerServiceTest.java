@@ -40,7 +40,7 @@ public class DownloadManagerServiceTest {
 
 	@Test
 	public void test_startInitialDownload() {
-		SentimentRequest req = new SentimentRequest();
+		SentimentRequest req = new SentimentRequest(0);
 		
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
@@ -54,7 +54,7 @@ public class DownloadManagerServiceTest {
 	
 	@Test
 	public void test_isInitialDownloadFinished_notFinished() {
-		SentimentRequest req = new SentimentRequest();
+		SentimentRequest req = new SentimentRequest(0);
 		
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
@@ -68,7 +68,7 @@ public class DownloadManagerServiceTest {
 	
 	@Test
 	public void test_isInitialDownloadFinished_isFinished() {
-		SentimentRequest req = new SentimentRequest();
+		SentimentRequest req = new SentimentRequest(0);
 		
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
@@ -82,7 +82,7 @@ public class DownloadManagerServiceTest {
 	
 	@Test
 	public void test_notifyOnInitialDownloadFinished() {
-		SentimentRequest req = new SentimentRequest();
+		SentimentRequest req = new SentimentRequest(0);
 		
 		// mock set of req to notify on
 		Set<SentimentRequest> notifySet = mock(Set.class);
@@ -95,7 +95,7 @@ public class DownloadManagerServiceTest {
 	
     @Test
     public void test_initialDownloadFinished_noNotify() {
-        SentimentRequest req = new SentimentRequest();
+        SentimentRequest req = new SentimentRequest(0);
 
         DownloadThread thread = new DownloadThread(req);
         // mock download threads map
@@ -116,7 +116,7 @@ public class DownloadManagerServiceTest {
     
     @Test
     public void test_registerForTwitterStream() {
-    	SentimentRequest req = new SentimentRequest();
+    	SentimentRequest req = new SentimentRequest(0);
     	
     	TwitterAPI twitterMock = mock(TwitterAPI.class);
     	dlService.setTwitterAPI(twitterMock);

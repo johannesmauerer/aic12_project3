@@ -13,7 +13,7 @@ public class TwitterAPITest {
 	public static void main(String args[]) {
 		TwitterAPI api = TwitterAPIImpl.getInstance();
 		
-		SentimentRequest req = new SentimentRequest();
+		SentimentRequest req = new SentimentRequest(0);
 		req.setCompanyName("linux");
 		req.setFrom(new Date(System.currentTimeMillis() - 84600000)); // minus one day
 		req.setTo(new Date());
