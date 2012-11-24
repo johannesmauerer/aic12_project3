@@ -11,7 +11,6 @@ public class UserBean implements Serializable {
   	
 	private int id;
 	
-	@ManagedProperty(value = "name")
 	private String name;
  
 	public String getName() {

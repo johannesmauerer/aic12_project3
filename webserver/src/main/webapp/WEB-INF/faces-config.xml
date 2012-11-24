@@ -9,13 +9,17 @@
 	  <managed-bean-name>user</managed-bean-name>
 	  <managed-bean-class>aic12.project3.common.beans.UserBean</managed-bean-class>
 	  <managed-bean-scope>session</managed-bean-scope>
-	  <managed-property>
-	   <property-name>name</property-name>
-	   </managed-property>
 	</managed-bean>
 	<managed-bean>
 	  <managed-bean-name>sentimentRequest</managed-bean-name>
 	  <managed-bean-class>aic12.project3.common.beans.SentimentRequest</managed-bean-class>
 	  <managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
+	<navigation-rule>
+    	<from-view-id>/login.xhtml</from-view-id>
+	    <navigation-case>
+	        <from-outcome>login</from-outcome>
+	        <to-view-id>/request.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
 </faces-config>

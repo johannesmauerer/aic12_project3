@@ -3,18 +3,37 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
-
-<h:head>
-	<title>Advanced Internet Computing 2012</title>
-</h:head>
-<h:body>
-	<h3>Cloud Computing - Twitter based Sentiment Analysis</h3>
-	<h:form>
-		<h:inputText label="Enter your company name:" value="#{user.name}"></h:inputText>
-		<h:commandButton value="Login" action="#{sentimentRequest.companyName}" ></h:commandButton>
-    	<f:param name="name" value="#{user.name}" />
-		
-	</h:form>
-</h:body>
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	
+	<ui:composition >
+		<h:outputStylesheet library="css" name="/styles/style.css"  />
+		<h:head >
+			<title>Advanced Internet Computing</title>
+		</h:head>
+		<h:body id="body">
+			<style>
+				#header {
+					background-color: #E8F4F5;
+				}
+			</style>
+			<div id="header">
+				
+					<h:graphicImage value="img/header.jpg"/>
+			</div>
+			<f:view>
+				
+				<h:form>
+					Enter your company name:<h:inputText value="#{user.name}"></h:inputText>
+					<h:commandButton value="Login" action="login" ></h:commandButton> <!--  "#{sentimentRequest.companyName}" 
+			    	<f:param name="name" value="#{user.name}" /> -->
+									
+				</h:form>
+				<div id="footer">
+					<h:graphicImage value="img/icone.jpg"/> 2012 AIC - Cloud computing
+				</div>
+			</f:view>
+		</h:body>
+	</ui:composition>
 </html>

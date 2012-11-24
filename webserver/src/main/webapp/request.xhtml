@@ -7,23 +7,43 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
-<ui:composition>
-
-Welcome <h:outputText value="#{user.name}" />
-					
-				</div>
+<link rel="stylesheet" type="text/css" href="styles/style.css" />
+	<ui:composition>
+		<h:head >
+			<title>Advanced Internet Computing</title>
+		</h:head>
+		<h:body id="body">
+			<style>
+				#header {
+					background-color: #E8F4F5;
+				}
+			</style>
+			<div id="header">
+					<h:graphicImage value="img/header.jpg"/>
+			</div>
+		<!-- outputText tag is a label -->
+		<h2> Welcome <i><h:outputText value="#{user.name}" /></i>!</h2> 
 				
-
-				<h:form>
+		<f:view>
+			<h:form>
+				<div>
+					<h3>Choose period for your sentiment analysis:</h3>
+					From:<h:inputText value="#{sentimentRequest.from}"></h:inputText>
+					<br/>
+					To:  <h:inputText value="#{sentimentRequest.to}"></h:inputText>
+				</div>	
 				
-				<h:inputText value="#{sentimentRequest.from}"></h:inputText>
-				<h:inputText value="#{sentimentRequest.to}"></h:inputText>
+				<div id="buttons">
 					<h:commandButton value="Test1" ></h:commandButton>
 					<h:commandButton value="Test2" ></h:commandButton>
-
-				</h:form>	
-
-		</div>
+				</div>
 	
-</ui:composition>
+			</h:form>	
+			<div id="footer">
+				<p><h:graphicImage value="img/icone.jpg"/> 2012 AIC - Cloud computing</p>
+			</div>
+		</f:view>
+	</h:body>
+		
+	</ui:composition>
 </html>
