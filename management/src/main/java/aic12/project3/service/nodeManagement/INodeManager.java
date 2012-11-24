@@ -35,5 +35,5 @@ public interface INodeManager {
 	 * @return List of running nodes.
 	 */
 	public List<Node> listNodes();
-
+	
 }

@@ -16,6 +16,7 @@
     <bean id="communicationService" class="aic12.project3.service.communication.CommunicationServiceImpl" />
     <bean id="statistics" class="aic12.project3.service.statistics.StatisticsImpl" />
     <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" />
+    <bean id="config" class="aic12.project3.service.util.ManagementConfig" />
      
             
 <bean id="log4jInitialization"

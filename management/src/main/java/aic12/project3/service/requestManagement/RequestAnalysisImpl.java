@@ -1,7 +1,5 @@
 package aic12.project3.service.requestManagement;
 
-import static org.junit.Assert.assertEquals;
-
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +20,7 @@ import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.TweetDTO;
 import aic12.project3.dao.tweetsManagement.DownloadManager;
 import aic12.project3.service.loadBalancing.LoadBalancer;
+import aic12.project3.service.requestManagement.RequestAnalysis;
 
 public class RequestAnalysisImpl implements RequestAnalysis {
 
@@ -77,7 +76,6 @@ public class RequestAnalysisImpl implements RequestAnalysis {
 		    // WebResource
 		    WebResource service = client.resource(uri);
 		    ClientResponse response = service.accept("application/json").get(ClientResponse.class);
-		    assertEquals(response.getType(),"application/json");
 		    
 		    // Get tweets from result
 	        List<TweetDTO> tweetResponse = response.getEntity(new GenericType<List<TweetDTO>>() {}); 

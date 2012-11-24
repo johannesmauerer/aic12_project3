@@ -10,12 +10,7 @@ import aic12.project3.service.requestManagement.RequestAnalysis;
 
 public class CommunicationServiceImpl implements CommunicationService {
 	
-	private RequestAnalysis ra;
-	
-	@Autowired
-	public void setRa(RequestAnalysis ra){
-		this.ra = ra;
-	}
+	@Autowired private RequestAnalysis ra;
 	
 	public boolean createRequest(String company, Long fromDate, Long toDate)
 	{
@@ -38,8 +33,17 @@ public class CommunicationServiceImpl implements CommunicationService {
 		
 	}
 	
+	
+	
 	public String test(){
 		return "All good";
+	}
+
+
+	@Override
+	public void processRequestUpdate(SentimentRequest req) {
+		// Received answer from Analysis, let Request Analysis know
+		
 	}
 
 }

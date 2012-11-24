@@ -7,6 +7,7 @@ public class Node{
 	private String id;
 	private String name;
 	private NODE_STATUS status;
+	private String ip;
 	
 	public Node(String name, String id){
 		this.name = name;
@@ -38,5 +39,17 @@ public class Node{
 	 */
 	public void setStatus(NODE_STATUS status) {
 		this.status = status;
+	}
+	
+	public String toString(){
+		return this.id + ": Name: " + this.name + "Status: " + this.status.toString();
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 }
