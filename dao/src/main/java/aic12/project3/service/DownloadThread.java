@@ -38,7 +38,7 @@ public class DownloadThread extends Thread {
 		List<TweetDTO> tweets = twitter.getAllTweets(request);
 		
 		// save to dao
-		log.debug("saving tweets from initial download for " + request.getCompanyName());
+		log.debug("saving " + tweets.size() + " tweets from initial download for " + request.getCompanyName());
 		tweetDao.storeTweet(tweets);
 		
 		// notify DownloadManagerService when finished and terminate
