@@ -2,12 +2,17 @@ package aic12.project3.analysis.rest;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,9 +39,24 @@ import com.sun.jersey.spi.resource.Singleton;
 public class SentimentService
 {
     private WeightedMajority wm;
+    private Map<UUID, SentimentResponse> map;
+    private WebResource resource;
 
     public SentimentService() throws Exception
     {
+        //Initialize map
+        map = new ConcurrentHashMap<UUID, SentimentResponse>();
+
+        //Initialize DAO access client
+        Properties properties = new Properties();
+        properties.load(SentimentService.class.getClassLoader().getResourceAsStream("config.properties"));
+
+        ClientConfig config = new DefaultClientConfig();
+        config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+
+        Client client = Client.create(config);
+        resource = client.resource(properties.getProperty("databaseServerUrl"));
+
         // Pre chaching of neural networks
         List<IClassifier> classifiers = new LinkedList<IClassifier>();
         ClassifierBuilder cb = new ClassifierBuilder();
@@ -61,19 +81,11 @@ public class SentimentService
         try
         {
             // Get all tweets from DB
-            Properties properties = new Properties();
-            properties.load(SentimentService.class.getClassLoader().getResourceAsStream("config.properties"));
-
-            ClientConfig config = new DefaultClientConfig();
-            config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-
-            Client client = Client.create(config);
-            WebResource resource = client.resource(properties.getProperty("databaseServerUrl"));
             TweetList response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
 
             try
             {
-                // Iterate through and counting the result
+                // Iterate through and count the result
                 int i = 0;
                 for (TweetDTO tweet : response.getList())
                 {
@@ -93,6 +105,78 @@ public class SentimentService
         catch (Exception e)
         {
             throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve tweets").build());
+        }
+    }
+
+    @POST
+    @Path("analyzeAsync")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public UUID analyzeAsync(final SentimentRequest request)
+    {
+        final UUID uuid = UUID.randomUUID();
+
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    // Get all tweets from DB
+                    TweetList response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
+
+                    try
+                    {
+                        // Iterate through and count the result
+                        int i = 0;
+                        for (TweetDTO tweet : response.getList())
+                        {
+                            i += wm.weightedClassify(tweet.getText()).getPolarity();
+                        }
+
+                        SentimentResponse resp = new SentimentResponse();
+                        resp.setSentiment((float) i / response.getList().size() / 4);
+                        resp.setNumberOfTweets(response.getList().size());
+                        map.put(uuid, resp);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to classify tweets").build());
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve tweets").build());
+                }
+            }
+        }.start();
+
+        return uuid;
+    }
+
+    @GET
+    @Path("getResponse")
+    @Produces("application/json")
+    public SentimentResponse getResponse(@QueryParam("uuid") String uuid)
+    {
+        if (uuid == null || uuid.equals(""))
+        {
+            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("You must provide a uuid!").build());
+        }
+
+        try
+        {
+            SentimentResponse response = map.get(UUID.fromString(uuid));
+            if (response != null)
+            {
+                map.remove(UUID.fromString(uuid));
+            }
+            return response;
+        }
+        catch (IllegalArgumentException e)
+        {
+            throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("You must provide a valid uuid!").build());
         }
     }
 }
