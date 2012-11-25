@@ -74,7 +74,7 @@ public class TwitterAPIImpl implements TwitterAPI {
 				List<Tweet> tweets = result.getTweets();
 				// map to TweetDTO
 				for(Tweet t : tweets) {
-                    TweetDTO tweetDTO = new TweetDTO(t.getId(), t.getText(),
+                    TweetDTO tweetDTO = new TweetDTO(Long.toString(t.getId()), t.getText(),
                             t.getCreatedAt()); //TODO getId() is this the right ID?
 					tweetDTOs.add(tweetDTO);
 				}

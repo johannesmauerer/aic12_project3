@@ -41,7 +41,7 @@ public class WriteCachedToDaoStreamListener implements StatusListener {
 		
 //		log.debug("tweet; cached tweets: " + tweetsCache.size() + " DAO: " + tweetDao);
 		
-		TweetDTO tweet = new TweetDTO(id, text, date);
+		TweetDTO tweet = new TweetDTO(Long.toString(id), text, date);
 		
 		tweetsCache.add(tweet);
 //		

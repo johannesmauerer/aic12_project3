@@ -12,7 +12,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import aic12.project3.common.dto.TweetDTO;
@@ -55,7 +57,7 @@ public class Importer implements iImporter {
 	@Override
 	public void importTweets(ITweetDAO tweetDAO) {
 
-		System.out.println("Start Import");
+		System.out.println("Start Import "+new Date());
 		this.parser = new JSONParser();
 		this.lreader = new LineNumberReader(freader);
 
@@ -72,16 +74,21 @@ public class Importer implements iImporter {
 					// Disabled this part because it somehow always loads some strange values for the state
 
 					JSONObject jsonObject = (JSONObject) this.parser.parse(line);
-
-					String text = (String) jsonObject.get("text");
-					String date = (String) jsonObject.get("created_at");
-					Long twitterId = Long.parseLong((String)jsonObject.get("id_str"));
-					TweetDTO tweet = new TweetDTO(twitterId, text, this.parseDate(date));
-
-					tweetDAO.storeTweet(tweet);
-
-					this.state = lreader.getLineNumber();
-					this.saveState();
+					try{
+						String text = (String) jsonObject.get("text");
+						String date = (String) jsonObject.get("created_at");
+						String twitterId = (String)jsonObject.get("id_str");
+						TweetDTO tweet = new TweetDTO(twitterId, text, this.parseDate(date));
+						List<String> companies = new ArrayList<String>();
+						tweet.setCompanies(companies);
+						tweetDAO.storeTweet(tweet);
+						this.state = lreader.getLineNumber();
+						this.saveState();
+					}catch(NumberFormatException e){
+						System.out.println("NumberException on line "+lreader.getLineNumber()+": "+e.getMessage());
+					}catch(Exception e){
+						System.out.println("Exception on line "+lreader.getLineNumber()+": "+e.getMessage());
+					}
 				}
 
 				line = lreader.readLine();
@@ -93,7 +100,7 @@ public class Importer implements iImporter {
 			this.saveState();
 			e.printStackTrace();
 		}
-		System.out.println("End Import");
+		System.out.println("End Import "+new Date());
 	}
 
 	private void saveState() {

@@ -36,33 +36,32 @@ public class MongoTweetDAO implements ITweetDAO{
 	@Override
 	public void storeTweet(TweetDTO tweet) {
 		log.debug("storeTweet");
-		
-		TweetDTO t = mongoOperation.findOne(new Query(Criteria.where("twitterId").is(tweet.getTwitterId())),TweetDTO.class, "tweets");
-
-		if(t==null){
-			log.debug("storing new tweet");
-			mongoOperation.insert(tweet,"tweets");
-		}else{
-			log.debug("updating sentiment only");
-			updateSentiment(tweet);
-		}
-	}
-	
-	public void updateSentiment(TweetDTO tweet){
-		mongoOperation.updateFirst(new Query(Criteria.where("twitterId").is(tweet.getTwitterId())),new Update().set("sentiment", tweet.getSentiment()),"tweets");
+		mongoOperation.save(tweet,"tweets");
 	}
 
 	@Override
 	public void storeTweet(List<TweetDTO> tweets) {
-		for(TweetDTO t:tweets){
-			storeTweet(t);
-		}
-		
+		mongoOperation.save(tweets,"tweets");
 	}
 
 	@Override
 	public List<TweetDTO> searchTweet(String company, Date fromDate, Date toDate) {
-		return mongoOperation.find(new Query(Criteria.where("date").gte(fromDate).lte(toDate).and("text").regex("\\b"+company+"\\b")),TweetDTO.class, "tweets");
+		return mongoOperation.find(new Query(Criteria.where("date").gte(fromDate).lte(toDate).and("text").regex(company)),TweetDTO.class, "tweets");
+	}
+	
+	@Override
+	public int indexCompany(String company){
+		List<TweetDTO> result = mongoOperation.find(new Query(Criteria.where("text").regex(company).and("companies").ne(company)),TweetDTO.class, "tweets");
+
+		for(TweetDTO t : result){
+			if(!t.getCompanies().contains(company)){
+				List<String> l = t.getCompanies();
+				l.add(company);
+				t.setCompanies(l);
+				mongoOperation.save(t, "tweets");
+			}
+		}
+		return result.size();
 	}
 
 	@Override

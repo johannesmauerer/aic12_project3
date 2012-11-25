@@ -12,5 +12,8 @@ public interface ITweetDAO {
 	//Search all Tweets in a specified timeframe which contain the company name
 	public abstract List<TweetDTO> searchTweet(String company, Date fromDate, Date toDate);
 	
+	//Index all Tweets containing the company which are not indexed
+	public abstract int indexCompany(String company);
+	
 	public abstract List<TweetDTO> getAllTweet();
 }
