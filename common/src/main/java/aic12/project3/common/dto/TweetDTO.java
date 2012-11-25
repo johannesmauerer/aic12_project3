@@ -1,29 +1,36 @@
 package aic12.project3.common.dto;
 
 import java.util.Date;
+import java.util.List;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection="tweets")
 public class TweetDTO
 {
-    private Long twitterId;
+	@Id
+    private String twitterId;
     private String text;
     private Date date;
     private Integer sentiment;
+    private List<String> companies;
     
     public TweetDTO() {}
     
-    public TweetDTO(Long twitterId, String text, Date date)
+    public TweetDTO(String twitterId, String text, Date date)
     {
         this.twitterId = twitterId;
         this.text = text;
         this.date = date;
     }
 
-    public Long getTwitterId()
+    public String getTwitterId()
     {
         return twitterId;
     }
 
-    public void setTwitterId(Long twitterId)
+    public void setTwitterId(String twitterId)
     {
         this.twitterId = twitterId;
     }
@@ -57,4 +64,18 @@ public class TweetDTO
     {
         this.sentiment = sentiment;
     }
+	
+	public List<String> getCompanies() {
+		return companies;
+	}
+
+	public void setCompanies(List<String> companies) {
+		this.companies = companies;
+	}
+
+	@Override
+	public String toString(){
+		return "TweetDTO[tweetId="+twitterId+", date="+date+", companies="+companies+"]";
+	}
+    
 }
