@@ -1,5 +1,6 @@
 package aic12.project3.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -29,21 +30,42 @@ public class MongoUserDAO implements IUserDAO{
 	
 	@Override
 	public void storeUser(UserDTO user) {
-		mongoOperation.insert(user, "users");
+		mongoOperation.save(user, "users");
 	}
 
 	@Override
 	public void storeUser(List<UserDTO> users) {
-		mongoOperation.insert(users, "users");
+		mongoOperation.save(users, "users");
 	}
 
 	@Override
 	public UserDTO searchUser(String userName) {
-		return mongoOperation.find(new Query(Criteria.where("userName").is(userName)),UserDTO.class, "users").get(0);		
+		return mongoOperation.findOne(new Query(Criteria.where("userName").is(userName)),UserDTO.class, "users");		
 	}
 
 	@Override
 	public List<UserDTO> getAllUser() {
 		return mongoOperation.findAll(UserDTO.class, "users");
+	}
+	
+	@Override
+	public List<String> getAllCompanies(){
+		List<UserDTO> result = mongoOperation.findAll(UserDTO.class, "users");
+		List<String> ret = new ArrayList<String>();
+		for(UserDTO u : result){
+			if(!ret.contains(u.getCompanyName())){
+				ret.add(u.getCompanyName());
+			}
+		}
+		return ret;
+	}
+
+	@Override
+	public Boolean authenticateUser(String userName, String pwHash) {
+		UserDTO user = mongoOperation.findOne(new Query(Criteria.where("userName").is(userName)),UserDTO.class, "users");
+		if(user.getPwHash().equals(pwHash)){
+			return true;
+		}
+		return false;
 	}
 }
