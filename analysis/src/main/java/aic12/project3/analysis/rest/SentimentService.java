@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.SentimentRequestCallback;
 import aic12.project3.common.beans.SentimentResponse;
 import aic12.project3.common.beans.TweetList;
 import aic12.project3.common.dto.TweetDTO;
@@ -81,21 +82,11 @@ public class SentimentService
         try
         {
             // Get all tweets from DB
-            TweetList response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
+            TweetList tweets = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
 
             try
             {
-                // Iterate through and count the result
-                int i = 0;
-                for (TweetDTO tweet : response.getList())
-                {
-                    i += wm.weightedClassify(tweet.getText()).getPolarity();
-                }
-
-                SentimentResponse resp = new SentimentResponse();
-                resp.setSentiment((float) i / response.getList().size() / 4);
-                resp.setNumberOfTweets(response.getList().size());
-                return resp;
+                return calculateSentiment(tweets.getList());
             }
             catch (Exception e)
             {
@@ -124,21 +115,11 @@ public class SentimentService
                 try
                 {
                     // Get all tweets from DB
-                    TweetList response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
+                    TweetList tweets = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
 
                     try
                     {
-                        // Iterate through and count the result
-                        int i = 0;
-                        for (TweetDTO tweet : response.getList())
-                        {
-                            i += wm.weightedClassify(tweet.getText()).getPolarity();
-                        }
-
-                        SentimentResponse resp = new SentimentResponse();
-                        resp.setSentiment((float) i / response.getList().size() / 4);
-                        resp.setNumberOfTweets(response.getList().size());
-                        map.put(uuid, resp);
+                        map.put(uuid, calculateSentiment(tweets.getList()));
                     }
                     catch (Exception e)
                     {
@@ -153,6 +134,43 @@ public class SentimentService
         }.start();
 
         return uuid;
+    }
+    
+    @POST
+    @Path("analyzeCallback")
+    @Consumes("application/json")
+    public void analyzeCallabck(final SentimentRequestCallback request)
+    {
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    // Get all tweets from DB
+                    TweetList tweets = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
+                    
+                    try
+                    {
+                        ClientConfig config = new DefaultClientConfig();
+                        config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+                        Client client = Client.create(config);
+
+                        WebResource resource = client.resource(request.getCallbackAddress());
+                        resource.type(MediaType.APPLICATION_JSON).post(calculateSentiment(tweets.getList()));
+                    }
+                    catch (Exception e)
+                    {
+                        throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to classify tweets").build());
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve tweets").build());
+                }
+            }
+        }.start();
     }
 
     @GET
@@ -178,5 +196,20 @@ public class SentimentService
         {
             throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("You must provide a valid uuid!").build());
         }
+    }
+    
+    private SentimentResponse calculateSentiment(List<TweetDTO> list) throws Exception
+    {
+        int i = 0;
+        for (TweetDTO tweet : list)
+        {
+            i += wm.weightedClassify(tweet.getText()).getPolarity();
+        }
+
+        SentimentResponse response = new SentimentResponse();
+        response.setSentiment((float) i / list.size() / 4);
+        response.setNumberOfTweets(list.size());
+        
+        return response;
     }
 }
