@@ -54,6 +54,14 @@ public class TweetDAOService
         return Response.ok(entity).build();
     }
     
+    @GET
+    @Path("indexcompany")
+    @Produces("application/json")
+    public int indexCompany(@QueryParam("company")String company)
+    {
+        return mongoDAO.indexCompany(company);
+    }
+    
     @POST
     @Path("getallforrequest")
     @Consumes("application/json")
@@ -61,13 +69,5 @@ public class TweetDAOService
     public TweetList getAllForRequest(SentimentRequest request)
     {
     	return new TweetList(mongoDAO.searchTweet(request.getCompanyName(), request.getFrom(),request.getTo()));
-    }
-    
-    @GET
-    @Path("getall")
-    @Produces("application/json")
-    public TweetList getAll()
-    {
-        return new TweetList(mongoDAO.getAllTweet());
     }
 }
