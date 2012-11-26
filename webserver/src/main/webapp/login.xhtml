@@ -8,26 +8,26 @@
 	
 	
 	<ui:composition >
-		<h:outputStylesheet library="css" name="/styles/style.css"  />
+		
 		<h:head >
 			<title>Advanced Internet Computing</title>
+			<link href="styles/style.css" rel="stylesheet" type="text/css"/>
+			  
 		</h:head>
 		<h:body id="body">
-			<style>
-				#header {
-					background-color: #E8F4F5;
-				}
-			</style>
+			
 			<div id="header">
 				
 					<h:graphicImage value="img/header.jpg"/>
 			</div>
 			<f:view>
+			<h2>What does twitter says about your company?</h2> 
 				
 				<h:form>
-					Enter your company name:<h:inputText value="#{user.name}"></h:inputText>
-					<h:commandButton value="Login" action="login" ></h:commandButton> <!--  "#{sentimentRequest.companyName}" 
-			    	<f:param name="name" value="#{user.name}" /> -->
+					<h3>Enter your company name:</h3><h:inputText value="#{user.name}"></h:inputText>
+					<div id="buttons">
+						<h:commandButton value="Login" action="login" ></h:commandButton>
+			    	</div>
 									
 				</h:form>
 				<div id="footer">

@@ -24,13 +24,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 		
 		<finalName>JavaServerFaces</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<outputDirectory>C:\Program Files\Apache Software Foundation\Tomcat 6.0\webapps\</outputDirectory>
-				</configuration>
-			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -90,6 +84,21 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 			<artifactId>el-ri</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+            <groupId>org.richfaces.ui</groupId>
+            <artifactId>richfaces-components-ui</artifactId>
+            <version>4.0.0.20101110-M4</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jsf-api</artifactId>
+                    <groupId>com.sun.faces</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jsf-impl</artifactId>
+                    <groupId>com.sun.faces</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 	</dependencies>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

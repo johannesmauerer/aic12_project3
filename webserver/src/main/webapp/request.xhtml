@@ -5,37 +5,60 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:rich="http://richfaces.org/rich">
 
-<link rel="stylesheet" type="text/css" href="styles/style.css" />
+	
+
 	<ui:composition>
+		
 		<h:head >
 			<title>Advanced Internet Computing</title>
+			<link href="styles/style.css" rel="stylesheet" type="text/css"/>
 		</h:head>
 		<h:body id="body">
-			<style>
-				#header {
-					background-color: #E8F4F5;
-				}
-			</style>
+			
 			<div id="header">
 					<h:graphicImage value="img/header.jpg"/>
 			</div>
-		<!-- outputText tag is a label -->
+		
 		<h2> Welcome <i><h:outputText value="#{user.name}" /></i>!</h2> 
-				
+		
+		<!-- setting companyName -->
+		<c:set value="#{user.name}" target="#{sentimentRequest}" property="companyName" />
+						
 		<f:view>
 			<h:form>
 				<div>
 					<h3>Choose period for your sentiment analysis:</h3>
-					From:<h:inputText value="#{sentimentRequest.from}"></h:inputText>
+					From:
+					<!-- <h:inputText value="#{sentimentRequest.from}">
+						<f:convertDateTime pattern="dd.mm.yyyy"/> 
+					</h:inputText>  -->	 
+					<rich:calendar value="#{sentimentRequest.from}"
+                        popup="true"
+                        time="dd/MM/yyyy"
+                        showInput="true"
+                        showApplyButton="true" 
+                        cellWidth="24px" 
+                        cellHeight="22px" 
+                        style="width:200px"/>
 					<br/>
-					To:  <h:inputText value="#{sentimentRequest.to}"></h:inputText>
+					To: 
+					<!-- <h:inputText value="#{sentimentRequest.to}">
+						<f:convertDateTime pattern="dd.mm.yyyy"/> 
+					</h:inputText> -->
+					<rich:calendar value="#{sentimentRequest.to}"
+                        popup="true"
+                        time="dd/MM/yyyy"
+                        showInput="true"
+                        showApplyButton="true" 
+                        cellWidth="24px" 
+                        cellHeight="22px" 
+                        style="width:200px"/> 
 				</div>	
-				
+								
 				<div id="buttons">
-					<h:commandButton value="Test1" ></h:commandButton>
-					<h:commandButton value="Test2" ></h:commandButton>
+					<h:commandButton value="Start anylisis" ></h:commandButton>
 				</div>
 	
 			</h:form>	
