@@ -30,10 +30,7 @@
 			<h:form>
 				<div>
 					<h3>Choose period for your sentiment analysis:</h3>
-					From:
-					<!-- <h:inputText value="#{sentimentRequest.from}">
-						<f:convertDateTime pattern="dd.mm.yyyy"/> 
-					</h:inputText>  -->	 
+					<h4>From:</h4>
 					<rich:calendar value="#{sentimentRequest.from}"
                         popup="true"
                         time="dd/MM/yyyy"
@@ -41,12 +38,9 @@
                         showApplyButton="true" 
                         cellWidth="24px" 
                         cellHeight="22px" 
-                        style="width:200px"/>
-					<br/>
-					To: 
-					<!-- <h:inputText value="#{sentimentRequest.to}">
-						<f:convertDateTime pattern="dd.mm.yyyy"/> 
-					</h:inputText> -->
+                        style="width:200px"
+                        required="true"/>
+					<h4>To:</h4> 
 					<rich:calendar value="#{sentimentRequest.to}"
                         popup="true"
                         time="dd/MM/yyyy"
@@ -54,7 +48,8 @@
                         showApplyButton="true" 
                         cellWidth="24px" 
                         cellHeight="22px" 
-                        style="width:200px"/> 
+                        style="width:200px"
+                        required="true"/> 
 				</div>	
 								
 				<div id="buttons">
