@@ -62,6 +62,8 @@ public class LoadBalancerTime extends LoadBalancer {
 			break;
 
 		case FINISHED:
+			// Delete from request_node mapping
+			request_nodes.remove(id);
 			sendRequestToNode(requestQueue.poll().getId());
 			break;
 
@@ -114,6 +116,9 @@ public class LoadBalancerTime extends LoadBalancer {
 			// SentimentResponse response = service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentResponse.class, rqr.getRequest(id));
 			logger.info("Not implemented: Request sent");
 			logger.info(stats.toString());
+			
+			// Add the request to the node mapping
+			request_nodes.put(id, nextNode);
 		}
 
 	}
