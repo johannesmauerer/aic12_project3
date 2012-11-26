@@ -2,27 +2,32 @@ package aic12.project3.common.beans;
 
 import java.util.Date;
 
+import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
+
 public class SentimentRequest
 {
-    private int id;
+    private String id;
     private String companyName;
     private Date from;
     private Date to;
+    private int numberOfTweets;
+    private REQUEST_QUEUE_STATE state;
+
 
     public SentimentRequest() { }
     
-    public SentimentRequest(int id) {
+    public SentimentRequest(String id) {
     	this.id = id;
 	}
 
-	public int getId()
+    public String getId()
     {
         return id;
     }
 
-    public void setId(int id)
+    public void setId(String string)
     {
-        this.id = id;
+        this.id = string;
     }
 
     public String getCompanyName()
@@ -63,7 +68,8 @@ public class SentimentRequest
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		// TODO
+		result = prime * result;
 		return result;
 	}
 
@@ -79,5 +85,33 @@ public class SentimentRequest
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return the numberOfTweets
+	 */
+	public int getNumberOfTweets() {
+		return numberOfTweets;
+	}
+
+	/**
+	 * @param numberOfTweets the numberOfTweets to set
+	 */
+	public void setNumberOfTweets(int numberOfTweets) {
+		this.numberOfTweets = numberOfTweets;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public REQUEST_QUEUE_STATE getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(REQUEST_QUEUE_STATE state) {
+		this.state = state;
 	}
 }

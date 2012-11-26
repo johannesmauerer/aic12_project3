@@ -3,6 +3,7 @@ package aic12.project3.dao.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 
@@ -47,7 +48,7 @@ public class Test
         String result = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, tweetList);
         System.out.println("Result: "+result);*/
         
-        String serveruri = "http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/find?company=ABC&fromdate="+
+        String serveruri = "http://localhost:8080/cloudservice-1.0-SNAPSHOT/tweetdao/find?company=ABC&fromdate="+
         		(new Date(System.currentTimeMillis()-40000000)).getTime()+"&todate="+(new Date(System.currentTimeMillis())).getTime();
         		
         WebResource resource = client.resource(serveruri);
@@ -60,8 +61,11 @@ public class Test
     
     public static void postRequest(){
     	SentimentRequest request = new SentimentRequest();
-    	request.setId(1);
+    	request.setId(UUID.randomUUID().toString());
     	request.setCompanyName("microsoft");
+    	request.setId("1");
+    	request.setCompanyName("ABC");
+
     	request.setFrom(new Date(System.currentTimeMillis()-new Long("4000000000")));
     	request.setTo(new Date(System.currentTimeMillis()));
     	

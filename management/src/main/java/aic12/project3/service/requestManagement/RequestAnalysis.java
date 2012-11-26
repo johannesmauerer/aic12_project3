@@ -7,5 +7,7 @@ public interface RequestAnalysis {
 
 	public void newRequest(SentimentRequest req);
 	
+	public void updateRequest(SentimentRequest req);
+	
 	public String test();
 }

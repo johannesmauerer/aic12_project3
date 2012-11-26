@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+
 import aic12.project3.common.dto.TweetDTO;
 
 public class MongoTweetDAO implements ITweetDAO{
@@ -68,4 +69,5 @@ public class MongoTweetDAO implements ITweetDAO{
 	public List<TweetDTO> getAllTweet() {
 		return mongoOperation.findAll(TweetDTO.class, "tweets");
 	}
+
 }

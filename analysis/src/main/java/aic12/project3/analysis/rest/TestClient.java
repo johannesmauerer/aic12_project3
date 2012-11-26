@@ -18,7 +18,7 @@ public class TestClient
     public static void main(String[] args)
     {
         SentimentRequest request = new SentimentRequest();
-        request.setId(1);
+        request.setId("1");
         request.setCompanyName("microsoft");
         request.setFrom(new Date());
         request.setTo(new Date());

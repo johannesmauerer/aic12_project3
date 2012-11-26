@@ -2,24 +2,28 @@ package aic12.project3.service.nodeManagement;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jclouds.ContextBuilder;
-import org.jclouds.collect.PagedIterable;
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.ComputeServiceContext;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.NovaAsyncApi;
+import org.jclouds.openstack.nova.v2_0.domain.Address;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
 import org.jclouds.openstack.nova.v2_0.domain.ServerCreated;
 import org.jclouds.openstack.nova.v2_0.features.ServerApi;
-import org.jclouds.openstack.v2_0.domain.Resource;
 import org.jclouds.rest.RestContext;
+
+import aic12.project3.common.enums.NODE_STATUS;
 
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import com.google.inject.Module;
 
 public class JCloudsNodeManager implements INodeManager{
@@ -87,10 +91,12 @@ public class JCloudsNodeManager implements INodeManager{
 		for (String zone: zones) {			
 
 			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);	
-			ServerCreated created = serverApi.create(name, image, flavor, null);
+			ServerCreated created = serverApi.create(name, image, flavor);
 
 			if(created != null){
-				close();			
+				close();	
+				Map<String, String> m = serverApi.getMetadata(created.getId());
+				
 				return new Node(created.getName(), created.getId());
 			}
 		}
@@ -135,11 +141,40 @@ public class JCloudsNodeManager implements INodeManager{
 			FluentIterable<? extends Server> list = serverApi.listInDetail().concat();	
 			
 			for(Server server: list){
-				nodeList.add(new Node(server.getName(),server.getId()));
+				
+				
+				
+				Node n = new Node(server.getName(),server.getId());
+				n.setStatus(NODE_STATUS.INACTIVE);
+
+				//n.setIp(a.getAddr());
+				//System.out.println(a.getAddr());
+
+				
+				Multimap<String, Address> map = server.getAddresses();
+				Set keySet = map.keySet( );  
+			    Iterator keyIterator = keySet.iterator();  
+			    
+			    // Get Address (only one available, if not take last one)
+			    String address = "";
+			    while( keyIterator.hasNext( ) ) {  
+			        Object key = keyIterator.next( );  
+			        Collection values = (Collection) map.get( (String) key );  
+			        Iterator valuesIterator = values.iterator( );  
+			        while( valuesIterator.hasNext( ) ) {  
+			        	Address ad = (Address) valuesIterator.next();
+			           address = ad.getAddr();  
+			        }    
+			    }  
+			    
+			    n.setIp(address);
+			      
+				nodeList.add(n);
 			}				
 		}
 
 		close();
 		return nodeList;
 	}
+
 }

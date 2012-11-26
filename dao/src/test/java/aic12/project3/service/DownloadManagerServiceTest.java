@@ -7,6 +7,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.After;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class DownloadManagerServiceTest {
 
 	@Test
 	public void test_startInitialDownload() {
-		SentimentRequest req = new SentimentRequest(0);
+		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
 		
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
@@ -54,7 +55,7 @@ public class DownloadManagerServiceTest {
 	
 	@Test
 	public void test_isInitialDownloadFinished_notFinished() {
-		SentimentRequest req = new SentimentRequest(0);
+		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
 		
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
@@ -68,7 +69,7 @@ public class DownloadManagerServiceTest {
 	
 	@Test
 	public void test_isInitialDownloadFinished_isFinished() {
-		SentimentRequest req = new SentimentRequest(0);
+		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
 		
 		// mock download threads map
 		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
@@ -82,7 +83,7 @@ public class DownloadManagerServiceTest {
 	
 	@Test
 	public void test_notifyOnInitialDownloadFinished() {
-		SentimentRequest req = new SentimentRequest(0);
+		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
 		
 		// mock set of req to notify on
 		Set<SentimentRequest> notifySet = mock(Set.class);
@@ -95,7 +96,7 @@ public class DownloadManagerServiceTest {
 	
     @Test
     public void test_initialDownloadFinished_noNotify() {
-        SentimentRequest req = new SentimentRequest(0);
+        SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
 
         DownloadThread thread = new DownloadThread(req);
         // mock download threads map
@@ -116,7 +117,7 @@ public class DownloadManagerServiceTest {
     
     @Test
     public void test_registerForTwitterStream() {
-    	SentimentRequest req = new SentimentRequest(0);
+    	SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
     	
     	TwitterAPI twitterMock = mock(TwitterAPI.class);
     	dlService.setTwitterAPI(twitterMock);
