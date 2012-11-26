@@ -12,8 +12,8 @@ public interface DownloadManagerServiceTestIF extends DownloadManagerService {
 
 	void setInitialDownloadsMap(Map<SentimentRequest, DownloadThread> dlMap);
 
-	void setNotifyOnDownloadFinishSet(Set<SentimentRequest> notifySet);
-
 	void setTwitterAPI(TwitterAPI twitterAPI);
+
+	void setNotifyOnDownloadFinishMap(Map<SentimentRequest, String> notifyMap);
 
 }

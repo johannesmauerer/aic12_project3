@@ -2,9 +2,7 @@ package aic12.project3.service;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	private Map<SentimentRequest, DownloadThread> initialDownloadsMap = 
 			Collections.synchronizedMap(
 					new HashMap<SentimentRequest, DownloadThread>());
-	private Set<SentimentRequest> notifyOnDownloadFinishSet = Collections.synchronizedSet(new HashSet<SentimentRequest>());
+	private Map<SentimentRequest, String> notifyOnDownloadFinishMap = Collections.synchronizedMap(new HashMap<SentimentRequest, String>());
 	
 	@Autowired
 	private TwitterAPI twitterAPI;
@@ -68,8 +66,8 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	}
 
 	@Override
-	public void notifyOnInitialDownloadFinished(SentimentRequest req) {
-		notifyOnDownloadFinishSet.add(req);
+	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callbackUrl) {
+		notifyOnDownloadFinishMap.put(req, callbackUrl);
 	}
 
 	@Override
@@ -85,8 +83,9 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		initialDownloadsMap.remove(req);
 		
 		// check if we need to notify about finishing
-		if(notifyOnDownloadFinishSet.contains(req)) {
-			notifyOnDownloadFinishSet.remove(req);
+		String callback = notifyOnDownloadFinishMap.get(req); // is null if no callback
+		if(callback != null) {
+			notifyOnDownloadFinishMap.remove(req);
 			// TODO notify that download is finished
 		}
 	}
@@ -99,8 +98,8 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	}
 
 	@Override
-	public void setNotifyOnDownloadFinishSet(Set<SentimentRequest> notifySet) {
-		notifyOnDownloadFinishSet = notifySet;
+	public void setNotifyOnDownloadFinishMap(Map<SentimentRequest, String> notifyMap) {
+		notifyOnDownloadFinishMap = notifyMap;
 	}
 
 	@Override

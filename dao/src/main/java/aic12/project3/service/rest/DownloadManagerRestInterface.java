@@ -42,9 +42,9 @@ public class DownloadManagerRestInterface {
     @POST
     @Path("notifyoninitialdownloadfinished")
     @Consumes("application/json")
-    public void notifyOnInitialDownloadFinished (SentimentRequest req) {
+    public void notifyOnInitialDownloadFinished (SentimentRequest req, String callbackUrl) {
     	log.info("notifyOnInitialDownloadFinished");
-    	dlManagerService.notifyOnInitialDownloadFinished(req);
+    	dlManagerService.notifyOnInitialDownloadFinished(req, callbackUrl);
 	}
     
     @POST

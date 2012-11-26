@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.is;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -85,12 +84,12 @@ public class DownloadManagerServiceTest {
 		SentimentRequest req = new SentimentRequest(0);
 		
 		// mock set of req to notify on
-		Set<SentimentRequest> notifySet = mock(Set.class);
-		dlService.setNotifyOnDownloadFinishSet(notifySet);
+		Map<SentimentRequest, String> notifyMap = mock(Map.class);
+		dlService.setNotifyOnDownloadFinishMap(notifyMap);
 		
-		dlService.notifyOnInitialDownloadFinished(req);
+		dlService.notifyOnInitialDownloadFinished(req, "");
 		
-		verify(notifySet, times(1)).add(req);
+		verify(notifyMap, times(1)).put(req, "");
 	}
 	
     @Test
@@ -102,16 +101,16 @@ public class DownloadManagerServiceTest {
         Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
         dlService.setInitialDownloadsMap(dlMap);
         when(dlMap.get(req)).thenReturn(thread);
-        // mock notifyOnDownloadFinishSet
-        Set<SentimentRequest> notifySet = mock(Set.class);
-        dlService.setNotifyOnDownloadFinishSet(notifySet);
+        // mock notifyOnDownloadFinishMap
+		Map<SentimentRequest, String> notifySet = mock(Map.class);
+        dlService.setNotifyOnDownloadFinishMap(notifySet);
 
-        when(notifySet.contains(req)).thenReturn(false);
+        when(notifySet.get(req)).thenReturn(null);
 
         dlService.initialDownloadFinished(req, thread);
 
         verify(dlMap, times(1)).remove(req);
-        verify(notifySet, times(1)).contains(req);
+        verify(notifySet, times(1)).get(req);
     }
     
     @Test
