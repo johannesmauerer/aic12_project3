@@ -28,7 +28,7 @@ public class RequestAnalysisTest extends SpringTest {
 	@Test
 	public void databaseConnection(){
 
-        
+        /*
         URI uri = UriBuilder.fromUri("http://128.130.172.202:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/find?company=Apple&fromdate=1313715508383&todate=1353715508384").build();
         String uriString = uri.toString();
         
@@ -44,5 +44,6 @@ public class RequestAnalysisTest extends SpringTest {
 	        for(TweetDTO t : tweetResponse){
 	        	System.out.println(t);
 	        }
+	        */
 	}
 }
