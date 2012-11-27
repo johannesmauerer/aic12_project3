@@ -63,6 +63,7 @@ public class App {
 		}*/
 
 		
+		/*
 		ApplicationContext ctx = new GenericXmlApplicationContext("applicationContext.xml");
 		BeanFactory factory = ctx;
 		
@@ -75,7 +76,7 @@ public class App {
 		CommunicationServiceImpl s = (CommunicationServiceImpl) factory.getBean("communicationService");
 		logger.info(s.createRequest("ABC", (new Date(System.currentTimeMillis()-40000000)).getTime(), (new Date(System.currentTimeMillis())).getTime()));
 		
-		
+		*/
 	
 		
 		

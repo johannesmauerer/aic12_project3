@@ -12,7 +12,8 @@
 	<!-- Normal runtime beans -->
 	<bean id="requestAnalysis" class="aic12.project3.service.requestManagement.RequestAnalysisImpl"/>
 	<bean id="requestQueueReady" class="aic12.project3.service.requestManagement.RequestQueueReadyImpl" factory-method="getInstance"/>
-	<bean id="loadBalancer" class="aic12.project3.service.loadBalancing.LoadBalancerTime" factory-method="getInstance" init-method="init" />
+	<!--  <bean id="loadBalancer" class="aic12.project3.service.loadBalancing.LoadBalancerTime" factory-method="getInstance" init-method="init" />  -->
+	<bean id="loadBalancer" class="aic12.project3.service.loadBalancing.LoadBalancerTime" factory-method="getInstance"/>
     <bean id="communicationService" class="aic12.project3.service.communication.CommunicationServiceImpl" />
     <bean id="statistics" class="aic12.project3.service.statistics.StatisticsImpl" />
     <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" />

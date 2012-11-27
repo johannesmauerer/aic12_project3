@@ -21,34 +21,38 @@ import aic12.project3.service.communication.CommunicationService;
 @Path("/request")
 public class RequestService {
 	
-	@Autowired
-	CommunicationService serv;
+	@Autowired	private CommunicationService serv;
 	
-
+	/**
+	 * Accept new request from Web-Interface / API
+	 * @param req the request to be processed
+	 */
 	@POST
-	@Path("analysisResult")
-	public void analysisResult(SentimentRequest req){
-		// TODO
+	@Path("accept")
+	public void acceptRequest(SentimentRequest req){
+		// Send Information to Communication Service
+		serv.acceptRequest(req);
 	}
 	
 	 
-	 /**
-	  * FOR TESTING
-	  */
+	/**
+	 * Creates new request from scratch with given Parameters
+	 * @param company
+	 * @param fromDate
+	 * @param toDate
+	 */
 	 @POST
-	 @Path("create")
-	 @Produces("text/plain")
-	 public String createRequest(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate){
+	 @Path("new")
+	 public void createRequest(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate){
 		 
-		 return serv.createRequest(company, fromDate, toDate) ? "OK" : "Error";
+		 // Send parameters to Communication Service
+		 serv.createRequest(company, fromDate, toDate);
 	 }
 	 
-	 @GET
-	 @Path("createtest")
-	 public String createTestRequest(){
-		 return serv.createRequest("ABC", new Date(System.currentTimeMillis()-40000000).getTime(), new Date(System.currentTimeMillis()).getTime()) ? "OK" : "Error";
-	 }
-	 
+	 /**
+	  * Test if webserver runs
+	  * @return
+	  */
 	 @GET
 	 @Path("test")
 	 @Produces("text/plain")

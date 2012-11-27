@@ -1,17 +1,20 @@
 package aic12.project3.common.beans;
 
 import java.util.Date;
+import org.springframework.data.annotation.Id;
 
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 
 public class SentimentRequest
 {
+	@Id
     private String id;
     private String companyName;
     private Date from;
     private Date to;
     private int numberOfTweets;
     private REQUEST_QUEUE_STATE state;
+    private SentimentResponse response;
 
 
     public SentimentRequest() { }
@@ -113,5 +116,13 @@ public class SentimentRequest
 	 */
 	public void setState(REQUEST_QUEUE_STATE state) {
 		this.state = state;
+	}
+
+	public SentimentResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(SentimentResponse response) {
+		this.response = response;
 	}
 }

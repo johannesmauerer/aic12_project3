@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.SentimentRequestCallback;
 import aic12.project3.common.beans.SentimentResponse;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.Node;
@@ -21,10 +22,17 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
+/**
+ * Time based implementation of Load Balancer
+ * Starts and Stops node according to using as much resources as possible
+ * to complete requests as quick as possible
+ * @author johannes
+ *
+ */
 public class LoadBalancerTime extends LoadBalancer {
 
 	private static LoadBalancerTime instance;
-	private Queue<SentimentRequest> requestQueue = new LinkedList<SentimentRequest>();
+	private Queue<String> requestQueue = new LinkedList<String>();
 
 	private LoadBalancerTime(){
 	}
@@ -43,20 +51,40 @@ public class LoadBalancerTime extends LoadBalancer {
 
 	}
 
+	/**
+	 * Handle updates in RequestQueueReady
+	 */
 	@Override
 	protected void updateInQueue(String id) {
+		/*
+		 * TODO: Remove Logger
+		 */
 		logger.info("QueueUpdate: " + id + " is " + rqr.getRequest(id).getState().toString());
 		logger.info(stats.toString());
-		
-		Iterator it = nodes.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry pairs = (Map.Entry)it.next();
-	        Node n = (Node) pairs.getValue();
-	        logger.info("ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
-	    }
 
+		/*
+		 * TODO: Remove Logger
+		 * Iterate over all nodes and print details
+		 */
+		Iterator it = nodes.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry)it.next();
+			Node n = (Node) pairs.getValue();
+			logger.info("ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
+		}
+
+		/*
+		 * Switch between Status of Request
+		 */
 		switch (rqr.getRequest(id).getState()){
 		case NEW:
+			// Not applicable
+			break;
+
+		case READY_TO_PROCESS:
+			// Put request into request Queue for processing
+			requestQueue.add(rqr.getRequest(id).getId());
+
 			// Call method to send request to Node
 			sendRequestToNode(id);
 			break;
@@ -64,42 +92,49 @@ public class LoadBalancerTime extends LoadBalancer {
 		case FINISHED:
 			// Delete from request_node mapping
 			request_nodes.remove(id);
-			sendRequestToNode(requestQueue.poll().getId());
+
+			// If there are requests in Backlog 
+			if (requestQueue.size()>0){
+				sendRequestToNode(requestQueue.poll());				
+			}
+			break;
+
+		default:
 			break;
 
 		}
 
 	}
 
+	/**
+	 * Send request to node if one is available
+	 * if not then put into Queue.
+	 * @param id
+	 */
 	private void sendRequestToNode(String id) {
-		
+
 		// Check if Node is available
 		String nextNode = this.getMostAvailableNode();
-		//logger.info(nextNode);
+
+		/*
+		 * Check Status of next node
+		 */
 		if (nextNode == null){
 			// No Node available currently
 			// Request stays in ReadyQueue until Node is available
 			logger.info("No Nodes available");
 
 		} else {
-			// Put request on Node, but check activity first
-			if (nodes.get(nextNode).getStatus() == NODE_STATUS.INACTIVE){
-
-				Node n = nodes.get(nextNode);
-				n.setStatus(NODE_STATUS.BUSY);
-				nodes.put(nextNode, n);
-
-			}
-
-			// Node is now available, request can be put on it
-			// Also save assignment
-			//request_nodes.put(key, value)
-			// TODO
-		            
-			URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
-					.path(config.getProperty("databaseDeployment"))
-					.path(config.getProperty("databaseRestPath"))
-					.path("find")
+			// Take Node
+			Node n = nodes.get(nextNode);
+			n.setStatus(NODE_STATUS.BUSY);
+			nodes.put(nextNode, n);
+			
+			// Request ready to be put onto Node
+			String server = "http://" + nodes.get(nextNode).getIp() + ":8080";
+			URI uri = UriBuilder.fromUri(config.getProperty(server))
+					.path(config.getProperty("sentimentDeployment"))
+					.path(config.getProperty("analyzeResultCallback"))
 					.build();
 
 			// Jersey Client Config
@@ -110,18 +145,20 @@ public class LoadBalancerTime extends LoadBalancer {
 			// WebResource
 			WebResource service = client.resource(uri);
 			
-
-			// Get tweets from result
-			//List<String> responseList = response.getEntity(new GenericType<List<String>>() {});
-			// SentimentResponse response = service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentResponse.class, rqr.getRequest(id));
-			logger.info("Not implemented: Request sent");
-			logger.info(stats.toString());
+			// Prepare Request
+			SentimentRequestCallback req = (SentimentRequestCallback) rqr.getRequest(id);
+			req.setCallbackAddress((String) config.getProperty("sentimentCallbackURL"));
 			
-			// Add the request to the node mapping
+			// Call Node
+			String response = service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, rqr.getRequest(id));
+
+			// Also save assignment
 			request_nodes.put(id, nextNode);
+
+			// TODO: Remove
+			logger.info(stats.toString());
+
 		}
-
 	}
-
 
 }
