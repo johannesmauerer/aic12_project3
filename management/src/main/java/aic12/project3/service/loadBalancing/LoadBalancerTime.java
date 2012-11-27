@@ -12,8 +12,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.common.beans.SentimentRequestCallback;
-import aic12.project3.common.beans.SentimentResponse;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.Node;
 
@@ -196,10 +194,6 @@ public class LoadBalancerTime extends LoadBalancer {
 
 			// WebResource
 			WebResource service = client.resource(uri);
-
-			// Prepare Request
-			SentimentRequestCallback req = (SentimentRequestCallback) rqr.getRequest(id);
-			req.setCallbackAddress((String) config.getProperty("sentimentCallbackURL"));
 
 			// Call Node
 			String response = service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, rqr.getRequest(id));

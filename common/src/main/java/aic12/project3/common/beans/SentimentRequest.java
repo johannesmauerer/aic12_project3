@@ -20,12 +20,10 @@ public class SentimentRequest
     private Date to;
     private int numberOfTweets;
     private REQUEST_QUEUE_STATE state;
-    private SentimentResponse response;
     private long timestampRequestSent;
     private long timestampProcessingStart;
     private long timestampProcessingDone;
     private long timetsampRequestFinished;
-    private String callbackAddress;
     private List<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
 
 
@@ -35,8 +33,6 @@ public class SentimentRequest
     	this.id = id;
 	}
 
-    
-    
     public String toString(){
     	return this.getCompanyName() + " - from: " + this.getFrom() + " to: " + this.getTo() + " with ID: " + this.getId(); 
     }
@@ -149,20 +145,6 @@ public class SentimentRequest
 	}
 
 	/**
-	 * @return the response
-	 */
-	public SentimentResponse getResponse() {
-		return response;
-	}
-
-	/**
-	 * @param response the response to set
-	 */
-	public void setResponse(SentimentResponse response) {
-		this.response = response;
-	}
-
-	/**
 	 * @return the timestampRequestSent
 	 */
 	public long getTimestampRequestSent() {
@@ -216,20 +198,6 @@ public class SentimentRequest
 	 */
 	public void setTimetsampRequestFinished(long timetsampRequestFinished) {
 		this.timetsampRequestFinished = timetsampRequestFinished;
-	}
-
-	/**
-	 * @return the callbackAddress
-	 */
-	public String getCallbackAddress() {
-		return callbackAddress;
-	}
-
-	/**
-	 * @param callbackAddress the callbackAddress to set
-	 */
-	public void setCallbackAddress(String callbackAddress) {
-		this.callbackAddress = callbackAddress;
 	}
 
 	/**
