@@ -21,7 +21,7 @@ public class SentimentRequest
     private long timestampProcessingDone;
     private long timetsampRequestFinished;
     private String callbackAddress;
-    private ArrayList<SentimentProcessingRequest> subRequests;
+    private ArrayList<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
 
 
     public SentimentRequest() { }
