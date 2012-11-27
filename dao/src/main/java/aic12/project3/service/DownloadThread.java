@@ -37,6 +37,14 @@ public class DownloadThread extends Thread {
 		log.info("starting initial download for " + companyName);
 		List<TweetDTO> tweets = twitter.getAllTweets(companyName);
 		
+		for(TweetDTO t : tweets) {
+			t.getCompanies().add(companyName);
+		}
+		
+		// index all old tweets for our new company
+		log.debug("indexing old tweets for company: " + companyName);
+		tweetDao.indexCompany(companyName);
+		
 		// save to dao
 		log.debug("saving " + tweets.size() + " tweets from initial download for " + companyName);
 		tweetDao.storeTweet(tweets);
