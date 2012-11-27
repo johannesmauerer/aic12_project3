@@ -2,6 +2,7 @@ package aic12.project3.dao.tweetsManagement;
 
 import javax.ws.rs.core.MediaType;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.client.Client;
@@ -11,20 +12,24 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.service.util.ManagementConfig;
 
-@Component
 public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 
 	private Client client;
-	// TODO read this from properties
-	private final static String SERVER_URI = "http://localhost:8080" +
-			"/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/";
-
+	private final String SERVER_URI;
+//	@Autowired protected ManagementConfig propConfig;
+	
 	public DownloadManagerClientRestImpl() {
 		ClientConfig config = new DefaultClientConfig();
         config.getFeatures()
         	.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
         client = Client.create(config);
+        SERVER_URI = "http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/";
+        // TODO fix spring setup to be able to use @autowired propConfig
+//        SERVER_URI = propConfig.getProperty("downloadManagerServer") + "/" +
+//        		propConfig.getProperty("downloadManagerDeployment") + "/" +
+//        		propConfig.getProperty("downloadManagerRestPath") + "/";
 	}
 	
 	@Override
