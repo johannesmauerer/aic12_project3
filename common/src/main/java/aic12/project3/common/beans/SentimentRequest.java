@@ -2,10 +2,15 @@ package aic12.project3.common.beans;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 
+
+@Document(collection="requests")
 public class SentimentRequest
 {
 	@Id
@@ -21,7 +26,7 @@ public class SentimentRequest
     private long timestampProcessingDone;
     private long timetsampRequestFinished;
     private String callbackAddress;
-    private ArrayList<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
+    private List<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
 
 
     public SentimentRequest() { }
@@ -230,14 +235,14 @@ public class SentimentRequest
 	/**
 	 * @return the subRequests
 	 */
-	public ArrayList<SentimentProcessingRequest> getSubRequests() {
+	public List<SentimentProcessingRequest> getSubRequests() {
 		return subRequests;
 	}
 
 	/**
 	 * @param subRequests the subRequests to set
 	 */
-	public void setSubRequests(ArrayList<SentimentProcessingRequest> subRequests) {
+	public void setSubRequests(List<SentimentProcessingRequest> subRequests) {
 		this.subRequests = subRequests;
 	}
 
