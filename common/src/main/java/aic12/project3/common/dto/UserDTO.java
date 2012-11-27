@@ -7,19 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class UserDTO
 {
 	@Id
-    private String userName;
     private String companyName;
-    private String pwHash;
-
-    public String getUserName()
-    {
-        return userName;
-    }
-
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
-    }
 
     public String getCompanyName()
     {
@@ -29,15 +17,5 @@ public class UserDTO
     public void setCompanyName(String companyName)
     {
         this.companyName = companyName;
-    }
-
-    public String getPwHash()
-    {
-        return pwHash;
-    }
-
-    public void setPwHash(String pwHash)
-    {
-        this.pwHash = pwHash;
     }
 }

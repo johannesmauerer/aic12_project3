@@ -9,7 +9,5 @@ public interface IUserDAO {
 	public abstract void storeUser(List<UserDTO> users);
 	public abstract UserDTO searchUser(String userName);
 	public abstract List<UserDTO> getAllUser();
-	public abstract List<String> getAllCompanies();
-	public Boolean authenticateUser(String userName, String pwHash);
 	
 }
