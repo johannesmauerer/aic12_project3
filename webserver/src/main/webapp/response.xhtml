@@ -7,41 +7,41 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:rich="http://richfaces.org/rich">
 
-	
+
 
 	<ui:composition>
-		
+
 		<h:head >
 			<title>Advanced Internet Computing</title>
 			<link href="styles/style.css" rel="stylesheet" type="text/css"/>
 		</h:head>
 		<h:body id="body">
-			
+
 			<div id="header">
 					<h:graphicImage value="img/header.jpg"/>
 			</div>
-		
+
 		<h2><i><h:outputText value="#{user.name}"/></i>! The result of your sentiment analysis is the following:  </h2> 
-								
+
 		<f:view>
 			<h:form>
 				<div>
-					<h3>We found <i><h:outputText value="#{sentimentResponse.numberOfTweets}"/></i> tweets concerning your company.</h3>
-								
+					<h3>We found <i><h:outputText value="#{sentimentResponse.numberOfTweets}"/></i> concerning your company.</h3>
+
 					<h3>Your final sentiment is<i><h:outputText value="#{sentimentResponse.sentiment}"/></i>.</h3>
 				</div>	
-								
+
 				<div id="buttons">
 					<h:commandButton value="Exit" action="start" ></h:commandButton>
 					<h:commandButton value="Start new analysis" action="analysis" ></h:commandButton>
 				</div>
-	
+
 			</h:form>	
 			<div id="footer">
 				<p><h:graphicImage value="img/icone.jpg"/> 2012 AIC - Cloud computing</p>
 			</div>
 		</f:view>
 	</h:body>
-		
+
 	</ui:composition>
 </html>

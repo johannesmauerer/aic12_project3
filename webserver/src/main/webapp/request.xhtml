@@ -7,25 +7,25 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:rich="http://richfaces.org/rich">
 
-	
+
 
 	<ui:composition>
-		
+
 		<h:head >
 			<title>Advanced Internet Computing</title>
 			<link href="styles/style.css" rel="stylesheet" type="text/css"/>
 		</h:head>
 		<h:body id="body">
-			
+
 			<div id="header">
 					<h:graphicImage value="img/header.jpg"/>
 			</div>
-		
+
 		<h2> Welcome <i><h:outputText value="#{user.name}" /></i>!</h2> 
-		
+
 		<!-- setting companyName -->
 		<c:set value="#{user.name}" target="#{sentimentRequest}" property="companyName" />
-						
+
 		<f:view>
 			<h:form>
 				<div>
@@ -33,32 +33,33 @@
 					<h4>From:</h4>
 					<rich:calendar value="#{sentimentRequest.from}"
                         popup="true"
+                        time="dd/MM/yyyy"
                         showInput="true"
                         cellWidth="24px" 
                         cellHeight="22px" 
                         style="width:200px"
                         required="true"/>
-                                  
 					<h4>To:</h4> 
 					<rich:calendar value="#{sentimentRequest.to}"
                         popup="true"
-                        showInput="true"
+                        time="dd/MM/yyyy"
+                        showInput="true" 
                         cellWidth="24px" 
                         cellHeight="22px" 
                         style="width:200px"
-                        required="true"/>
+                        required="true"/> 
 				</div>	
-								
+
 				<div id="buttons">
-					<h:commandButton value="Start anylisis" ></h:commandButton>
+					<h:commandButton value="Start anylisis" action="#{sentimentRequest.sendToAnalysis}"></h:commandButton>
 				</div>
-	
+
 			</h:form>	
 			<div id="footer">
 				<p><h:graphicImage value="img/icone.jpg"/> 2012 AIC - Cloud computing</p>
 			</div>
 		</f:view>
 	</h:body>
-		
+
 	</ui:composition>
 </html>

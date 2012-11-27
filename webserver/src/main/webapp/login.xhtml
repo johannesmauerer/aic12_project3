@@ -5,30 +5,30 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
-	
-	
+
+
 	<ui:composition >
-		
+
 		<h:head >
 			<title>Advanced Internet Computing</title>
 			<link href="styles/style.css" rel="stylesheet" type="text/css"/>
-			  
+
 		</h:head>
 		<h:body id="body">
-			
+
 			<div id="header">
-				
+
 					<h:graphicImage value="img/header.jpg"/>
 			</div>
 			<f:view>
 			<h2>What does twitter says about your company?</h2> 
-				
+
 				<h:form>
 					<h4>Enter your company name:</h4><h:inputText required="true" value="#{user.name}"></h:inputText>
 					<div id="buttons">
-						<h:commandButton value="Login" action="login" ></h:commandButton>
+						<h:commandButton value="Login" action="#{user.loginAction}" ></h:commandButton>
 			    	</div>
-									
+
 				</h:form>
 				<div id="footer">
 					<h:graphicImage value="img/icone.jpg"/> 2012 AIC - Cloud computing
