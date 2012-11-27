@@ -1,5 +1,6 @@
 package aic12.project3.common.beans;
 
+import java.util.ArrayList;
 import java.util.Date;
 import org.springframework.data.annotation.Id;
 
@@ -15,8 +16,12 @@ public class SentimentRequest
     private int numberOfTweets;
     private REQUEST_QUEUE_STATE state;
     private SentimentResponse response;
-    private long startProcessing;
-    private long stopProcessing;
+    private long timestampRequestSent;
+    private long timestampProcessingStart;
+    private long timestampProcessingDone;
+    private long timetsampRequestFinished;
+    private String callbackAddress;
+    private ArrayList<SentimentProcessingRequest> subRequests;
 
 
     public SentimentRequest() { }
@@ -25,45 +30,7 @@ public class SentimentRequest
     	this.id = id;
 	}
 
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String string)
-    {
-        this.id = string;
-    }
-
-    public String getCompanyName()
-    {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName)
-    {
-        this.companyName = companyName;
-    }
-
-    public Date getFrom()
-    {
-        return from;
-    }
-
-    public void setFrom(Date from)
-    {
-        this.from = from;
-    }
-
-    public Date getTo()
-    {
-        return to;
-    }
-
-    public void setTo(Date to)
-    {
-        this.to = to;
-    }
+    
     
     public String toString(){
     	return this.getCompanyName() + " - from: " + this.getFrom() + " to: " + this.getTo() + " with ID: " + this.getId(); 
@@ -90,6 +57,62 @@ public class SentimentRequest
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the companyName
+	 */
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	/**
+	 * @param companyName the companyName to set
+	 */
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	/**
+	 * @return the from
+	 */
+	public Date getFrom() {
+		return from;
+	}
+
+	/**
+	 * @param from the from to set
+	 */
+	public void setFrom(Date from) {
+		this.from = from;
+	}
+
+	/**
+	 * @return the to
+	 */
+	public Date getTo() {
+		return to;
+	}
+
+	/**
+	 * @param to the to to set
+	 */
+	public void setTo(Date to) {
+		this.to = to;
 	}
 
 	/**
@@ -120,27 +143,103 @@ public class SentimentRequest
 		this.state = state;
 	}
 
+	/**
+	 * @return the response
+	 */
 	public SentimentResponse getResponse() {
 		return response;
 	}
 
+	/**
+	 * @param response the response to set
+	 */
 	public void setResponse(SentimentResponse response) {
 		this.response = response;
 	}
 
-	public long getStartProcessing() {
-		return startProcessing;
+	/**
+	 * @return the timestampRequestSent
+	 */
+	public long getTimestampRequestSent() {
+		return timestampRequestSent;
 	}
 
-	public void setStartProcessing(long startProcessing) {
-		this.startProcessing = startProcessing;
+	/**
+	 * @param timestampRequestSent the timestampRequestSent to set
+	 */
+	public void setTimestampRequestSent(long timestampRequestSent) {
+		this.timestampRequestSent = timestampRequestSent;
 	}
 
-	public long getStopProcessing() {
-		return stopProcessing;
+	/**
+	 * @return the timestampProcessingStart
+	 */
+	public long getTimestampProcessingStart() {
+		return timestampProcessingStart;
 	}
 
-	public void setStopProcessing(long stopProcessing) {
-		this.stopProcessing = stopProcessing;
+	/**
+	 * @param timestampProcessingStart the timestampProcessingStart to set
+	 */
+	public void setTimestampProcessingStart(long timestampProcessingStart) {
+		this.timestampProcessingStart = timestampProcessingStart;
 	}
+
+	/**
+	 * @return the timestampProcessingDone
+	 */
+	public long getTimestampProcessingDone() {
+		return timestampProcessingDone;
+	}
+
+	/**
+	 * @param timestampProcessingDone the timestampProcessingDone to set
+	 */
+	public void setTimestampProcessingDone(long timestampProcessingDone) {
+		this.timestampProcessingDone = timestampProcessingDone;
+	}
+
+	/**
+	 * @return the timetsampRequestFinished
+	 */
+	public long getTimetsampRequestFinished() {
+		return timetsampRequestFinished;
+	}
+
+	/**
+	 * @param timetsampRequestFinished the timetsampRequestFinished to set
+	 */
+	public void setTimetsampRequestFinished(long timetsampRequestFinished) {
+		this.timetsampRequestFinished = timetsampRequestFinished;
+	}
+
+	/**
+	 * @return the callbackAddress
+	 */
+	public String getCallbackAddress() {
+		return callbackAddress;
+	}
+
+	/**
+	 * @param callbackAddress the callbackAddress to set
+	 */
+	public void setCallbackAddress(String callbackAddress) {
+		this.callbackAddress = callbackAddress;
+	}
+
+	/**
+	 * @return the subRequests
+	 */
+	public ArrayList<SentimentProcessingRequest> getSubRequests() {
+		return subRequests;
+	}
+
+	/**
+	 * @param subRequests the subRequests to set
+	 */
+	public void setSubRequests(ArrayList<SentimentProcessingRequest> subRequests) {
+		this.subRequests = subRequests;
+	}
+
+	
 }
