@@ -59,7 +59,7 @@ public abstract class RequestQueueReady extends Observable {
 	 * Save a request to Database
 	 * @param req
 	 */
-	protected abstract void saveRequestToDB(SentimentRequest req);
+	protected abstract void saveRequestToDB(String id);
 	
 	/**
 	 * Delete a request from the queue

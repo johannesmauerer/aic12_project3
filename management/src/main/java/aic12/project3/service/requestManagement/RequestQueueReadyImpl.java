@@ -38,6 +38,9 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		// Put request into Queue
 		readyQueue.put(req.getId(), req);
 
+		// And save request to DB
+		saveRequestToDB(req.getId());
+		
 		// Inform all Observers
 		super.setChanged();
 		super.notifyObservers(req.getId());
@@ -57,7 +60,8 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	 * Save request to Database
 	 */
 	@Override
-	protected void saveRequestToDB(SentimentRequest req){
+	protected void saveRequestToDB(String id){
+		// TODO
 		// Call Database Interface and save request
 	}
 

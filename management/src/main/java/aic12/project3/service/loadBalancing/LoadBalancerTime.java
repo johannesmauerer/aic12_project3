@@ -294,7 +294,7 @@ public class LoadBalancerTime extends LoadBalancer {
             @Override
             public void run()
             {
-                logger.info("Thread is running");
+                logger.info("Start waiting to stop Node: " + id + " for " + config.getProperty("nodeIdleTimeout") + " milliseconds");
                 try {
 					Thread.sleep(Integer.parseInt((String) config.getProperty("nodeIdleTimeout")));
 				} catch (InterruptedException e) {
@@ -304,14 +304,15 @@ public class LoadBalancerTime extends LoadBalancer {
                 if (nodes.get(id).getStatus()==NODE_STATUS.IDLE){
                 	if (nodes.get(id).getLastVisitID().equals(lastVisit)){
                 		// Only stop if there are more nodes left
-                		if (nodes.size()>1){
+                		logger.info("Node " + id + " is still idle");
+                		if (Integer.parseInt(((String) config.getProperty("minimumNodes"))) < nodes.size()){
                         	stopNode(id);
-                			logger.info("Node stopped: " + id);
+                			logger.info("Node " + id + " was still idle and has been stopped");
                         	
                 		}
                 	}
                 }
-                logger.info("Thread is done");
+                logger.info("Idle handling is done.");
             }
         }.start();
 	}
