@@ -1,6 +1,8 @@
 package aic12.project3.dao.rest;
 
 import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -14,6 +16,7 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.TweetCountDetail;
 import aic12.project3.common.beans.TweetList;
 import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.dao.MongoTweetDAO;
@@ -63,5 +66,14 @@ public class TweetDAOService
     public Long getNumberOfTweetsForRequest(SentimentRequest request)
     {
     	return mongoDAO.countTweet(request.getCompanyName(), request.getFrom(),request.getTo());
+    }
+    
+    @POST
+    @Path("getnumberoftweetforrequestdetailed")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public TweetCountDetail getNumberOfTweetsForRequestDetailed(SentimentRequest request)
+    {
+    	return new TweetCountDetail(mongoDAO.countTweetPerDay(request.getCompanyName(), request.getFrom(),request.getTo()));
     }
 }
