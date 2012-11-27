@@ -12,6 +12,7 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.service.rest.DownloadManagerCallbackClient;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 
@@ -31,6 +32,8 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	
 	@Autowired
 	private TwitterAPI twitterAPI;
+	@Autowired
+	private DownloadManagerCallbackClient restClient;
 	
 	private static Logger log;
 	
@@ -87,6 +90,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		if(callback != null) {
 			notifyOnDownloadFinishMap.remove(company);
 			// TODO notify that download is finished
+			restClient.notifyInitialDownloadFinished(company, callback);
 		}
 	}
 
