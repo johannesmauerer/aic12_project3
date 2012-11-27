@@ -40,7 +40,7 @@ public class MongoUserDAO implements IUserDAO{
 
 	@Override
 	public UserDTO searchUser(String userName) {
-		return mongoOperation.findOne(new Query(Criteria.where("userName").is(userName)),UserDTO.class, "users");		
+		return mongoOperation.findOne(new Query(Criteria.where("companyName").is(userName)),UserDTO.class, "users");		
 	}
 
 	@Override
@@ -48,24 +48,4 @@ public class MongoUserDAO implements IUserDAO{
 		return mongoOperation.findAll(UserDTO.class, "users");
 	}
 	
-	@Override
-	public List<String> getAllCompanies(){
-		List<UserDTO> result = mongoOperation.findAll(UserDTO.class, "users");
-		List<String> ret = new ArrayList<String>();
-		for(UserDTO u : result){
-			if(!ret.contains(u.getCompanyName())){
-				ret.add(u.getCompanyName());
-			}
-		}
-		return ret;
-	}
-
-	@Override
-	public Boolean authenticateUser(String userName, String pwHash) {
-		UserDTO user = mongoOperation.findOne(new Query(Criteria.where("userName").is(userName)),UserDTO.class, "users");
-		if(user.getPwHash().equals(pwHash)){
-			return true;
-		}
-		return false;
-	}
 }
