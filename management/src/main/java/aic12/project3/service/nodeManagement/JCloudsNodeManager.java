@@ -95,17 +95,28 @@ public class JCloudsNodeManager implements INodeManager{
 
 			if(created != null){
 					
-				//Map<String, String> map = serverApi.getMetadata(created.getId());
 				close();
 				Node n = new Node(created.getName(), created.getId());
 
-				n.setIp("10.10.10.10");
+				// TODO: Please change to actually make it work :)
+				n.setIp(this.getIp(created.getId()));
 				return n;
 			}
 		}
 
 		close();
 		return null;
+	}
+
+	private String getIp(String id) {
+		// Use List method to get IP
+		List<Node> list = this.listNodes();
+		for (Node n : list){
+			if (n.getId().equals(id)){
+				return n.getIp();
+			}
+		}
+		return "";
 	}
 
 	@Override
