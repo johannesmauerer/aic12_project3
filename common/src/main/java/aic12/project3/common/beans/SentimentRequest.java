@@ -15,6 +15,8 @@ public class SentimentRequest
     private int numberOfTweets;
     private REQUEST_QUEUE_STATE state;
     private SentimentResponse response;
+    private long startProcessing;
+    private long stopProcessing;
 
 
     public SentimentRequest() { }
@@ -124,5 +126,21 @@ public class SentimentRequest
 
 	public void setResponse(SentimentResponse response) {
 		this.response = response;
+	}
+
+	public long getStartProcessing() {
+		return startProcessing;
+	}
+
+	public void setStartProcessing(long startProcessing) {
+		this.startProcessing = startProcessing;
+	}
+
+	public long getStopProcessing() {
+		return stopProcessing;
+	}
+
+	public void setStopProcessing(long stopProcessing) {
+		this.stopProcessing = stopProcessing;
 	}
 }

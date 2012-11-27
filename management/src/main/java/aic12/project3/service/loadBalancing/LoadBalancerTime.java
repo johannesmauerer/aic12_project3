@@ -303,7 +303,12 @@ public class LoadBalancerTime extends LoadBalancer {
 				}
                 if (nodes.get(id).getStatus()==NODE_STATUS.IDLE){
                 	if (nodes.get(id).getLastVisitID().equals(lastVisit)){
-                    	logger.info("Node stopped: " + id);                		
+                		// Only stop if there are more nodes left
+                		if (nodes.size()>1){
+                        	stopNode(id);
+                			logger.info("Node stopped: " + id);
+                        	
+                		}
                 	}
                 }
                 logger.info("Thread is done");

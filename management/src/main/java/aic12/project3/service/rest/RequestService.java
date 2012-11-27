@@ -57,7 +57,7 @@ public class RequestService {
 	 @Path("test")
 	 @Produces("text/plain")
 	    public String getMessage(){
-		 return "Hello";
+		 return "OK";
 	 }
 
 

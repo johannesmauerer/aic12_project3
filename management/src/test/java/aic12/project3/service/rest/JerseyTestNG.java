@@ -1,7 +1,5 @@
 package aic12.project3.service.rest;
 
-import javax.servlet.ServletContextListener;
-
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.request.RequestContextListener;
 import org.testng.annotations.AfterTest;

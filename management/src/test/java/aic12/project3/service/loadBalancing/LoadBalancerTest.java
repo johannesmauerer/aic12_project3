@@ -23,15 +23,6 @@ public class LoadBalancerTest extends SpringTest {
 	@Autowired RequestQueueReady rqr;
 	@Autowired LoadBalancer lb;
 	
-	@Test
-	public void testObserverForReadyQueue() {
-		
-		SentimentRequest s = new SentimentRequest();
-		s.setId(UUID.randomUUID().toString());
-		s.setState(REQUEST_QUEUE_STATE.NEW);
-		rqr.addRequest(s);
-		
-	}
 	
 	@Test
 	public void testLoadBalancerBasic(){
