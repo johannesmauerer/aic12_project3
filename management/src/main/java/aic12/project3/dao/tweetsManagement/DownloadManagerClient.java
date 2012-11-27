@@ -2,7 +2,7 @@ package aic12.project3.dao.tweetsManagement;
 
 public interface DownloadManagerClient {
 
-	void notifyOnInitialDownloadFinished(String companyName);
+	void notifyOnInitialDownloadFinished(String companyName, String callback);
 
 	boolean isInitialDownloadFinished(String companyName);
 
