@@ -61,7 +61,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 		SentimentRequest req = requestQueueReady.getRequest(id);
 
 		// Check if downloaded
-		if(downloadManager.isInitialDownloadFinished(req)) {
+		if(downloadManager.isInitialDownloadFinished(req.getCompanyName())) {
 			// Count Tweets first
 			req.setNumberOfTweets(this.getNumberOfTweets(req));
 
@@ -78,7 +78,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 		} else {
 			// Send to download Manager
-			downloadManager.notifyOnInitialDownloadFinished(req);
+			downloadManager.notifyOnInitialDownloadFinished(req.getCompanyName());
 		}
 
 	}

@@ -33,33 +33,33 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 	}
 	
 	@Override
-	public void notifyOnInitialDownloadFinished(SentimentRequest req) {
-		
+	public void notifyOnInitialDownloadFinished(String companyName) {
+
 	}
 
 	@Override
-	public boolean isInitialDownloadFinished(SentimentRequest req) {
+	public boolean isInitialDownloadFinished(String companyName) {
 		WebResource resource = client.resource(SERVER_URI + 
 				"isinitaldownloadfinished");
         
         return resource.accept(MediaType.APPLICATION_JSON)
-        		.type(MediaType.APPLICATION_JSON).post(Boolean.class, req.getCompanyName());
+        		.type(MediaType.APPLICATION_JSON).post(Boolean.class, companyName);
 	}
 
 	@Override
-	public void startInitialDownload(SentimentRequest req) {
+	public void startInitialDownload(String companyName) {
 		WebResource ressource = client.resource(SERVER_URI +
 				"startinitialdownload");
 		ressource.accept(MediaType.APPLICATION_JSON)
-			.type(MediaType.APPLICATION_JSON).post(req.getCompanyName());
+			.type(MediaType.APPLICATION_JSON).post(companyName);
 	}
 	
 	@Override
-	public void registerForTwitterStream(SentimentRequest req) {
+	public void registerForTwitterStream(String companyName) {
 		WebResource ressource = client.resource(SERVER_URI +
 				"registerfortwitterstream");
 		ressource.accept(MediaType.APPLICATION_JSON)
-			.type(MediaType.APPLICATION_JSON).post(req.getCompanyName());
+			.type(MediaType.APPLICATION_JSON).post(companyName);
 	}
 
 }
