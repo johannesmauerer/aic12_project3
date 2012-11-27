@@ -38,7 +38,7 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 				"isinitaldownloadfinished");
         
         return resource.accept(MediaType.APPLICATION_JSON)
-        		.type(MediaType.APPLICATION_JSON).post(Boolean.class, req);
+        		.type(MediaType.APPLICATION_JSON).post(Boolean.class, req.getCompanyName());
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 		WebResource ressource = client.resource(SERVER_URI +
 				"startinitialdownload");
 		ressource.accept(MediaType.APPLICATION_JSON)
-			.type(MediaType.APPLICATION_JSON).post(req);
+			.type(MediaType.APPLICATION_JSON).post(req.getCompanyName());
 	}
 	
 	@Override
@@ -54,7 +54,7 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 		WebResource ressource = client.resource(SERVER_URI +
 				"registerfortwitterstream");
 		ressource.accept(MediaType.APPLICATION_JSON)
-			.type(MediaType.APPLICATION_JSON).post(req);
+			.type(MediaType.APPLICATION_JSON).post(req.getCompanyName());
 	}
 
 }
