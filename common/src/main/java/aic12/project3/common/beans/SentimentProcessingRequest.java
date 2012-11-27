@@ -9,6 +9,7 @@ import java.util.Date;
  */
 public class SentimentProcessingRequest {
 	
+	private String parentID;
     private String companyName;
     private Date from;
     private Date to;
@@ -17,6 +18,18 @@ public class SentimentProcessingRequest {
     private Long timestampAnalyzed;
     private float sentiment;
     
+	/**
+	 * @return the parentID
+	 */
+	public String getParentID() {
+		return parentID;
+	}
+	/**
+	 * @param parentID the parentID to set
+	 */
+	public void setParentID(String parentID) {
+		this.parentID = parentID;
+	}
 	/**
 	 * @return the companyName
 	 */
