@@ -2,8 +2,6 @@ package aic12.project3.common.beans;
 
 import java.util.List;
 
-import aic12.project3.common.dto.TweetDTO;
-
 public class SentimentRequestList
 {
     private List<SentimentRequest> list;
