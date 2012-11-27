@@ -7,8 +7,8 @@ import aic12.project3.common.dto.TweetDTO;
 
 public interface TwitterAPI {
 
-	List<TweetDTO> getAllTweets(SentimentRequest req);
+	List<TweetDTO> getAllTweets(String company);
 
-	void registerForTwitterStream(SentimentRequest req);
+	void registerForTwitterStream(String company);
 
 }

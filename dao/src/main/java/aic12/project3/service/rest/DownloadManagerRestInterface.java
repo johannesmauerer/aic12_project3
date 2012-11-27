@@ -34,33 +34,33 @@ public class DownloadManagerRestInterface {
     @Path("isinitaldownloadfinished")
     @Consumes("application/json")
     @Produces("application/json")
-    public boolean isInitialDownloadFinished(SentimentRequest req) {
+    public boolean isInitialDownloadFinished(String company) {
 		log.info("isInitialDownloadFinished");
-		return dlManagerService.isInitialDownloadFinished(req);
+		return dlManagerService.isInitialDownloadFinished(company);
 	}
 	
     @POST
     @Path("notifyoninitialdownloadfinished")
     @Consumes("application/json")
-    public void notifyOnInitialDownloadFinished (SentimentRequest req, String callbackUrl) {
+    public void notifyOnInitialDownloadFinished (String company, String callbackUrl) {
     	log.info("notifyOnInitialDownloadFinished");
-    	dlManagerService.notifyOnInitialDownloadFinished(req, callbackUrl);
+    	dlManagerService.notifyOnInitialDownloadFinished(company, callbackUrl);
 	}
     
     @POST
     @Path("startinitialdownload")
     @Consumes("application/json")
-    public void startInitialDownload(SentimentRequest req) {
+    public void startInitialDownload(String company) {
     	log.info("startInitialDownload");
-    	dlManagerService.startInitialDownload(req);
+    	dlManagerService.startInitialDownload(company);
     }
 
     @POST
     @Path("registerfortwitterstream")
     @Consumes("application/json")
-    public void registerForTwitterStream(SentimentRequest req) {
+    public void registerForTwitterStream(String company) {
     	log.info("registerForTwitterStream");
-    	dlManagerService.registerForTwitterStream(req);
+    	dlManagerService.registerForTwitterStream(company);
     }
 
 

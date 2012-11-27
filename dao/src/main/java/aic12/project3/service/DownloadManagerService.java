@@ -1,22 +1,19 @@
 package aic12.project3.service;
 
-import aic12.project3.common.beans.SentimentRequest;
-
 public interface DownloadManagerService {
 
-	public void startInitialDownload(SentimentRequest req);
+	public void startInitialDownload(String company);
 	
-	public boolean isInitialDownloadFinished(SentimentRequest req);
+	public boolean isInitialDownloadFinished(String company);
 
-	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callbackUrl);
+	public void notifyOnInitialDownloadFinished(String company, String callbackUrl);
 
 	/**
 	 * this method should only be called by the thread which was downloading these initial tweets.
-	 * @param req
 	 * @param thread thread which downloaded tweets
 	 */
-	void initialDownloadFinished(SentimentRequest req, DownloadThread thread);
+	void initialDownloadFinished(String company, DownloadThread thread);
 
-	void registerForTwitterStream(SentimentRequest req);
+	void registerForTwitterStream(String company);
 
 }

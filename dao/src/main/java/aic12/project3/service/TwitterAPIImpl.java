@@ -23,7 +23,6 @@ import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
-import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
 
 public class TwitterAPIImpl implements TwitterAPI {
@@ -48,9 +47,9 @@ public class TwitterAPIImpl implements TwitterAPI {
 	}
 
 	@Override
-	public List<TweetDTO> getAllTweets(SentimentRequest req) {
-		// abort if request is not valid
-		if(!validReqeuest(req)) {
+	public List<TweetDTO> getAllTweets(String company) {
+		// abort if company name is not valid
+		if(!validReqeuest(company)) {
 			return new LinkedList<TweetDTO>();
 		}
 		
@@ -64,8 +63,7 @@ public class TwitterAPIImpl implements TwitterAPI {
 			int pagesStartWith = 1;
 			for(int pageToGet = pagesStartWith; pageToGet <= maxPages; pageToGet++) {
 
-				// we must not respect toDate and fromDate here, twitter4j might not get us any tweets at all otherwise
-				Query query = new Query(req.getCompanyName());
+				Query query = new Query(company);
 				query.setLang("en");
 				query.setRpp(100);
 				query.setPage(pageToGet);
@@ -91,22 +89,22 @@ public class TwitterAPIImpl implements TwitterAPI {
 	}
 	
 	@Override
-	public void registerForTwitterStream(SentimentRequest req) {
+	public void registerForTwitterStream(String company) {
 		log.debug("registerForTwitterStream");
-		if(!validReqeuest(req)) {
-			log.debug("invalid reqest");
+		if(!validReqeuest(company)) {
+			log.debug("invalid companyName");
 			return;
 		}
 		/* TODO WARNING streamingAPI might
 			not compatible with google app engine (maybe this has changed)
 		 */
 		
-		trackedCompanies.add(req.getCompanyName());
+		trackedCompanies.add(company);
 		FilterQuery query = new FilterQuery().track(trackedCompanies.toArray(new String[trackedCompanies.size()]));
 		stream.filter(query);
 	}
 
-	private boolean validReqeuest(SentimentRequest req) {
-		return req.getCompanyName() != null; // we must not respect dates here
+	private boolean validReqeuest(String company) {
+		return company != null && ! "".equals(company);
 	}
 }
