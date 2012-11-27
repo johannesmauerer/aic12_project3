@@ -13,8 +13,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.common.beans.SentimentRequestCallback;
-import aic12.project3.common.beans.SentimentResponse;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.nodeManagement.Node;
@@ -221,7 +219,6 @@ public class LoadBalancerTime extends LoadBalancer {
 			if (nextNode == null){
 				// No Node available currently
 				// Request stays in ReadyQueue until Node is available
-				logger.info("No Nodes available");
 
 			} else {
 				// Take Node
