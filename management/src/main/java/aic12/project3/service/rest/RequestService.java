@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.service.communication.CommunicationService;
 
 
@@ -20,35 +21,43 @@ import aic12.project3.service.communication.CommunicationService;
 @Path("/request")
 public class RequestService {
 	
-	@Autowired
-	CommunicationService serv;
+	@Autowired	private CommunicationService serv;
 	
+	/**
+	 * Accept new request from Web-Interface / API
+	 * @param req the request to be processed
+	 */
+	@POST
+	@Path("accept")
+	public void acceptRequest(SentimentRequest req){
+		// Send Information to Communication Service
+		serv.acceptRequest(req);
+	}
+	
+	 
+	/**
+	 * Creates new request from scratch with given Parameters
+	 * @param company
+	 * @param fromDate
+	 * @param toDate
+	 */
+	 @POST
+	 @Path("new")
+	 public void createRequest(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate){
+		 
+		 // Send parameters to Communication Service
+		 serv.createRequest(company, fromDate, toDate);
+	 }
+	 
+	 /**
+	  * Test if webserver runs
+	  * @return
+	  */
 	 @GET
 	 @Path("test")
 	 @Produces("text/plain")
 	    public String getMessage(){
-		 return "Hello";
-	 }
-	 
-	 /**
-	  * Create a request and pass on to RequestHandler
-	  * @param company
-	  * @param fromDate
-	  * @param toDate
-	  * @return
-	  */
-	 @POST
-	 @Path("create")
-	 @Produces("text/plain")
-	 public String createRequest(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate){
-		 
-		 return serv.createRequest(company, fromDate, toDate) ? "OK" : "Error";
-	 }
-	 
-	 @GET
-	 @Path("createtest")
-	 public String createTestRequest(){
-		 return serv.createRequest("ABC", new Date(System.currentTimeMillis()-40000000).getTime(), new Date(System.currentTimeMillis()).getTime()) ? "OK" : "Error";
+		 return "OK";
 	 }
 
 

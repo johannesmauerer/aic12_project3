@@ -1,6 +1,7 @@
 package aic12.project3.service.manualTest;
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 
@@ -20,7 +21,7 @@ public class DownloadManagerRestTest {
 
 	public static void main(String[] args)
 	{
-		request = new SentimentRequest(0);
+		request = new SentimentRequest(UUID.randomUUID().toString());
 		request.setCompanyName("microsoft");
 		request.setFrom(new Date(System.currentTimeMillis()-new Long("4000000000")));
 		request.setTo(new Date(System.currentTimeMillis()));

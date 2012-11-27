@@ -4,8 +4,7 @@ import java.util.Date;
 
 import javax.ws.rs.core.MediaType;
 
-import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.common.beans.SentimentResponse;
+import aic12.project3.common.beans.SentimentProcessingRequest;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -17,8 +16,7 @@ public class TestClient
 {
     public static void main(String[] args)
     {
-        SentimentRequest request = new SentimentRequest();
-        request.setId(1);
+        SentimentProcessingRequest request = new SentimentProcessingRequest();
         request.setCompanyName("microsoft");
         request.setFrom(new Date());
         request.setTo(new Date());
@@ -30,7 +28,7 @@ public class TestClient
         // Synchonous call
         {
             WebResource resource = client.resource("http://localhost:8080/cloudservice-analysis-1.0-SNAPSHOT/sentiment/analyze");
-            SentimentResponse response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentResponse.class, request);
+            SentimentProcessingRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentProcessingRequest.class, request);
 
             double interval = 1.96 * Math.sqrt(response.getSentiment() * (1 - response.getSentiment()) / (response.getNumberOfTweets() - 1));
 

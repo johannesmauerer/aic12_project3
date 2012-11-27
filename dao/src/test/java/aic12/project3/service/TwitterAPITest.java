@@ -2,6 +2,7 @@ package aic12.project3.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
@@ -13,7 +14,7 @@ public class TwitterAPITest {
 	public static void main(String args[]) {
 		TwitterAPI api = TwitterAPIImpl.getInstance();
 		
-		SentimentRequest req = new SentimentRequest(0);
+		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
 		req.setCompanyName("linux");
 		req.setFrom(new Date(System.currentTimeMillis() - 84600000)); // minus one day
 		req.setTo(new Date());
