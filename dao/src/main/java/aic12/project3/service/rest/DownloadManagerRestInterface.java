@@ -1,9 +1,11 @@
 package aic12.project3.service.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,33 +36,35 @@ public class DownloadManagerRestInterface {
     @Path("isinitaldownloadfinished")
     @Consumes("application/json")
     @Produces("application/json")
-    public boolean isInitialDownloadFinished(SentimentRequest req) {
+    public boolean isInitialDownloadFinished(String company) {
 		log.info("isInitialDownloadFinished");
-		return dlManagerService.isInitialDownloadFinished(req);
+		return dlManagerService.isInitialDownloadFinished(company);
 	}
 	
-    @POST
+    @GET
     @Path("notifyoninitialdownloadfinished")
     @Consumes("application/json")
-    public void notifyOnInitialDownloadFinished (SentimentRequest req) {
-    	log.info("notifyOnInitialDownloadFinished");
-    	dlManagerService.notifyOnInitialDownloadFinished(req);
+    @Produces("application/json")
+    public boolean notifyOnInitialDownloadFinished (@QueryParam("company") String company, @QueryParam("callback") String callbackUrl) {
+    	log.info("notifyOnInitialDownloadFinished; company: " + company + " callback: " + callbackUrl);
+    	dlManagerService.notifyOnInitialDownloadFinished(company, callbackUrl);
+    	return true;
 	}
     
     @POST
     @Path("startinitialdownload")
     @Consumes("application/json")
-    public void startInitialDownload(SentimentRequest req) {
+    public void startInitialDownload(String company) {
     	log.info("startInitialDownload");
-    	dlManagerService.startInitialDownload(req);
+    	dlManagerService.startInitialDownload(company);
     }
 
     @POST
     @Path("registerfortwitterstream")
     @Consumes("application/json")
-    public void registerForTwitterStream(SentimentRequest req) {
+    public void registerForTwitterStream(String company) {
     	log.info("registerForTwitterStream");
-    	dlManagerService.registerForTwitterStream(req);
+    	dlManagerService.registerForTwitterStream(company);
     }
 
 

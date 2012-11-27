@@ -10,10 +10,10 @@ import aic12.project3.service.TwitterAPI;
 
 public interface DownloadManagerServiceTestIF extends DownloadManagerService {
 
-	void setInitialDownloadsMap(Map<SentimentRequest, DownloadThread> dlMap);
-
-	void setNotifyOnDownloadFinishSet(Set<SentimentRequest> notifySet);
+	void setInitialDownloadsMap(Map<String, DownloadThread> dlMap);
 
 	void setTwitterAPI(TwitterAPI twitterAPI);
+
+	void setNotifyOnDownloadFinishMap(Map<String, String> notifyMap);
 
 }
