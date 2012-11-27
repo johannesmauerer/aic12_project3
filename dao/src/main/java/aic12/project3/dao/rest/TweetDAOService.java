@@ -70,4 +70,13 @@ public class TweetDAOService
     {
     	return new TweetList(mongoDAO.searchTweet(request.getCompanyName(), request.getFrom(),request.getTo()));
     }
+    
+    @POST
+    @Path("getnumberoftweetforrequest")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Long getNumberOfTweetsForRequest(SentimentRequest request)
+    {
+    	return mongoDAO.countTweet(request.getCompanyName(), request.getFrom(),request.getTo());
+    }
 }
