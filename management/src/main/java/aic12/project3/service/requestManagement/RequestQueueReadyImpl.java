@@ -41,6 +41,9 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		// Inform all Observers
 		super.setChanged();
 		super.notifyObservers(req.getId());
+		
+		// TODO: Remove
+		logger.info("Request added");
 	}
 
 	/**

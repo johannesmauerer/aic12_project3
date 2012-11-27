@@ -8,6 +8,7 @@ public class Node{
 	private String name;
 	private NODE_STATUS status;
 	private String ip;
+	private String lastVisitID;
 	
 	public Node(String name, String id){
 		this.name = name;
@@ -51,5 +52,13 @@ public class Node{
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+
+	public String getLastVisitID() {
+		return lastVisitID;
+	}
+
+	public void setLastVisitID(String lastVisitID) {
+		this.lastVisitID = lastVisitID;
 	}
 }

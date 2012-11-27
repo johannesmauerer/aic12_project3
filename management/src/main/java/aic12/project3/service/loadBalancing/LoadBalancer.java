@@ -6,10 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.UUID;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import aic12.project3.common.beans.TweetList;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.nodeManagement.INodeManager;
@@ -51,63 +58,13 @@ public abstract class LoadBalancer implements Observer
 	/**
 	 * Initialize the Load Balancer (Check for nodes etc.)
 	 */
-	protected void init(){
-
-		// Add self as Observer to requestQueueReady
-		rqr.addObserver(this);
-
-		// Get available Nodes from NodeManager
-		List<Node> n = nm.listNodes();
-
-		// Stop all running nodes
-		for (Node node : n){
-			// Check if any Sentiment Nodes exist
-			if (node.getName().contains(config.getProperty("serverNameSentiment"))){
-				nm.stopNode(node.getId());	
-			}
-		}
-
-		// If there is more than one node running, 
-		int amountOfNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
-
-		// Try to start first node (one is always running)
-		try {
-			startNode();
-		} catch (LoadBalancerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	protected abstract void init();
 
 	/**
 	 * Looks through available nodes and presents most available one
 	 * @return
 	 */
-	protected String getMostAvailableNode(){
-		// String for possible Node ID
-		String possibleNode = null;
-
-		/*
-		 * Iterate through available nodes
-		 */
-		Iterator it = nodes.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry)it.next();
-			Node n = (Node) pairs.getValue();
-			/*
-			 * If a node is IDLE, use it.
-			 */
-			if (n.getStatus() == NODE_STATUS.IDLE){
-				return (String) pairs.getKey();
-			}
-		}
-
-		/*
-		 * Return possible node
-		 */
-		return possibleNode;
-	}
+	protected abstract String getMostAvailableNode();
 
 	/**
 	 * Returns avilable nodes in Load Balancer
@@ -118,30 +75,24 @@ public abstract class LoadBalancer implements Observer
 	}
 
 	/**
-	 * Start a new node (if available)
+	 * Start a new node (if available) and return ID
 	 * @throws LoadBalancerException
 	 */
-	protected void startNode() throws LoadBalancerException {
-		/*
-		 * Check if resources to start new node are available
-		 */
-		if (nodes.size()==Integer.parseInt(config.getProperty("amountOfSentimentNodes"))){
-			/*
-			 * If not available throw exception
-			 */
-			throw new LoadBalancerException("No more resources available to start another node");
-		} else {
-			/*
-			 * Create new Node from available image
-			 */
-			Node n = nm.startNode(config.getProperty("serverNameSentiment"), config.getProperty("sentimentImageId"), config.getProperty("serverFlavor"));
-			/*
-			 * Set Node Status to Idle
-			 */
-			n.setStatus(NODE_STATUS.IDLE);
-			nodes.put(n.getId(), n);
-		}
-
+	protected abstract String startNode();
+	
+	/**
+	 * Stops a node
+	 * @param id
+	 */
+	public void stopNode(String id){
+		nm.stopNode(id);
 	}
+	
+	/**
+	 * Deal with currently Idle nodes
+	 * @param id
+	 * @param lastVisit
+	 */
+	public abstract void idleNodeHandling(final String id, final String lastVisit);
 
 }

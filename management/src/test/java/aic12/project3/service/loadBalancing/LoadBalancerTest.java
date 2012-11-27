@@ -26,8 +26,6 @@ public class LoadBalancerTest extends SpringTest {
 	@Test
 	public void testObserverForReadyQueue() {
 		
-		// Add Load Balancer as Observer
-		// rqr.addObserver(lb);
 		SentimentRequest s = new SentimentRequest();
 		s.setId(UUID.randomUUID().toString());
 		s.setState(REQUEST_QUEUE_STATE.NEW);

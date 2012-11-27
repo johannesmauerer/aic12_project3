@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentRequest;
@@ -26,6 +27,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 	@Autowired private RequestQueueReady requestQueueReady;
 	@Autowired private DownloadManagerClient downloadManager;
+	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
 
 	/**
 	 * Add Observer, add request and check for downloads
@@ -40,7 +42,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 			requestQueueReady.addRequest(req);
 
 			// Check if Tweets are there
-			this.checkDownloaded(req.getId());			
+			// this.checkDownloaded(req.getId());			
 		} else {
 			// Update request in Request Queue
 			requestQueueReady.addRequest(req);
@@ -119,6 +121,10 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	 */
 	@Override
 	protected void updateInQueue(String id) {
+		
+		// TODO: Remove
+		logger.info("New Update in Request Queue");
+		
 		switch (requestQueueReady.getRequest(id).getState()){
 		case NEW:
 			// Never applicable
