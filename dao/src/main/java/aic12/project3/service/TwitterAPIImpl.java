@@ -1,5 +1,6 @@
 package aic12.project3.service;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class TwitterAPIImpl implements TwitterAPI {
 
 	private TwitterAPIImpl() {
 		stream = new TwitterStreamFactory().getInstance();
-	    stream.addListener(new WriteCachedToDaoStreamListener(TWEETS_CACHE_SIZE));
+	    stream.addListener(new WriteCachedToDaoStreamListener(TWEETS_CACHE_SIZE, this));
 	}
 	
 	public static TwitterAPIImpl getInstance() {
@@ -106,5 +107,10 @@ public class TwitterAPIImpl implements TwitterAPI {
 
 	private boolean validReqeuest(String company) {
 		return company != null && ! "".equals(company);
+	}
+
+	@Override
+	public List<String> getTrackedCompanies() {
+		return Collections.unmodifiableList(trackedCompanies);
 	}
 }

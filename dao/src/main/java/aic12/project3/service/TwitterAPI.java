@@ -11,4 +11,9 @@ public interface TwitterAPI {
 
 	void registerForTwitterStream(String company);
 
+	/**
+	 * @return unmodifiable view of all tracked companies
+	 */
+	List<String> getTrackedCompanies();
+
 }
