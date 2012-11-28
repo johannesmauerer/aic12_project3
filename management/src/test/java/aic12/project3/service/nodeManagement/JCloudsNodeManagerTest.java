@@ -20,9 +20,13 @@ public class JCloudsNodeManagerTest extends SpringTest {
 		//Node n = nm.startNode(config.getProperty("serverNameSentiment"), config.getProperty("sentimentImageId"), config.getProperty("serverFlavor"));
 		//nm.stopNode(n.getId());
 		List<Node> list = nm.listNodes();
-		for (Node n : list){
-			System.out.println(n.getName());
+		if (list != null){
+			for (Node n : list){
+				System.out.println(n.getName());
+			}			
 		}
+	
+
 		
 	}
 

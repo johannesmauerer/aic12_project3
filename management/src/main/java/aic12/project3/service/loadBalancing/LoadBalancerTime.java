@@ -140,10 +140,6 @@ public class LoadBalancerTime extends LoadBalancer {
 		 * Switch between Status of Request
 		 */
 		switch (rqr.getRequest(id).getState()){
-		case NEW:
-			// Not applicable
-			break;
-
 		case READY_TO_PROCESS:
 			logger.info("Time to split");
 			// Create entry in combine Queue
@@ -202,8 +198,8 @@ public class LoadBalancerTime extends LoadBalancer {
 		/*
 		 * Calculate wanted Nodes and wanted Parts
 		 */
-		int wantedNodes = 2;
-		int wantedParts = 3;
+		int wantedNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
+		int wantedParts = wantedNodes;
 		// When there is less days than parts
 		if (wantedParts>dayDifference){
 			wantedParts = dayDifference;
@@ -355,7 +351,7 @@ public class LoadBalancerTime extends LoadBalancer {
 				// TODO: Add
 				req.setCallbackAddress((String) config.getProperty("sentimentCallbackURL"));
 
-				// Call Node
+				// TODO: Call Node, missing IP for Node so far
 				//String response = service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, req);
 				logger.info("SentimentProcessingRequest with parent " + req.getCompanyName() + ":" + req.getParentID() + " has been sent to Node " + id + " which has state " + nodes.get(id).getStatus());
 
