@@ -41,8 +41,7 @@ public class SentimentRequest
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		// TODO
-		result = prime * result;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -55,7 +54,10 @@ public class SentimentRequest
 		if (getClass() != obj.getClass())
 			return false;
 		SentimentRequest other = (SentimentRequest) obj;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
