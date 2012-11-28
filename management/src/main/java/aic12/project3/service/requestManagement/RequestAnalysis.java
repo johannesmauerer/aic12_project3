@@ -1,15 +1,30 @@
 package aic12.project3.service.requestManagement;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.Observable;
+import java.util.Observer;
 
-@Component
-public class RequestAnalysis {
+import aic12.project3.common.beans.SentimentRequest;
 
-	@Autowired
-	private RequestQueueReady requestQueueReady;
 
-	public RequestQueueReady getRequestQueueReady() {
-		return requestQueueReady;
+public abstract class RequestAnalysis implements Observer {
+
+	/**
+	 * Accept new request to be put into Queue
+	 * @param req
+	 */
+	public abstract void acceptRequest(SentimentRequest req);
+	
+	/**
+	 * Observer method, handling of updates in requestQueue
+	 */
+	public void update(Observable arg0, Object arg1) {
+		this.updateInQueue((String) arg1);
 	}
+	
+	/**
+	 * Delegated via Observer method
+	 * @param id
+	 */
+	protected abstract void updateInQueue(String id);
+	
 }

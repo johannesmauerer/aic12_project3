@@ -1,7 +1,8 @@
 package aic12.project3.dao.rest;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -9,13 +10,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
+import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.TweetCountDetail;
+import aic12.project3.common.beans.TweetList;
+import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.dao.MongoTweetDAO;
-import aic12.project3.dto.TweetDTO;
 
 import com.sun.jersey.spi.resource.Singleton;
 
@@ -25,50 +29,51 @@ public class TweetDAOService
 {
     private MongoTweetDAO mongoDAO;
 
-    public TweetDAOService()
-    {
-    	this.mongoDAO = new MongoTweetDAO();
+    public TweetDAOService() {
+        ApplicationContext ctx = new GenericXmlApplicationContext("app-config.xml");
+        mongoDAO = ctx.getBean(MongoTweetDAO.class);
     }
 
     @POST
     @Path("insert")
     @Consumes("application/json")
-    @Produces("application/json")
-    public String insert(List<TweetDTO> tweet)
+    public void insert(List<TweetDTO> tweet)
     {
         mongoDAO.storeTweet(tweet);
-        return "yay";
     }
     
     @GET
-    @Path("find")
+    @Path("indexcompany")
     @Produces("application/json")
-    public Response find(@QueryParam("company")String company, @QueryParam("fromdate") Long fromDate, @QueryParam("todate") Long toDate)
+    public int indexCompany(@QueryParam("company") String company)
     {
-        List<TweetDTO> tweetList = mongoDAO.searchTweet(company, new Date(fromDate), new Date(toDate));
-        GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
-        return Response.ok(entity).build();
+        return mongoDAO.indexCompany(company);
     }
     
     @POST
     @Path("getallforrequest")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response getAllForRequest(SentimentRequest request)
+    public TweetList getAllForRequest(SentimentProcessingRequest request)
     {
-    	List<TweetDTO> tweetList = mongoDAO.searchTweet(request.getCompanyName(), request.getFrom(),request.getTo());
-        GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
-        return Response.ok(entity).build();
+    	return new TweetList(mongoDAO.searchTweet(request.getCompanyName(), request.getFrom(),request.getTo()));
     }
     
-    @GET
-    @Path("getall")
+    @POST
+    @Path("getnumberoftweetforrequest")
+    @Consumes("application/json")
     @Produces("application/json")
-    public Response getAll()
+    public Long getNumberOfTweetsForRequest(SentimentRequest request)
     {
-        List<TweetDTO> tweetList = mongoDAO.getAllTweet();
-        
-        GenericEntity<List<TweetDTO>> entity = new GenericEntity<List<TweetDTO>>(tweetList) {};
-        return Response.ok(entity).build();
+    	return mongoDAO.countTweet(request.getCompanyName(), request.getFrom(),request.getTo());
+    }
+    
+    @POST
+    @Path("getnumberoftweetforrequestdetailed")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public TweetCountDetail getNumberOfTweetsForRequestDetailed(SentimentRequest request)
+    {
+    	return new TweetCountDetail(mongoDAO.countTweetPerDay(request.getCompanyName(), request.getFrom(),request.getTo()));
     }
 }

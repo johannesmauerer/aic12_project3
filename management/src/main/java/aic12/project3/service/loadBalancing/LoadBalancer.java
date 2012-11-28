@@ -1,36 +1,98 @@
 package aic12.project3.service.loadBalancing;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import aic12.project3.common.beans.TweetList;
+import aic12.project3.common.enums.NODE_STATUS;
+import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
+import aic12.project3.service.nodeManagement.INodeManager;
+import aic12.project3.service.nodeManagement.Node;
 import aic12.project3.service.requestManagement.RequestAnalysis;
+import aic12.project3.service.requestManagement.RequestQueueReady;
+import aic12.project3.service.statistics.Statistics;
+import aic12.project3.service.util.ManagementConfig;
 
 /**
- * LoadBalancer class to handle loads across whole project.
- * Tasks of the LoadBalancer are to calculate the Runtime of requests,
- * start and stop nodes depending on Statistics.
- * @author Johannes
+ * Load Balancer (Singleton)
+ * Handles processing Nodes and Requests on it.
+ * @author johannes
  *
  */
-public class LoadBalancer {
-	
-	private static LoadBalancer instance = new LoadBalancer();
-	
-	private LoadBalancer(){}
-	
+public abstract class LoadBalancer implements Observer
+{
+	@Autowired protected RequestQueueReady rqr;
+	@Autowired protected Statistics stats;
+	@Autowired protected INodeManager nm;
+	@Autowired protected ManagementConfig config;
+	protected static Logger logger = Logger.getRootLogger();
+	protected HashMap<String, Node> nodes = new HashMap<String,Node> ();
+	protected HashMap<String, String> request_nodes = new HashMap<String, String> ();
+
 	/**
-	 * Return the singleton LoadBalancer
+	 * Handle incoming updates as Observer
+	 */
+	public void update(Observable arg0, Object arg1) {
+		this.updateInQueue((String) arg1);
+	}
+
+	/**
+	 * Delegated from Observer method
+	 * @param id
+	 */
+	protected abstract void updateInQueue(String id);
+
+	/**
+	 * Initialize the Load Balancer (Check for nodes etc.)
+	 */
+	protected abstract void init();
+
+	/**
+	 * Looks through available nodes and presents most available one
 	 * @return
 	 */
-	public static LoadBalancer getInstance(){
-		return instance;
+	protected abstract String getMostAvailableNode();
+
+	/**
+	 * Returns avilable nodes in Load Balancer
+	 * @return the nodes
+	 */
+	public HashMap<String, Node> getNodes() {
+		return nodes;
+	}
+
+	/**
+	 * Start a new node (if available) and return ID
+	 * @throws LoadBalancerException
+	 */
+	protected abstract String startNode();
+	
+	/**
+	 * Stops a node
+	 * @param id
+	 */
+	public void stopNode(String id){
+		nm.stopNode(id);
 	}
 	
-	public String callRequest(){
-		ApplicationContext ctx = new GenericXmlApplicationContext("aic12/service/app-config.xml");
-		
-		RequestAnalysis ra = (RequestAnalysis) ctx.getBean("requestAnalysis");
-		return ra.getRequestQueueReady().some();
-	}
+	/**
+	 * Deal with currently Idle nodes
+	 * @param id
+	 * @param lastVisit
+	 */
+	public abstract void idleNodeHandling(final String id, final String lastVisit);
 
 }

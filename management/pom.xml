@@ -14,7 +14,7 @@
 
   <name>CloudService :: Management</name>
 
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
 
   <dependencies>
     <!-- Spring -->
@@ -23,6 +23,12 @@
       <artifactId>spring-context</artifactId>
       <version>${org.springframework.version}</version>
     </dependency>
+    
+    <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>
+		<version>${org.springframework.version}</version>
+	</dependency>
 
     <dependency>
       <groupId>aic12.project3</groupId>
@@ -48,12 +54,112 @@
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
+    
+    <!-- JCLOUDS -->
+    <dependency>
+    	<groupId>org.jclouds</groupId>
+    	<artifactId>jclouds-allcompute</artifactId>
+    	<version>1.5.2</version>
+  	</dependency>
+  	<dependency>
+    	<groupId>org.jclouds</groupId>
+    	<artifactId>jclouds-allblobstore</artifactId>
+    	<version>1.5.2</version>
+  	</dependency>
+  	
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.14</version>
     </dependency>
-  </dependencies>
+    
+    <!-- SERVER -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-servlet</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${com.sun.jersey.version}</version>
+    </dependency>
+   <dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-spring</artifactId>
+			<version>1.8</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-beans</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+     <dependency>
+                    <groupId>com.sun.jersey.jersey-test-framework</groupId>
+                    <artifactId>jersey-test-framework-grizzly2</artifactId>
+                    <version>${com.sun.jersey.version}</version>
+                    <scope>test</scope>
+                </dependency>
+     <dependency>
+  <groupId>org.testng</groupId>
+  <artifactId>testng</artifactId>
+  <version>6.1</version>
+  <scope>test</scope>
+</dependency>
 
+    <dependency>
+		<groupId>com.googlecode.json-simple</groupId>
+		<artifactId>json-simple</artifactId>
+		<version>1.1</version>
+	</dependency>
+  </dependencies>
+<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+              
+                <executions>
+        <execution>
+            <phase>test</phase>
+            <goals>
+                <goal>test</goal>
+            </goals>
+            <configuration> 
+                <testNGArtifactName>none:none</testNGArtifactName>
+            </configuration>
+        </execution>
+
+    </executions>
+            </plugin>
+        </plugins>
+  </build>
 </project>

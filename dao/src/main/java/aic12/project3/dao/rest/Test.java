@@ -3,12 +3,13 @@ package aic12.project3.dao.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dto.TweetDTO;
+import aic12.project3.common.beans.TweetList;
+import aic12.project3.common.dto.TweetDTO;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -28,12 +29,12 @@ public class Test
     public static void getRequest(){
     	List<TweetDTO> tweetList = new ArrayList<TweetDTO>();
         TweetDTO tweet1 = new TweetDTO();
-        tweet1.setTwitterId(new Long(123));
+        tweet1.setTwitterId("123");
         tweet1.setText("test ABC test");
         tweet1.setSentiment(1);
         tweet1.setDate(new Date(System.currentTimeMillis()-400000));
-        TweetDTO tweet2 = new TweetDTO(new Long(123), "test2 ABC test", new Date(System.currentTimeMillis()-200000));
-        TweetDTO tweet3 = new TweetDTO(new Long(124), "test3 ABC test", new Date(System.currentTimeMillis()));
+        TweetDTO tweet2 = new TweetDTO("123", "test2 ABC test", new Date(System.currentTimeMillis()-200000));
+        TweetDTO tweet3 = new TweetDTO("124", "test3 ABC test", new Date(System.currentTimeMillis()));
         
         tweetList.add(tweet1);
         tweetList.add(tweet2);
@@ -43,7 +44,7 @@ public class Test
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
         
         Client client = Client.create(config);
-        /*WebResource resource = client.resource("http://localhost:8080/cloudservice-1.0-SNAPSHOT/tweetdao/insert");
+        /*WebResource resource = client.resource("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/insert");
         String result = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, tweetList);
         System.out.println("Result: "+result);*/
         
@@ -60,8 +61,8 @@ public class Test
     
     public static void postRequest(){
     	SentimentRequest request = new SentimentRequest();
-    	request.setId("1");
-    	request.setCompanyName("ABC");
+    	request.setId(UUID.randomUUID().toString());
+    	request.setCompanyName("microsoft");
     	request.setFrom(new Date(System.currentTimeMillis()-new Long("4000000000")));
     	request.setTo(new Date(System.currentTimeMillis()));
     	
@@ -69,10 +70,10 @@ public class Test
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
         
         Client client = Client.create(config);
+
         WebResource resource = client.resource("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/tweetdao/getall");
-        ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, request);
-        List<TweetDTO> tweetResponse = response.getEntity(new GenericType<List<TweetDTO>>(){}); 
-        for(TweetDTO t : tweetResponse){
+        TweetList response = resource.accept(MediaType.APPLICATION_JSON).get(TweetList.class);
+        for(TweetDTO t : response.getList()){
         	System.out.println(t);
         }
     }

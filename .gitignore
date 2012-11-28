@@ -32,3 +32,10 @@ eclipse-workspace
 #Assembly artifacts
 #================
 *.zip
+
+
+#================
+#Logs and other debug stuff
+#================
+*.log
+*log/
