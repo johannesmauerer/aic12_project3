@@ -16,12 +16,12 @@ public class StatisticsService
 {
     @Autowired
     private Statistics statistics;
-    
+
     @GET
     @Path("getStatistics")
     @Produces("application/json")
     public StatisticsBean getStatistics()
     {
-        return statistics.recalculateStatistics();
+        return statistics.calculateStatistics();
     }
 }
