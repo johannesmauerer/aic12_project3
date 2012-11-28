@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -37,9 +38,11 @@ public class TweetDAOService
     @POST
     @Path("insert")
     @Consumes("application/json")
-    public void insert(List<TweetDTO> tweet)
+    @Produces("application/json")
+    public Boolean insert(List<TweetDTO> tweet)
     {
         mongoDAO.storeTweet(tweet);
+        return true;
     }
     
     @GET

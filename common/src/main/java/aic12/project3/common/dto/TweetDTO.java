@@ -1,5 +1,6 @@
 package aic12.project3.common.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class TweetDTO
     private String text;
     private Date date;
     private Integer sentiment;
-    private List<String> companies;
+    private List<String> companies = new ArrayList<String>();
     
     public TweetDTO() {}
     
