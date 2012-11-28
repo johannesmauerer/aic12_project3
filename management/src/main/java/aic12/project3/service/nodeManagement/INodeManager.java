@@ -36,4 +36,6 @@ public interface INodeManager {
 	 */
 	public List<Node> listNodes();
 	
+	public String getIp(final String id);
+	
 }

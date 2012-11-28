@@ -64,4 +64,10 @@ public class MockNodeManager implements INodeManager {
 		return null;
 	}
 
+	@Override
+	public String getIp(String id) {
+		
+		return "localhost";
+	}
+
 }

@@ -476,15 +476,22 @@ public class LoadBalancerTime extends LoadBalancer {
 			public void run()
 			{
 				boolean alive = false;
+				
+
 				do {
 					// TODO: Send poll request
 					// Receive answer true or false (alive or unalive
+					String ip = nm.getIp(id);
+					if (nm.getIp(id)!=null){
+						alive = true;
+					}
 					
 					if (alive){
 						// Change status
 						Node n = nodes.get(id);
 						n.setStatus(NODE_STATUS.IDLE);
-
+						n.setIp(ip);
+						
 						// Idle handling
 						String lastVisit = UUID.randomUUID().toString();
 						n.setLastVisitID(lastVisit);
@@ -504,9 +511,9 @@ public class LoadBalancerTime extends LoadBalancer {
 						// Wait for specified Time
 						
 						try {
-							Thread.sleep(10000);
+							
 							Thread.sleep(Integer.parseInt((String) config.getProperty("pollSentimentAliveInterval")));
-							alive = true;
+							
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
