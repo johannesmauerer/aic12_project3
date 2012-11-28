@@ -2,6 +2,8 @@ package aic12.project3.service.rest;
 
 import javax.ws.rs.core.MediaType;
 
+import aic12.project3.common.beans.SentimentRequest;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -21,11 +23,11 @@ public class DownloadManagerCallbackClientRestImpl implements
 	}
 	
 	@Override
-	public void notifyInitialDownloadFinished(String company, String callback) {
+	public void notifyInitialDownloadFinished(SentimentRequest req, String callback) {
 		WebResource resource = client.resource(callback);
         
         resource.accept(MediaType.APPLICATION_JSON)
-        		.type(MediaType.APPLICATION_JSON).post(company);
+        		.type(MediaType.APPLICATION_JSON).post(req);
 	}
 
 }
