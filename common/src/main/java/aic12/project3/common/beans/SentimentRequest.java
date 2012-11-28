@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,7 +13,6 @@ import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 @Document(collection="requests")
 public class SentimentRequest
 {
-    
 	@Id
     private String id;
     private String companyName;
@@ -22,10 +20,10 @@ public class SentimentRequest
     private Date to;
     private int numberOfTweets;
     private REQUEST_QUEUE_STATE state;
-    private long timestampRequestSent;
+    private long timestampRequestSending;
     private long timestampProcessingStart;
     private long timestampProcessingDone;
-    private long timetsampRequestFinished;
+    private long timestampRequestFinished;
     private List<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
 
 
@@ -43,8 +41,7 @@ public class SentimentRequest
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		// TODO
-		result = prime * result;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -57,7 +54,10 @@ public class SentimentRequest
 		if (getClass() != obj.getClass())
 			return false;
 		SentimentRequest other = (SentimentRequest) obj;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
@@ -90,7 +90,6 @@ public class SentimentRequest
 		this.companyName = companyName;
 	}
 
-    
 	/**
 	 * @return the from
 	 */
@@ -148,17 +147,17 @@ public class SentimentRequest
 	}
 
 	/**
-	 * @return the timestampRequestSent
+	 * @return the timestampRequestSending
 	 */
-	public long getTimestampRequestSent() {
-		return timestampRequestSent;
+	public long getTimestampRequestSending() {
+		return timestampRequestSending;
 	}
 
 	/**
-	 * @param timestampRequestSent the timestampRequestSent to set
+	 * @param timestampRequestSending the timestampRequestSending to set
 	 */
-	public void setTimestampRequestSent(long timestampRequestSent) {
-		this.timestampRequestSent = timestampRequestSent;
+	public void setTimestampRequestSending(long timestampRequestSending) {
+		this.timestampRequestSending = timestampRequestSending;
 	}
 
 	/**
@@ -190,17 +189,17 @@ public class SentimentRequest
 	}
 
 	/**
-	 * @return the timetsampRequestFinished
+	 * @return the timestampRequestFinished
 	 */
-	public long getTimetsampRequestFinished() {
-		return timetsampRequestFinished;
+	public long getTimestampRequestFinished() {
+		return timestampRequestFinished;
 	}
 
 	/**
-	 * @param timetsampRequestFinished the timetsampRequestFinished to set
+	 * @param timestampRequestFinished the timestampRequestFinished to set
 	 */
-	public void setTimetsampRequestFinished(long timetsampRequestFinished) {
-		this.timetsampRequestFinished = timetsampRequestFinished;
+	public void setTimestampRequestFinished(long timestampRequestFinished) {
+		this.timestampRequestFinished = timestampRequestFinished;
 	}
 
 	/**

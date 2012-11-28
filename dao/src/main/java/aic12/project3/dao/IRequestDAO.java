@@ -4,15 +4,18 @@ import java.util.List;
 
 import aic12.project3.common.beans.SentimentRequest;
 
-public interface IRequestDAO {
-	
-	/**
-	 * Saves a Sentiment Request
-	 * @param request SentimentRequest
-	 */
-	public abstract void saveRequest(SentimentRequest request);
-	
-	public abstract List<SentimentRequest> getAllRequestForCompany(String company);
-	public abstract SentimentRequest getRequest(String id);
+public interface IRequestDAO
+{
+    /**
+     * Saves a Sentiment Request
+     * 
+     * @param request SentimentRequest
+     */
+    void saveRequest(SentimentRequest request);
 
+    List<SentimentRequest> getAllRequestForCompany(String company);
+
+    SentimentRequest getRequest(String id);
+    
+    List<SentimentRequest> getAllRequests();
 }

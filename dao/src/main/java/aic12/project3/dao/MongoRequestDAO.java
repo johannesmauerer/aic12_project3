@@ -12,20 +12,20 @@ import org.springframework.data.mongodb.core.query.Query;
 import aic12.project3.common.beans.SentimentRequest;
 
 public class MongoRequestDAO implements IRequestDAO {
-	
+
 private static Logger log = Logger.getLogger(MongoRequestDAO.class);
-	
+
 	private static MongoRequestDAO instance = new MongoRequestDAO();
-	
+
 	private MongoOperations mongoOperation;
-	
+
 	private MongoRequestDAO(){
 		super();
 		log.debug("constr");
 		ApplicationContext ctx = new GenericXmlApplicationContext("mongo-config.xml");
 		mongoOperation = (MongoOperations)ctx.getBean("mongoOperation");
 	}
-	
+
 	public static MongoRequestDAO getInstance() {
 		log.debug("getInstance()");
 		return instance;
@@ -47,4 +47,9 @@ private static Logger log = Logger.getLogger(MongoRequestDAO.class);
 		return mongoOperation.findOne(new Query(Criteria.where("_id").is(id)), SentimentRequest.class, "requests");
 	}
 
+    @Override
+    public List<SentimentRequest> getAllRequests()
+    {
+        return mongoOperation.findAll(SentimentRequest.class, "requests");
+    }
 }

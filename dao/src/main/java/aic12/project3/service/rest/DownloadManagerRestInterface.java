@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.SentimentRequestWithCallback;
 import aic12.project3.service.DownloadManagerService;
 import aic12.project3.service.DownloadManagerServiceImpl;
 
@@ -41,13 +42,13 @@ public class DownloadManagerRestInterface {
 		return dlManagerService.isInitialDownloadFinished(company);
 	}
 
-    @GET
+    @POST
     @Path("notifyoninitialdownloadfinished")
     @Consumes("application/json")
     @Produces("application/json")
-    public boolean notifyOnInitialDownloadFinished (@QueryParam("company") String company, @QueryParam("callback") String callbackUrl) {
-    	log.info("notifyOnInitialDownloadFinished; company: " + company + " callback: " + callbackUrl);
-    	dlManagerService.notifyOnInitialDownloadFinished(company, callbackUrl);
+    public boolean notifyOnInitialDownloadFinished (SentimentRequestWithCallback req) {
+    	log.info("notifyOnInitialDownloadFinished; requestWithCallback: " + req);
+    	dlManagerService.notifyOnInitialDownloadFinished(req.getRequest(), req.getCallbackUrl());
     	return true;
 	}
     

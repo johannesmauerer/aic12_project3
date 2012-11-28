@@ -2,7 +2,10 @@ package aic12.project3.service;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	private Map<String, DownloadThread> initialDownloadsMap = 
 			Collections.synchronizedMap(
 					new HashMap<String, DownloadThread>());
-	private Map<String, String> notifyOnDownloadFinishMap = Collections.synchronizedMap(new HashMap<String, String>());
+	private Map<SentimentRequest, String> notifyOnDownloadFinishMap = Collections.synchronizedMap(new HashMap<SentimentRequest, String>());
 
 	@Autowired
 	private TwitterAPI twitterAPI;
@@ -69,8 +72,8 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	}
 
 	@Override
-	public void notifyOnInitialDownloadFinished(String company, String callbackUrl) {
-		notifyOnDownloadFinishMap.put(company, callbackUrl);
+	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callbackUrl) {
+		notifyOnDownloadFinishMap.put(req, callbackUrl);
 	}
 
 	@Override
@@ -86,11 +89,19 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		initialDownloadsMap.remove(company);
 
 		// check if we need to notify about finishing
-		String callback = notifyOnDownloadFinishMap.get(company); // is null if no callback
-		if(callback != null) {
-			notifyOnDownloadFinishMap.remove(company);
-			// TODO notify that download is finished
-			restClient.notifyInitialDownloadFinished(company, callback);
+		Set<Entry<SentimentRequest, String>> entries = notifyOnDownloadFinishMap.entrySet();
+		synchronized(notifyOnDownloadFinishMap) {
+			Iterator<Entry<SentimentRequest, String>> it = entries.iterator();
+
+			while(it.hasNext()) {
+				Entry<SentimentRequest, String> e = it.next();
+
+				if(e.getKey().getCompanyName().equals(company)) {
+					log.debug("notifying that download finished. req: " + e.getKey());
+					restClient.notifyInitialDownloadFinished(e.getKey(), e.getValue());
+					it.remove();
+				}
+			}
 		}
 	}
 
@@ -102,7 +113,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	}
 
 	@Override
-	public void setNotifyOnDownloadFinishMap(Map<String, String> notifyMap) {
+	public void setNotifyOnDownloadFinishMap(Map<SentimentRequest, String> notifyMap) {
 		notifyOnDownloadFinishMap = notifyMap;
 	}
 
@@ -115,6 +126,11 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	public static void recreateInstance() {
 		log.debug("recreateInstance()");
 		instance = new DownloadManagerServiceImpl();
+	}
+
+	@Override
+	public void setRestClient(DownloadManagerCallbackClient restClient) {
+		this.restClient = restClient;
 	}
 
 }
