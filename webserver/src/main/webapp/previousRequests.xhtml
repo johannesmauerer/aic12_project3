@@ -21,37 +21,20 @@
 					<h:graphicImage value="img/header.jpg"/>
 			</div>
 
-		<h2> Welcome <i><h:outputText value="#{user.name}" /></i>!</h2> 
+		<h2> Welcome back <i><h:outputText value="#{user.name}" /></i>!</h2> 
 
+		Previous Requests will be here.
+		
 		<!-- setting companyName -->
 		<c:set value="#{user.name}" target="#{sentimentRequest}" property="companyName" />
 
 		<f:view>
 			<h:form>
-				<div>
-					<h3>Choose period for your sentiment analysis:</h3>
-					<h4>From:</h4>
-					<rich:calendar value="#{sentimentRequest.from}"
-                        popup="true"
-                        time="dd/MM/yyyy"
-                        showInput="true"
-                        cellWidth="24px" 
-                        cellHeight="22px" 
-                        style="width:200px"
-                        required="true"/>
-					<h4>To:</h4> 
-					<rich:calendar value="#{sentimentRequest.to}"
-                        popup="true"
-                        time="dd/MM/yyyy"
-                        showInput="true" 
-                        cellWidth="24px" 
-                        cellHeight="22px" 
-                        style="width:200px"
-                        required="true"/> 
-				</div>	
-
 				<div id="buttons">
-					<h:commandButton value="Start anylysis" action="#{sentimentRequest.sendToAnalysis}"></h:commandButton>
+					<div id="buttons">
+					<h:commandButton value="Exit" action="start" ></h:commandButton>
+					<h:commandButton value="Start new analysis" action="analysis" ></h:commandButton>
+				</div>
 				</div>
 
 			</h:form>	

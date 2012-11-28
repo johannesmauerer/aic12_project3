@@ -22,6 +22,22 @@
 	        <from-outcome>login</from-outcome>
 	        <to-view-id>/request.xhtml</to-view-id>
 	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{user.loginAction}</from-action>
+	        <from-outcome>loggedIn</from-outcome>
+	        <to-view-id>/previousRequests.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+    	<from-view-id>/previousRequests.xhtml</from-view-id>
+	    <navigation-case>
+	    	<from-outcome>start</from-outcome>
+	        <to-view-id>/login.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-outcome>analysis</from-outcome>
+	        <to-view-id>/request.xhtml</to-view-id>
+	    </navigation-case>
 	</navigation-rule>
 	<navigation-rule>
     	<from-view-id>/request.xhtml</from-view-id>
@@ -29,6 +45,11 @@
 	    	<from-action>#{sentimentRequest.sendToAnalysis}</from-action>
 	        <from-outcome>request</from-outcome>
 	        <to-view-id>/response.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.sendToAnalysis}</from-action>
+	        <from-outcome>wait</from-outcome>
+	        <to-view-id>/wait.xhtml</to-view-id>
 	    </navigation-case>
 	</navigation-rule>
 	<navigation-rule>

@@ -1,12 +1,27 @@
 package controller;
 
+import java.net.URI;
 import java.util.Date;
+import java.util.Properties;
 import java.util.UUID;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.SentimentRequestCallback;
+import aic12.project3.common.beans.TweetList;
 
 @ManagedBean
 @RequestScoped
@@ -71,8 +86,10 @@ public class RequestController {
     	request.setFrom(this.from);
     	request.setTo(this.to);
     	
-    	System.out.println("REQ:" + request.getCompanyName() + "," + request.getFrom() + "," + request.getTo());
-    	System.out.println("id:" + this.id);
+    	//System.out.println("REQ:" + request.getCompanyName() + "," + request.getFrom() + "," + request.getTo());
+    	//System.out.println("id:" + this.id);
+    	
+    	//createRestRequest(request);
     	
     	return "request";
     }
@@ -80,5 +97,6 @@ public class RequestController {
 	public UUID getId() {
 		return id;
 	}
-    
+		
+	
 }
