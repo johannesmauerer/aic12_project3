@@ -38,11 +38,9 @@ public class TweetDAOService
     @POST
     @Path("insert")
     @Consumes("application/json")
-    @Produces("application/json")
-    public Boolean insert(List<TweetDTO> tweet)
+    public void insert(List<TweetDTO> tweet)
     {
         mongoDAO.storeTweet(tweet);
-        return true;
     }
     
     @GET

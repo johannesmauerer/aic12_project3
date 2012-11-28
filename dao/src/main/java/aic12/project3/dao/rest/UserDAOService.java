@@ -27,11 +27,9 @@ public class UserDAOService
     @POST
     @Path("insert")
     @Consumes("application/json")
-    @Produces("application/json")
-    public Boolean insert(UserDTO user)
+    public void insert(UserDTO user)
     {
         mongoDAO.storeUser(user);
-        return true;
     }
     
     @GET

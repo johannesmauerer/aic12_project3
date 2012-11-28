@@ -31,11 +31,9 @@ public class RequestDAOService
     @POST
     @Path("insert")
     @Consumes("application/json")
-    @Produces("application/json")
-    public Boolean insert(SentimentRequest request)
+    public void insert(SentimentRequest request)
     {
         mongoDAO.saveRequest(request);
-        return true;
     }
 
     @GET
