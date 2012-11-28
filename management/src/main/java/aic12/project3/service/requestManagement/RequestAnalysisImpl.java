@@ -79,7 +79,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 		} else {
 			// Send to download Manager
 			// TODO implement callback
-			downloadManager.notifyOnInitialDownloadFinished(req.getCompanyName(), "");
+			downloadManager.notifyOnInitialDownloadFinished(req, "");
 		}
 
 	}

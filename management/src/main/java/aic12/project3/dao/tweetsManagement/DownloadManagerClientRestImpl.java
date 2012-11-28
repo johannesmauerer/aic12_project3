@@ -11,6 +11,8 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
+import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.SentimentRequestWithCallback;
 import aic12.project3.service.util.ManagementConfig;
 
 public class DownloadManagerClientRestImpl implements DownloadManagerClient {
@@ -32,11 +34,12 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 	}
 	
 	@Override
-	public void notifyOnInitialDownloadFinished(String companyName, String callback) {
+	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callback) {
+		SentimentRequestWithCallback reqWithCallback = new SentimentRequestWithCallback(req, callback);
 		WebResource resource = client.resource(SERVER_URI +
 						"notifyoninitialdownloadfinished");
-        resource.queryParam("company", companyName)
-        		.queryParam("callback", callback).get(Boolean.class);
+		resource.accept(MediaType.APPLICATION_JSON)
+        		.type(MediaType.APPLICATION_JSON).post(reqWithCallback);
 	}
 
 	@Override
