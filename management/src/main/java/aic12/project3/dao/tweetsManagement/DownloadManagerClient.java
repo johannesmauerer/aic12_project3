@@ -4,12 +4,12 @@ import aic12.project3.common.beans.SentimentRequest;
 
 public interface DownloadManagerClient {
 
-	void notifyOnInitialDownloadFinished(SentimentRequest req);
+	void notifyOnInitialDownloadFinished(SentimentRequest req, String callback);
 
-	boolean isInitialDownloadFinished(SentimentRequest req);
+	boolean isInitialDownloadFinished(String companyName);
 
-	void startInitialDownload(SentimentRequest req);
+	void startInitialDownload(String companyName);
 
-	void registerForTwitterStream(SentimentRequest req);
+	void registerForTwitterStream(String companyName);
 
 }

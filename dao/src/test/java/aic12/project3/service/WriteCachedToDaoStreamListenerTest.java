@@ -27,7 +27,10 @@ public class WriteCachedToDaoStreamListenerTest {
 	@Test
 	public void test_onStatus_verifyWriteToDao() {
 		int cacheSize = 2;
-		WriteCachedToDaoStreamListener listener = new WriteCachedToDaoStreamListener(cacheSize);
+		// mock twitterAPI
+		TwitterAPI api = mock(TwitterAPI.class);
+		
+		WriteCachedToDaoStreamListener listener = new WriteCachedToDaoStreamListener(cacheSize, api);
 		
 		//mock dao
 		ITweetDAO daoMock = mock(ITweetDAO.class);
@@ -37,5 +40,6 @@ public class WriteCachedToDaoStreamListenerTest {
 		listener.onStatus(mock(Status.class));
 		
 		verify(daoMock, times(1)).storeTweet(anyList()); // TODO check that this list contains those 2 tweets
+		verify(api, times(2)).getTrackedCompanies();
 	}
 }

@@ -17,7 +17,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dao.tweetsManagement.TweetsDAO;
+
 import aic12.project3.service.util.ManagementConfig;
 
 /**
@@ -28,9 +28,8 @@ import aic12.project3.service.util.ManagementConfig;
 public class RequestQueueReadyImpl extends RequestQueueReady {
 
 	private static RequestQueueReadyImpl instance = new RequestQueueReadyImpl();
-	@Autowired private TweetsDAO tweetsDAO;
-	@Autowired private ManagementConfig config;
 
+	@Autowired private ManagementConfig config;
 	/**
 	 * Singleton method
 	 */

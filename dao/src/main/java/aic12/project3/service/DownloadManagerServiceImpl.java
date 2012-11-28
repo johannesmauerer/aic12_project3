@@ -2,8 +2,9 @@ package aic12.project3.service;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.service.rest.DownloadManagerCallbackClient;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 
@@ -26,13 +28,15 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		DownloadManagerServiceTestIF {
 
 	private static DownloadManagerServiceImpl instance = new DownloadManagerServiceImpl();
-	private Map<SentimentRequest, DownloadThread> initialDownloadsMap = 
+	private Map<String, DownloadThread> initialDownloadsMap = 
 			Collections.synchronizedMap(
-					new HashMap<SentimentRequest, DownloadThread>());
-	private Set<SentimentRequest> notifyOnDownloadFinishSet = Collections.synchronizedSet(new HashSet<SentimentRequest>());
+					new HashMap<String, DownloadThread>());
+	private Map<SentimentRequest, String> notifyOnDownloadFinishMap = Collections.synchronizedMap(new HashMap<SentimentRequest, String>());
 	
 	@Autowired
 	private TwitterAPI twitterAPI;
+	@Autowired
+	private DownloadManagerCallbackClient restClient;
 	
 	private static Logger log;
 	
@@ -47,60 +51,70 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	}
 
 	@Override
-	public void startInitialDownload(SentimentRequest req) {
-		DownloadThread thread = new DownloadThread(req);
-		initialDownloadsMap.put(req, thread);
+	public void startInitialDownload(String company) {
+		DownloadThread thread = new DownloadThread(company);
+		initialDownloadsMap.put(company, thread);
 		thread.start();
 	}
 	
 	@Override
-	public void registerForTwitterStream(SentimentRequest req) {
-		twitterAPI.registerForTwitterStream(req);
+	public void registerForTwitterStream(String company) {
+		twitterAPI.registerForTwitterStream(company);
 	}
 
 	/**
 	 * Checks if an initial download job/thread is still downloading tweets.
 	 */
 	@Override
-	public boolean isInitialDownloadFinished(SentimentRequest req) {
-		log.debug("isInitialDownloadFinished; req: " + req);
-		return ! initialDownloadsMap.containsKey(req);
+	public boolean isInitialDownloadFinished(String company) {
+		log.debug("isInitialDownloadFinished; company: " + company);
+		return ! initialDownloadsMap.containsKey(company);
 	}
 
 	@Override
-	public void notifyOnInitialDownloadFinished(SentimentRequest req) {
-		notifyOnDownloadFinishSet.add(req);
+	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callbackUrl) {
+		notifyOnDownloadFinishMap.put(req, callbackUrl);
 	}
 
 	@Override
-	public void initialDownloadFinished(SentimentRequest req, DownloadThread thread) {
-		log.debug("initialDownloadFinished with request " + req);
+	public void initialDownloadFinished(String company, DownloadThread thread) {
+		log.debug("initialDownloadFinished for company: " + company);
 		// check if we got the same reference to thread object
-		if(initialDownloadsMap.get(req) != thread) {
+		if(initialDownloadsMap.get(company) != thread) {
 			log.warn("initialDownloadFinished called with wrong thread reference!");
 			return; // some thing bad may happen otherwise...
 		}
 		
 		// remove from initalDownloadMap
-		initialDownloadsMap.remove(req);
+		initialDownloadsMap.remove(company);
 		
 		// check if we need to notify about finishing
-		if(notifyOnDownloadFinishSet.contains(req)) {
-			notifyOnDownloadFinishSet.remove(req);
-			// TODO notify that download is finished
+		Set<Entry<SentimentRequest, String>> entries = notifyOnDownloadFinishMap.entrySet();
+		synchronized(notifyOnDownloadFinishMap) {
+			Iterator<Entry<SentimentRequest, String>> it = entries.iterator();
+
+			while(it.hasNext()) {
+				Entry<SentimentRequest, String> e = it.next();
+				
+				if(e.getKey().getCompanyName().equals(company)) {
+					log.debug("notifying that download finished. req: " + e.getKey());
+					restClient.notifyInitialDownloadFinished(e.getKey(), e.getValue());
+					it.remove();
+				}
+			}
 		}
 	}
 
 	
 	// TEST IF methods
 	@Override
-	public void setInitialDownloadsMap(Map<SentimentRequest, DownloadThread> dlMap) {
+	public void setInitialDownloadsMap(Map<String, DownloadThread> dlMap) {
 		initialDownloadsMap = dlMap;
 	}
 
 	@Override
-	public void setNotifyOnDownloadFinishSet(Set<SentimentRequest> notifySet) {
-		notifyOnDownloadFinishSet = notifySet;
+	public void setNotifyOnDownloadFinishMap(Map<SentimentRequest, String> notifyMap) {
+		notifyOnDownloadFinishMap = notifyMap;
 	}
 
 	@Override
@@ -112,6 +126,11 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	public static void recreateInstance() {
 		log.debug("recreateInstance()");
 		instance = new DownloadManagerServiceImpl();
+	}
+
+	@Override
+	public void setRestClient(DownloadManagerCallbackClient restClient) {
+		this.restClient = restClient;
 	}
 
 }

@@ -7,13 +7,16 @@ import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.service.DownloadManagerService;
 import aic12.project3.service.DownloadThread;
 import aic12.project3.service.TwitterAPI;
+import aic12.project3.service.rest.DownloadManagerCallbackClient;
 
 public interface DownloadManagerServiceTestIF extends DownloadManagerService {
 
-	void setInitialDownloadsMap(Map<SentimentRequest, DownloadThread> dlMap);
-
-	void setNotifyOnDownloadFinishSet(Set<SentimentRequest> notifySet);
+	void setInitialDownloadsMap(Map<String, DownloadThread> dlMap);
 
 	void setTwitterAPI(TwitterAPI twitterAPI);
+
+	void setNotifyOnDownloadFinishMap(Map<SentimentRequest, String> notifyMap);
+
+	void setRestClient(DownloadManagerCallbackClient restClient);
 
 }

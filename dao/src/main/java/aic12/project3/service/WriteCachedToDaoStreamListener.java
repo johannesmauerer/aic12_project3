@@ -23,13 +23,16 @@ public class WriteCachedToDaoStreamListener implements StatusListener {
 	private ITweetDAO tweetDao;
 	private int cacheSize;
 	private List<TweetDTO> tweetsCache;
+	private TwitterAPI twitterApi;
 
-	public WriteCachedToDaoStreamListener(int tweetsCacheSize) {
+	public WriteCachedToDaoStreamListener(int tweetsCacheSize, TwitterAPI twitterApi) {
 		log.debug("constr; cacheSize: " + tweetsCacheSize);
 		
 		cacheSize = tweetsCacheSize;
 		tweetsCache = Collections.synchronizedList(new ArrayList<TweetDTO>(cacheSize));
 		tweetDao = MongoTweetDAO.getInstance(); // spring should manage this instead
+		
+		this.twitterApi = twitterApi;
 	}
 	
 	@Override
@@ -39,9 +42,17 @@ public class WriteCachedToDaoStreamListener implements StatusListener {
 		String text = status.getText();
 		Date date = status.getCreatedAt();
 		
+		TweetDTO tweet = new TweetDTO(Long.toString(id), text, date);
+		
+		// check tweet for registered companies
+		for(String companyName : twitterApi.getTrackedCompanies()) {
+			if(status.getText().contains(companyName)) {
+				tweet.getCompanies().add(companyName);
+			}
+		}
+		
 //		log.debug("tweet; cached tweets: " + tweetsCache.size() + " DAO: " + tweetDao);
 		
-		TweetDTO tweet = new TweetDTO(Long.toString(id), text, date);
 		
 		tweetsCache.add(tweet);
 //		
