@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.dao.tweetsManagement.TweetsDAO;
 
 /**
  * Main implementation of the Request Queue
@@ -15,7 +14,6 @@ import aic12.project3.dao.tweetsManagement.TweetsDAO;
 public class RequestQueueReadyImpl extends RequestQueueReady {
 
 	private static RequestQueueReadyImpl instance = new RequestQueueReadyImpl();
-	@Autowired private TweetsDAO tweetsDAO;
 
 	/**
 	 * Singleton method
