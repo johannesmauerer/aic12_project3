@@ -13,6 +13,7 @@ import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.dao.tweetsManagement.DownloadManagerClient;
+import aic12.project3.service.util.ManagementConfig;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -27,6 +28,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 	@Autowired private RequestQueueReady requestQueueReady;
 	@Autowired private DownloadManagerClient downloadManager;
+	@Autowired protected ManagementConfig config;
 	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
 
 	/**
@@ -78,8 +80,8 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 		} else {
 			// Send to download Manager
-			// TODO implement callback
-			downloadManager.notifyOnInitialDownloadFinished(req, "");
+			downloadManager.notifyOnInitialDownloadFinished(req, 
+					config.getProperty("downloadManagerCallbackURL"));
 		}
 
 	}
