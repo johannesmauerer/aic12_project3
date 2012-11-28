@@ -60,7 +60,7 @@ public class Test
     
     public static void postRequest(){
     	SentimentRequest request = new SentimentRequest();
-    	request.setId(1);
+    	request.setId("1");
     	request.setCompanyName("ABC");
     	request.setFrom(new Date(System.currentTimeMillis()-new Long("4000000000")));
     	request.setTo(new Date(System.currentTimeMillis()));
