@@ -13,15 +13,12 @@ public class TwitterAPITest {
 
 	public static void main(String args[]) {
 		TwitterAPI api = TwitterAPIImpl.getInstance();
-		
-		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
-		req.setCompanyName("linux");
-		req.setFrom(new Date(System.currentTimeMillis() - 84600000)); // minus one day
-		req.setTo(new Date());
-		
-//		List<TweetDTO> tweets = api.getAllTweets(req);
+
+		String company = "Linux";
+
+//		List<TweetDTO> tweets = api.getAllTweets(company);
 //		System.out.println(tweets);
 //		System.out.println(tweets.size());
-		api.registerForTwitterStream(req);
+		api.registerForTwitterStream(company);
 	}
 }

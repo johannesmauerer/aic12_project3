@@ -7,38 +7,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class UserDTO
 {
 	@Id
-    private String userName;
-	private String companyName;
-	private String pwHash;
+    private String companyName;
 
-	public UserDTO(String companyName) {
-		this.companyName = companyName;
-	}
-
-	public String getUserName()
+    public String getCompanyName()
     {
-        return userName;
+        return companyName;
     }
 
-    public void setUserName(String userName)
+    public void setCompanyName(String companyName)
     {
-        this.userName = userName;
+        this.companyName = companyName;
     }
-
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-
-	public String getPwHash() {
-		return pwHash;
-	}
-
-	public void setPwHash(String pwHash) {
-		this.pwHash = pwHash;
-	}
-
 }

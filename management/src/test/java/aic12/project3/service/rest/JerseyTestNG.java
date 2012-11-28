@@ -1,7 +1,5 @@
 package aic12.project3.service.rest;
 
-import javax.servlet.ServletContextListener;
-
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.request.RequestContextListener;
 import org.testng.annotations.AfterTest;
@@ -16,9 +14,9 @@ import com.sun.jersey.test.framework.WebAppDescriptor;
 
 public class JerseyTestNG {
 
-	
+
 	 private static JerseyTest jersyTest;
-	 
+
 	 @BeforeSuite()
 	    public void init() {
 	        jersyTest = new JerseyTest( new WebAppDescriptor.Builder(
@@ -32,7 +30,7 @@ public class JerseyTestNG {
 
 	        };
 	    }
-	 
+
 	  public WebResource resource() {
 	        return jersyTest.resource();
 	    }
@@ -53,6 +51,6 @@ public class JerseyTestNG {
 	        throws Exception {
 	        jersyTest.tearDown();
 	    }
-	
-	
+
+
 }

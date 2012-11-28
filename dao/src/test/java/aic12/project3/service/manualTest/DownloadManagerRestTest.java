@@ -31,9 +31,20 @@ public class DownloadManagerRestTest {
 
 		client = Client.create(config);
 
-		postRequestInitialDownload();
+//		postRequestInitialDownload();
 //		postRequestRegisterForStream();
+		getNotifyOnFinish();
 
+	}
+
+	private static void getNotifyOnFinish() {
+		System.out.println("sending get request (registerfortwitterstream): " + request);
+		WebResource resource = client.resource
+				("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/" +
+						"notifyoninitialdownloadfinished");
+        Boolean response = resource.queryParam("company", "microsoft")
+        		.queryParam("callback", "").get(Boolean.class);
+        System.out.println(response);
 	}
 
 	public static void postRequestRegisterForStream(){

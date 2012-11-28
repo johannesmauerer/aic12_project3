@@ -22,26 +22,15 @@ public class LoadBalancerTest extends SpringTest {
 
 	@Autowired RequestQueueReady rqr;
 	@Autowired LoadBalancer lb;
-	
-	@Test
-	public void testObserverForReadyQueue() {
-		
-		// Add Load Balancer as Observer
-		rqr.addObserver(lb);
-		SentimentRequest s = new SentimentRequest();
-		s.setId(UUID.randomUUID().toString());
-		s.setState(REQUEST_QUEUE_STATE.NEW);
-		rqr.addRequest(s);
-		
-	}
-	
+
+
 	@Test
 	public void testLoadBalancerBasic(){
 		// Check if init works
 		HashMap<String, Node> nodes = lb.getNodes();
 		printMap(nodes);
 	}
-	
+
 	public static void printMap(Map mp) {
 	    Iterator it = mp.entrySet().iterator();
 	    while (it.hasNext()) {

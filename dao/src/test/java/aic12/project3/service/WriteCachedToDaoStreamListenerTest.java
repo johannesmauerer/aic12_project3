@@ -19,23 +19,27 @@ import aic12.project3.service.WriteCachedToDaoStreamListener;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath:/app-config.xml")
 public class WriteCachedToDaoStreamListenerTest {
-	
+
 	@Before
 	public void setUp() {
 	}
-	
+
 	@Test
 	public void test_onStatus_verifyWriteToDao() {
 		int cacheSize = 2;
-		WriteCachedToDaoStreamListener listener = new WriteCachedToDaoStreamListener(cacheSize);
-		
+		// mock twitterAPI
+		TwitterAPI api = mock(TwitterAPI.class);
+
+		WriteCachedToDaoStreamListener listener = new WriteCachedToDaoStreamListener(cacheSize, api);
+
 		//mock dao
 		ITweetDAO daoMock = mock(ITweetDAO.class);
 		listener.setTweetDao(daoMock);
-		
+
 		listener.onStatus(mock(Status.class));
 		listener.onStatus(mock(Status.class));
-		
+
 		verify(daoMock, times(1)).storeTweet(anyList()); // TODO check that this list contains those 2 tweets
+		verify(api, times(2)).getTrackedCompanies();
 	}
 }

@@ -13,37 +13,45 @@ import aic12.project3.dao.ITweetDAO;
 
 public class DownloadThread extends Thread {
 
-	private SentimentRequest request;
+	private String companyName;
 //	@Autowired // not working
 	private ITweetDAO tweetDao;
 //	@Autowired
 	private TwitterAPI twitter;
 	//@Autowired
 	private DownloadManagerService dlManagerService;
-	
+
 	private Logger log = Logger.getLogger(DownloadThread.class);
-	
-	public DownloadThread(SentimentRequest req) {
+
+	public DownloadThread(String company) {
 		ApplicationContext ctx = new GenericXmlApplicationContext("app-config.xml");
 		tweetDao = ctx.getBean(ITweetDAO.class);
 		twitter = ctx.getBean(TwitterAPI.class);
 		dlManagerService = ctx.getBean(DownloadManagerService.class);
-		request = req;
+		companyName = company;
 	}
 
 	@Override
 	public void run() {
 		// start download and save to db
-		log.info("starting initial download for " + request.getCompanyName());
-		List<TweetDTO> tweets = twitter.getAllTweets(request);
-		
+		log.info("starting initial download for " + companyName);
+		List<TweetDTO> tweets = twitter.getAllTweets(companyName);
+
+		for(TweetDTO t : tweets) {
+			t.getCompanies().add(companyName);
+		}
+
+		// index all old tweets for our new company
+		log.debug("indexing old tweets for company: " + companyName);
+		tweetDao.indexCompany(companyName);
+
 		// save to dao
-		log.debug("saving " + tweets.size() + " tweets from initial download for " + request.getCompanyName());
+		log.debug("saving " + tweets.size() + " tweets from initial download for " + companyName);
 		tweetDao.storeTweet(tweets);
-		
+
 		// notify DownloadManagerService when finished and terminate
-		dlManagerService.initialDownloadFinished(request, this);
-		log.info("finished initial download for " + request.getCompanyName());
+		dlManagerService.initialDownloadFinished(companyName, this);
+		log.info("finished initial download for " + companyName);
 	}
 
 }

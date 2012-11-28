@@ -3,12 +3,15 @@ package aic12.project3.service.requestManagement;
 import static org.junit.Assert.*;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sun.istack.logging.Logger;
 import com.sun.jersey.api.client.Client;
@@ -19,12 +22,16 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
+import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
+import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.SpringTest;
 
 
 public class RequestAnalysisTest extends SpringTest {
-	
+
+	@Autowired RequestAnalysis requestAnalysis;
+
 	@Test
 	public void databaseConnection(){
 
@@ -45,5 +52,18 @@ public class RequestAnalysisTest extends SpringTest {
 	        	System.out.println(t);
 	        }
 	        */
+	}
+
+	@Test
+	public void acceptRequestTest(){
+
+		SentimentRequest req = new SentimentRequest();
+		req.setId(UUID.randomUUID().toString());
+		req.setState(REQUEST_QUEUE_STATE.NEW);
+		req.setCompanyName("Microsoft");
+		req.setFrom(new Date());
+		req.setTo(new Date());
+		requestAnalysis.acceptRequest(req);
+
 	}
 }

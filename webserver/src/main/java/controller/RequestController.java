@@ -13,6 +13,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 
+import rest.RequestService;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -31,7 +33,11 @@ public class RequestController {
 	private String companyName;
     private Date from;
     private Date to;
+    private String response;
+    private String statistics;
 
+    private RequestService requestService;
+    
     public String getCompanyName()
     {
         return companyName;
@@ -89,14 +95,42 @@ public class RequestController {
     	//System.out.println("REQ:" + request.getCompanyName() + "," + request.getFrom() + "," + request.getTo());
     	//System.out.println("id:" + this.id);
     	
-    	//createRestRequest(request);
+    	requestService = new RequestService();
+    	//response = requestService.sendRequestToAnalysis(request);
+
+    	return "response";
+    }
+	
+    public String getStatistics(){
     	
-    	return "request";
+    	requestService = new RequestService();
+    	
+    	//statistics = requestService.getStatistics();
+
+    	return "statistics";
     }
 
+	public String refresh(){
+		System.out.println("REFRESH PRESSED");
+		if(this.response==null){
+			System.out.println("RESPONSE null");
+		}else{
+			System.out.println(this.response);
+		}
+		System.out.println(response);
+		this.response = "hey";
+		if(this.response==null){
+			System.out.println("REDIRECT WAIT");
+			return "wait";
+		}
+		else {
+			System.out.println("REDIRECT RESPONSE");
+			return "response";
+		}
+	}
+	
 	public UUID getId() {
 		return id;
 	}
-		
 	
 }

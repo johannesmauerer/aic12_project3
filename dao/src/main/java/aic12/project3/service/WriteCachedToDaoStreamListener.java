@@ -18,31 +18,42 @@ import twitter4j.StatusListener;
 
 public class WriteCachedToDaoStreamListener implements StatusListener {
 	private static Logger log = Logger.getLogger(WriteCachedToDaoStreamListener.class);
-	
+
 //	@Autowired // AUTOWIRE doesn't work here, why ever...
 	private ITweetDAO tweetDao;
 	private int cacheSize;
 	private List<TweetDTO> tweetsCache;
+	private TwitterAPI twitterApi;
 
-	public WriteCachedToDaoStreamListener(int tweetsCacheSize) {
+	public WriteCachedToDaoStreamListener(int tweetsCacheSize, TwitterAPI twitterApi) {
 		log.debug("constr; cacheSize: " + tweetsCacheSize);
-		
+
 		cacheSize = tweetsCacheSize;
 		tweetsCache = Collections.synchronizedList(new ArrayList<TweetDTO>(cacheSize));
 		tweetDao = MongoTweetDAO.getInstance(); // spring should manage this instead
+
+		this.twitterApi = twitterApi;
 	}
-	
+
 	@Override
 	public void onStatus(Status status) {
 		//cache new status update, write to dao only after a few updates
 		long id = status.getId();
 		String text = status.getText();
 		Date date = status.getCreatedAt();
-		
-//		log.debug("tweet; cached tweets: " + tweetsCache.size() + " DAO: " + tweetDao);
-		
+
 		TweetDTO tweet = new TweetDTO(Long.toString(id), text, date);
-		
+
+		// check tweet for registered companies
+		for(String companyName : twitterApi.getTrackedCompanies()) {
+			if(status.getText().contains(companyName)) {
+				tweet.getCompanies().add(companyName);
+			}
+		}
+
+//		log.debug("tweet; cached tweets: " + tweetsCache.size() + " DAO: " + tweetDao);
+
+
 		tweetsCache.add(tweet);
 //		
 //		// write to dao if enough tweets are cached
@@ -69,7 +80,7 @@ public class WriteCachedToDaoStreamListener implements StatusListener {
 	public void onTrackLimitationNotice(int arg0) { }
 
 	// TESTING methods
-	
+
 	/**
 	 * method only used for testing
 	 */

@@ -19,9 +19,9 @@ public class LoginController {
 	//private static Logger myLogger = Logger.getLogger("JULI"); //import java.util.logging.Logger;
 	
 	private String name;
-	private RequestService requestService;
- 
 	private String pastRequests;
+	
+	private RequestService requestService;
 	
 	public String getName() {
 		return name;
@@ -32,39 +32,39 @@ public class LoginController {
 	}
 	
 	public String loginAction(){
-		System.out.println("STDOUT USER before create");
-    	
+		    	
 		/*
 		 * send request to requestService if company already reqistered
-		 */
-		System.out.println("Before creating onject");
+		 
 		requestService = new RequestService();
 		String response = requestService.findCompany(this.name);
 		
-		/*
+		
 		 * if company not yet registered
-		 */
+		 
 		if(response==null){
-			/*
+			
 			 * create user
-			 */
-			UserDTO user = new UserDTO(this.name);
+			 
+			UserDTO user = new UserDTO();
+			user.setCompanyName(this.name);
+			requestService.insertCompany(this.name);
 			System.out.println("COMPANY:" + user.getCompanyName() + " registered");
 			
-			return "login";
-			
 		} 
-		/*
+		
 		 * if company already registered
-		 */
+		 
 		else {
 			
-			/*
+			
 			 * request all company's previous requests
-			 */
+			 
 			pastRequests = requestService.getCompanyRequests(this.name);
 			return "loggedIn";
-		}
+		}*/
+		
+		return "login";
 		
 	}
 

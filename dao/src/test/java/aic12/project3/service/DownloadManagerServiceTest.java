@@ -25,7 +25,7 @@ import aic12.project3.service.test.DownloadManagerServiceTestIF;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath:/app-config.xml")
 public class DownloadManagerServiceTest {
-	
+
 	private DownloadManagerServiceTestIF dlService;
 
 	@Before
@@ -33,7 +33,7 @@ public class DownloadManagerServiceTest {
 		//dlRestIF = mock(DownloadManagerRestInterface.class);
 		dlService = DownloadManagerServiceImpl.getInstance();
 	}
-	
+
 	@After
 	public void tearDown() {
 		DownloadManagerServiceImpl.recreateInstance();
@@ -41,89 +41,89 @@ public class DownloadManagerServiceTest {
 
 	@Test
 	public void test_startInitialDownload() {
-		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
-		
+		String company = "";
+
 		// mock download threads map
-		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
+		Map<String, DownloadThread> dlMap = mock(Map.class);
 		dlService.setInitialDownloadsMap(dlMap);
 
-		dlService.startInitialDownload(req);
-		
-		verify(dlMap, times(1)).put(eq(req), any(DownloadThread.class));
+		dlService.startInitialDownload(company);
+
+		verify(dlMap, times(1)).put(eq(company), any(DownloadThread.class));
 		// no cleanup of thread is needed, since this is not a real SentimentReq
 	}
-	
+
 	@Test
 	public void test_isInitialDownloadFinished_notFinished() {
-		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
-		
-		// mock download threads map
-		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
-		dlService.setInitialDownloadsMap(dlMap);
-		when(dlMap.containsKey(req)).thenReturn(true);
+		String company = "";
 
-		boolean actual = dlService.isInitialDownloadFinished(req);
-		
+		// mock download threads map
+		Map<String, DownloadThread> dlMap = mock(Map.class);
+		dlService.setInitialDownloadsMap(dlMap);
+		when(dlMap.containsKey(company)).thenReturn(true);
+
+		boolean actual = dlService.isInitialDownloadFinished(company);
+
 		assertThat(actual, is(false));
 	}
-	
+
 	@Test
 	public void test_isInitialDownloadFinished_isFinished() {
-		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
-		
-		// mock download threads map
-		Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
-		dlService.setInitialDownloadsMap(dlMap);
-		when(dlMap.containsKey(req)).thenReturn(false);
+		String company = "";
 
-		boolean actual = dlService.isInitialDownloadFinished(req);
-		
+		// mock download threads map
+		Map<String, DownloadThread> dlMap = mock(Map.class);
+		dlService.setInitialDownloadsMap(dlMap);
+		when(dlMap.containsKey(company)).thenReturn(false);
+
+		boolean actual = dlService.isInitialDownloadFinished(company);
+
 		assertThat(actual, is(true));
 	}
-	
+
 	@Test
 	public void test_notifyOnInitialDownloadFinished() {
-		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
-		
+		String company = "";
+
 		// mock set of req to notify on
-		Set<SentimentRequest> notifySet = mock(Set.class);
-		dlService.setNotifyOnDownloadFinishSet(notifySet);
-		
-		dlService.notifyOnInitialDownloadFinished(req);
-		
-		verify(notifySet, times(1)).add(req);
+		Map<String, String> notifyMap = mock(Map.class);
+		dlService.setNotifyOnDownloadFinishMap(notifyMap);
+
+		dlService.notifyOnInitialDownloadFinished(company, "");
+
+		verify(notifyMap, times(1)).put(company, "");
 	}
-	
+
     @Test
     public void test_initialDownloadFinished_noNotify() {
-        SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
+        String company = "";
 
-        DownloadThread thread = new DownloadThread(req);
+        DownloadThread thread = new DownloadThread(company);
         // mock download threads map
-        Map<SentimentRequest, DownloadThread> dlMap = mock(Map.class);
+        Map<String, DownloadThread> dlMap = mock(Map.class);
         dlService.setInitialDownloadsMap(dlMap);
-        when(dlMap.get(req)).thenReturn(thread);
-        // mock notifyOnDownloadFinishSet
-        Set<SentimentRequest> notifySet = mock(Set.class);
-        dlService.setNotifyOnDownloadFinishSet(notifySet);
+        when(dlMap.get(company)).thenReturn(thread);
+        // mock notifyOnDownloadFinishMap
+		Map<String, String> notifySet = mock(Map.class);
+        dlService.setNotifyOnDownloadFinishMap(notifySet);
 
-        when(notifySet.contains(req)).thenReturn(false);
+        when(notifySet.get(company)).thenReturn(null);
 
-        dlService.initialDownloadFinished(req, thread);
+        dlService.initialDownloadFinished(company, thread);
 
-        verify(dlMap, times(1)).remove(req);
-        verify(notifySet, times(1)).contains(req);
+        verify(dlMap, times(1)).remove(company);
+        verify(notifySet, times(1)).get(company);
     }
     
     @Test
     public void test_registerForTwitterStream() {
-    	SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
+    	String company = "";
     	
     	TwitterAPI twitterMock = mock(TwitterAPI.class);
     	dlService.setTwitterAPI(twitterMock);
     	
-    	dlService.registerForTwitterStream(req);
+    	dlService.registerForTwitterStream(company);
     	
-    	verify(twitterMock, times(1)).registerForTwitterStream(req);
+    	verify(twitterMock, times(1)).registerForTwitterStream(company);
     }
 }

@@ -18,9 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.common.beans.SentimentRequestCallback;
-import aic12.project3.common.beans.SentimentResponse;
+import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.TweetList;
 import aic12.project3.common.dto.TweetDTO;
 import classifier.ClassifierBuilder;
@@ -40,15 +38,15 @@ import com.sun.jersey.spi.resource.Singleton;
 public class SentimentService
 {
     private WeightedMajority wm;
-    private Map<UUID, SentimentResponse> map;
+    private Map<UUID, SentimentProcessingRequest> map;
     private WebResource resource;
 
     public SentimentService() throws Exception
     {
-        //Initialize map
-        map = new ConcurrentHashMap<UUID, SentimentResponse>();
+        // Initialize map
+        map = new ConcurrentHashMap<UUID, SentimentProcessingRequest>();
 
-        //Initialize DAO access client
+        // Initialize DAO access client
         Properties properties = new Properties();
         properties.load(SentimentService.class.getClassLoader().getResourceAsStream("config.properties"));
 
@@ -77,8 +75,10 @@ public class SentimentService
     @Path("analyze")
     @Consumes("application/json")
     @Produces("application/json")
-    public SentimentResponse analyze(SentimentRequest request)
+    public SentimentProcessingRequest analyze(SentimentProcessingRequest request)
     {
+        request.setTimestampStartOfAnalysis(System.currentTimeMillis());
+
         try
         {
             // Get all tweets from DB
@@ -86,7 +86,7 @@ public class SentimentService
 
             try
             {
-                return calculateSentiment(tweets.getList());
+                return calculateSentiment(request, tweets.getList());
             }
             catch (Exception e)
             {
@@ -103,7 +103,7 @@ public class SentimentService
     @Path("analyzeAsync")
     @Consumes("application/json")
     @Produces("application/json")
-    public UUID analyzeAsync(final SentimentRequest request)
+    public UUID analyzeAsync(final SentimentProcessingRequest request)
     {
         final UUID uuid = UUID.randomUUID();
 
@@ -112,6 +112,8 @@ public class SentimentService
             @Override
             public void run()
             {
+                request.setTimestampStartOfAnalysis(System.currentTimeMillis());
+
                 try
                 {
                     // Get all tweets from DB
@@ -119,7 +121,7 @@ public class SentimentService
 
                     try
                     {
-                        map.put(uuid, calculateSentiment(tweets.getList()));
+                        map.put(uuid, calculateSentiment(request, tweets.getList()));
                     }
                     catch (Exception e)
                     {
@@ -135,22 +137,24 @@ public class SentimentService
 
         return uuid;
     }
-    
+
     @POST
     @Path("analyzeCallback")
     @Consumes("application/json")
-    public void analyzeCallabck(final SentimentRequestCallback request)
+    public void analyzeCallabck(final SentimentProcessingRequest request)
     {
         new Thread()
         {
             @Override
             public void run()
             {
+                request.setTimestampStartOfAnalysis(System.currentTimeMillis());
+
                 try
                 {
                     // Get all tweets from DB
                     TweetList tweets = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
-                    
+
                     try
                     {
                         ClientConfig config = new DefaultClientConfig();
@@ -158,7 +162,7 @@ public class SentimentService
                         Client client = Client.create(config);
 
                         WebResource resource = client.resource(request.getCallbackAddress());
-                        resource.type(MediaType.APPLICATION_JSON).post(calculateSentiment(tweets.getList()));
+                        resource.type(MediaType.APPLICATION_JSON).post(calculateSentiment(request, tweets.getList()));
                     }
                     catch (Exception e)
                     {
@@ -176,7 +180,7 @@ public class SentimentService
     @GET
     @Path("getResponse")
     @Produces("application/json")
-    public SentimentResponse getResponse(@QueryParam("uuid") String uuid)
+    public SentimentProcessingRequest getResponse(@QueryParam("uuid") String uuid)
     {
         if (uuid == null || uuid.equals(""))
         {
@@ -185,7 +189,7 @@ public class SentimentService
 
         try
         {
-            SentimentResponse response = map.get(UUID.fromString(uuid));
+            SentimentProcessingRequest response = map.get(UUID.fromString(uuid));
             if (response != null)
             {
                 map.remove(UUID.fromString(uuid));
@@ -197,19 +201,22 @@ public class SentimentService
             throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("You must provide a valid uuid!").build());
         }
     }
-    
-    private SentimentResponse calculateSentiment(List<TweetDTO> list) throws Exception
+
+    private SentimentProcessingRequest calculateSentiment(SentimentProcessingRequest request, List<TweetDTO> list) throws Exception
     {
+        request.setTimestampDataFetched(System.currentTimeMillis());
+
         int i = 0;
         for (TweetDTO tweet : list)
         {
             i += wm.weightedClassify(tweet.getText()).getPolarity();
         }
 
-        SentimentResponse response = new SentimentResponse();
-        response.setSentiment((float) i / list.size() / 4);
-        response.setNumberOfTweets(list.size());
-        
-        return response;
+        request.setSentiment((float) i / list.size() / 4);
+        request.setNumberOfTweets(list.size());
+
+        request.setTimestampAnalyzed(System.currentTimeMillis());
+
+        return request;
     }
 }

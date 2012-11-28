@@ -1,5 +1,6 @@
 package aic12.project3.service;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,39 +24,38 @@ import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
-import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
 
 public class TwitterAPIImpl implements TwitterAPI {
-	
+
 	private static final int TWEETS_CACHE_SIZE = 5;
 
 	private static Logger log = Logger.getLogger(TwitterAPIImpl.class);
 
 	private static TwitterAPIImpl instance = new TwitterAPIImpl();
-	
+
 	private TwitterStream stream;
 	private List<String> trackedCompanies = new LinkedList<String>();
 
 	private TwitterAPIImpl() {
 		stream = new TwitterStreamFactory().getInstance();
-	    stream.addListener(new WriteCachedToDaoStreamListener(TWEETS_CACHE_SIZE));
+	    stream.addListener(new WriteCachedToDaoStreamListener(TWEETS_CACHE_SIZE, this));
 	}
-	
+
 	public static TwitterAPIImpl getInstance() {
 		log.debug("getInstance()");
 		return instance;
 	}
 
 	@Override
-	public List<TweetDTO> getAllTweets(SentimentRequest req) {
-		// abort if request is not valid
-		if(!validReqeuest(req)) {
+	public List<TweetDTO> getAllTweets(String company) {
+		// abort if company name is not valid
+		if(!validReqeuest(company)) {
 			return new LinkedList<TweetDTO>();
 		}
-		
+
 		List<TweetDTO> tweetDTOs = new LinkedList<TweetDTO>();
-		
+
 		Twitter twitter = new TwitterFactory().getInstance();
 
 		try {
@@ -64,8 +64,7 @@ public class TwitterAPIImpl implements TwitterAPI {
 			int pagesStartWith = 1;
 			for(int pageToGet = pagesStartWith; pageToGet <= maxPages; pageToGet++) {
 
-				// we must not respect toDate and fromDate here, twitter4j might not get us any tweets at all otherwise
-				Query query = new Query(req.getCompanyName());
+				Query query = new Query(company);
 				query.setLang("en");
 				query.setRpp(100);
 				query.setPage(pageToGet);
@@ -86,27 +85,32 @@ public class TwitterAPIImpl implements TwitterAPI {
             		javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
             			.entity("Failed to retrieve tweets").build());
         }
-		
+
 		return tweetDTOs;
 	}
-	
+
 	@Override
-	public void registerForTwitterStream(SentimentRequest req) {
+	public void registerForTwitterStream(String company) {
 		log.debug("registerForTwitterStream");
-		if(!validReqeuest(req)) {
-			log.debug("invalid reqest");
+		if(!validReqeuest(company)) {
+			log.debug("invalid companyName");
 			return;
 		}
 		/* TODO WARNING streamingAPI might
 			not compatible with google app engine (maybe this has changed)
 		 */
-		
-		trackedCompanies.add(req.getCompanyName());
+
+		trackedCompanies.add(company);
 		FilterQuery query = new FilterQuery().track(trackedCompanies.toArray(new String[trackedCompanies.size()]));
 		stream.filter(query);
 	}
 
-	private boolean validReqeuest(SentimentRequest req) {
-		return req.getCompanyName() != null; // we must not respect dates here
+	private boolean validReqeuest(String company) {
+		return company != null && ! "".equals(company);
+	}
+
+	@Override
+	public List<String> getTrackedCompanies() {
+		return Collections.unmodifiableList(trackedCompanies);
 	}
 }
