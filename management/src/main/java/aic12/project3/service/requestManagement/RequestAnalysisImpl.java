@@ -9,6 +9,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
@@ -42,7 +43,13 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 			requestQueueReady.addRequest(req);
 
 			// Check if Tweets are there
-			// this.checkDownloaded(req.getId());			
+			// this.checkDownloaded(req.getId());
+			// TODO: Important, change!
+			logger.info("No check if downloaded");
+			logger.info("Request with company Name " + req.getCompanyName() + " ready for processing");
+			req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
+			requestQueueReady.addRequest(req);
+			
 		} else {
 			// Update request in Request Queue
 			requestQueueReady.addRequest(req);

@@ -1,6 +1,7 @@
 package aic12.project3.common.beans;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Sub-processing part of Sentiment Request
@@ -11,6 +12,7 @@ import java.util.Date;
 
 public class SentimentProcessingRequest {
 	
+	private String id;
 	private String parentID;
     private String companyName;
     private Date from;
@@ -21,6 +23,14 @@ public class SentimentProcessingRequest {
     private float sentiment;
     private int numberOfTweets;
     private String callbackAddress;
+    
+    public SentimentProcessingRequest(){
+    	this.id = UUID.randomUUID().toString();
+    }
+    
+    public String getId(){
+    	return this.id;
+    }
 
     /**
 	 * @return the parentID

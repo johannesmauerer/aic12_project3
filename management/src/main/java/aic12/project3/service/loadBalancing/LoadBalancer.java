@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.TweetList;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
@@ -40,7 +41,7 @@ public abstract class LoadBalancer implements Observer
 	@Autowired protected ManagementConfig config;
 	protected static Logger logger = Logger.getRootLogger();
 	protected HashMap<String, Node> nodes = new HashMap<String,Node> ();
-	protected HashMap<String, String> request_nodes = new HashMap<String, String> ();
+	protected HashMap<String, String> processRequest_nodes = new HashMap<String, String> ();
 
 	/**
 	 * Handle incoming updates as Observer
@@ -94,5 +95,11 @@ public abstract class LoadBalancer implements Observer
 	 * @param lastVisit
 	 */
 	public abstract void idleNodeHandling(final String id, final String lastVisit);
+	
+	/**
+	 * Accepts a processing request
+	 * @param req
+	 */
+	public abstract void acceptProcessingRequest(SentimentProcessingRequest req);
 
 }
