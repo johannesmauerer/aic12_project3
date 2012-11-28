@@ -47,4 +47,9 @@ private static Logger log = Logger.getLogger(MongoRequestDAO.class);
 		return mongoOperation.findOne(new Query(Criteria.where("_id").is(id)), SentimentRequest.class, "requests");
 	}
 
+    @Override
+    public List<SentimentRequest> getAllRequests()
+    {
+        return mongoOperation.findAll(SentimentRequest.class, "requests");
+    }
 }

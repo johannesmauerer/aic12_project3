@@ -1,12 +1,10 @@
 package aic12.project3.service.statistics;
 
+import aic12.project3.common.beans.StatisticsBean;
 
-/**
- * 
- * @author johannes
- *
- */
-public interface Statistics {
-	
+public interface Statistics
+{
+    StatisticsBean getStatistics();
 
+    StatisticsBean recalculateStatistics();
 }
