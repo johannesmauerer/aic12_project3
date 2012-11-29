@@ -95,7 +95,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		Client client = Client.create(config);
 
 		WebResource resource = client.resource(uri);
-		resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentRequest.class, s);
+		resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
 
 	}
 
