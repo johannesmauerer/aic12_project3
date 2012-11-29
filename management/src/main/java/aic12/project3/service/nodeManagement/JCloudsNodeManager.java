@@ -20,6 +20,7 @@ import org.jclouds.openstack.nova.v2_0.domain.ServerCreated;
 import org.jclouds.openstack.nova.v2_0.features.ServerApi;
 import org.jclouds.rest.RestContext;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -94,7 +95,7 @@ public class JCloudsNodeManager implements INodeManager{
 			ServerCreated created = serverApi.create(name, image, flavor);
 
 			if(created != null){
-					
+
 				close();
 				Node n = new Node(created.getName(), created.getId());
 
@@ -108,16 +109,7 @@ public class JCloudsNodeManager implements INodeManager{
 		return null;
 	}
 
-	private String getIp(String id) {
-		// Use List method to get IP
-		List<Node> list = this.listNodes();
-		for (Node n : list){
-			if (n.getId().equals(id)){
-				return n.getIp();
-			}
-		}
-		return "";
-	}
+
 
 	@Override
 	public boolean stopNode(String id) {
@@ -185,5 +177,48 @@ public class JCloudsNodeManager implements INodeManager{
 		close();
 		return nodeList;
 	}
+
+	@Override
+	public String getIp(final String id) {
+		init();
+
+		for (String zone: zones) {             
+
+			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);
+
+			FluentIterable<? extends Server> list = serverApi.listInDetail().concat();     
+
+			Predicate<Server> matchesServerIdPredicate = new Predicate<Server>() {
+				@Override
+				public boolean apply(Server server) {
+					return (server.getId().equals(id));
+				}              
+			};
+
+			for(Server server: list.filter(matchesServerIdPredicate)){
+				Multimap<String, Address> map = server.getAddresses();
+				Iterator<String> keyIterator = map.keySet().iterator();  
+
+				// Get Address (only one available, if not take last one)
+				String address = "";
+				while( keyIterator.hasNext( ) ) {  
+					Collection<Address> values = map.get( (String) keyIterator.next( ) );  
+					Iterator<Address> valuesIterator = values.iterator( );  
+					while(valuesIterator.hasNext()) {
+						Address ad = (Address) valuesIterator.next();
+						address = ad.getAddr();  
+					}    
+				}  
+				close();
+				return address;
+			}                              
+		}
+
+		close();
+		return null;
+	}
+
+
+
 
 }

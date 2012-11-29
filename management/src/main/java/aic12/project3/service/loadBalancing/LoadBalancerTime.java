@@ -278,7 +278,8 @@ public class LoadBalancerTime extends LoadBalancer {
 
 		Node n = nodes.get(this.getMostAvailableNode());
 		while (n!=null && processQueue.size()>0){
-			pollAndSend(this.getMostAvailableNode());			
+			pollAndSend(n.getId());	
+			n = nodes.get(this.getMostAvailableNode());
 		}
 
 	}
@@ -476,15 +477,22 @@ public class LoadBalancerTime extends LoadBalancer {
 			public void run()
 			{
 				boolean alive = false;
+				
+
 				do {
 					// TODO: Send poll request
 					// Receive answer true or false (alive or unalive
+					String ip = nm.getIp(id);
+					if (nm.getIp(id)!=null){
+						alive = true;
+					}
 					
 					if (alive){
 						// Change status
 						Node n = nodes.get(id);
 						n.setStatus(NODE_STATUS.IDLE);
-
+						n.setIp(ip);
+						
 						// Idle handling
 						String lastVisit = UUID.randomUUID().toString();
 						n.setLastVisitID(lastVisit);
@@ -504,9 +512,9 @@ public class LoadBalancerTime extends LoadBalancer {
 						// Wait for specified Time
 						
 						try {
-							Thread.sleep(10000);
+							
 							Thread.sleep(Integer.parseInt((String) config.getProperty("pollSentimentAliveInterval")));
-							alive = true;
+							
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -531,6 +539,27 @@ public class LoadBalancerTime extends LoadBalancer {
 		combineQueue.put(req.getParentID(), list);
 		
 		this.combineParts(req.getParentID());
+		
+		/*
+		 * Also change node state
+		 */
+		String id = this.processRequest_nodes.get(req.getId());
+		Node n = nodes.get(id);
+		n.setStatus(NODE_STATUS.IDLE);
+		
+		// Idle Handling
+		// Idle handling
+		String lastVisit = UUID.randomUUID().toString();
+		n.setLastVisitID(lastVisit);
+
+		nodes.put(id, n);
+
+		// Also do idle node handling
+		idleNodeHandling(id,lastVisit);
+		
+		// And remove from processRequest_nodes mapping
+		processRequest_nodes.remove(req.getId());
+		
 	}
 
 	/**

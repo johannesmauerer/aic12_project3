@@ -17,7 +17,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
-
+import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.util.ManagementConfig;
 
 /**
@@ -53,7 +53,12 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 
 		// TODO: ENable
 		// And save request to DB
-		// saveRequestToDB(req.getId());
+		saveRequestToDB(req.getId());
+		
+		// Delete request from queue if done
+		if (req.getState()==REQUEST_QUEUE_STATE.ARCHIVED){
+			readyQueue.remove(req.getId());
+		}
 
 		// Inform all Observers
 		super.setChanged();
@@ -90,7 +95,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		Client client = Client.create(config);
 
 		WebResource resource = client.resource(uri);
-		SentimentRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentRequest.class, s);
+		resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentRequest.class, s);
 
 	}
 
