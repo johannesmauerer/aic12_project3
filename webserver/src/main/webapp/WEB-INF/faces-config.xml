@@ -56,6 +56,10 @@
 	        <from-outcome>response</from-outcome>
 	        <to-view-id>/response.xhtml</to-view-id>
 	    </navigation-case>
+	    <navigation-case>
+	        <from-outcome>request</from-outcome>
+	        <to-view-id>/request.xhtml</to-view-id>
+	    </navigation-case>
 	</navigation-rule>
 	<!-- from request.xhtml navigation rule -->
 	<navigation-rule>

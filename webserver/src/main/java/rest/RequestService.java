@@ -30,10 +30,10 @@ public class RequestService {
 	protected Client client;
 	protected WebResource service;
 
-	private final String managementServiceUri = "http://10.09.10.09:8080"; 
-	private final String mongoServiceUri = "http://10.99.0.109:44444"; 
+	private final String managementServiceUri = "http://128.130.172.202:8080/management"; 
+	private final String mongoServiceUri = "http://128.130.172.202:8080/dao"; //"http://10.99.0.141:44444/sentimentanalysis";
 	
-	public UserDTO findCompany(String companyName) {
+	public String findCompany(String companyName) {
 
 		// Jersey Client Config
 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
@@ -43,24 +43,26 @@ public class RequestService {
 		URI uri = UriBuilder.fromUri(mongoServiceUri)
 				.path("userdao")
 				.path("find")
-				.queryParam(companyName).build();
-
+				.queryParam("user", companyName)
+				.build();
+		
 		// WebResource
 		service = client.resource(uri);
 
 		/*
 		 * first check response status
 		 */
+		System.out.println("GETTING STATUS");
 		Status status = service.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON).get(ClientResponse.class)
 				.getClientResponseStatus();
-
+		
+				
 		System.out.println("STATUS: " + status);
-		UserDTO response;
+		String response;
 		if (status.equals(Status.OK)) {
 			// Call Node
-			response = service.accept(MediaType.APPLICATION_JSON)
-					.type(MediaType.APPLICATION_JSON).get(UserDTO.class);
+			response = "found";
 		} else {
 			response = null;
 		}
@@ -70,7 +72,7 @@ public class RequestService {
 	}
 
 	public void insertCompany(UserDTO user) {
-
+	
 		// Jersey Client Config
 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 		client = Client.create(config);
@@ -87,8 +89,13 @@ public class RequestService {
 		/*
 		 * call insert user
 		 */
-		service.accept(MediaType.APPLICATION_JSON)
-				.type(MediaType.APPLICATION_JSON).post(UserDTO.class, user);
+		ClientResponse response = service.accept(MediaType.APPLICATION_JSON)
+			    .type(MediaType.APPLICATION_JSON).post(ClientResponse.class, user);
+			System.out.println(response); // this should print "no content 204 smthing
+			/*service.accept(MediaType.APPLICATION_JSON)
+			.type(MediaType.APPLICATION_JSON).post(UserDTO.class, user);*/
+		
+		
 	}
 
 	public SentimentRequestList getCompanyRequests(String companyName) {
@@ -101,7 +108,7 @@ public class RequestService {
 		URI uri = UriBuilder.fromUri(mongoServiceUri)
 				.path("requestdao")
 				.path("getallforcompany")
-				.queryParam(companyName)
+				.queryParam("company", companyName)
 				.build();
 
 		// WebResource
@@ -146,7 +153,7 @@ public class RequestService {
  		URI uri = UriBuilder.fromUri(mongoServiceUri)
  				.path("requestdao")
  				.path("getrequestbyid")
- 				.queryParam(id.toString())
+ 				.queryParam("id", id.toString())
  				.build();
 
  		// WebResource

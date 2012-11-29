@@ -16,6 +16,7 @@ import rest.RequestService;
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.StatisticsBean;
+import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 
 @ManagedBean
 @RequestScoped
@@ -86,6 +87,7 @@ public class RequestController {
     	request.setCompanyName(this.companyName);
     	request.setFrom(this.from);
     	request.setTo(this.to);
+    	request.setState(REQUEST_QUEUE_STATE.NEW);
     	    	
     	requestService = new RequestService();
     	requestService.sendRequestToAnalysis(request);
@@ -151,8 +153,33 @@ public class RequestController {
 
 
 	public String refresh(){
-		
-		getResponseFromDB();
+		        
+		SentimentProcessingRequest req = new SentimentProcessingRequest();
+    	req.setNumberOfTweets(657000);
+    	req.setSentiment(0.13f);
+    	req.setFrom(new Date());
+    	req.setTo(new Date());
+    	
+    	SentimentProcessingRequest pr1 = new SentimentProcessingRequest();
+    	pr1.setNumberOfTweets(12);
+    	pr1.setSentiment(0.56f);
+    	pr1.setFrom(new Date());
+    	pr1.setTo(new Date());
+    	
+    	SentimentProcessingRequest pr2 = new SentimentProcessingRequest();
+    	pr2.setNumberOfTweets(15);
+    	pr2.setSentiment(0.9f);
+    	pr2.setFrom(new Date());
+    	pr2.setTo(new Date());
+    	
+    	SentimentProcessingRequest pr3 = new SentimentProcessingRequest();
+    	pr3.setNumberOfTweets(9751);
+    	pr3.setSentiment(0.13f);
+    	pr3.setFrom(new Date());
+    	pr3.setTo(new Date());
+    	
+    	return "response";
+		/*getResponseFromDB();
 		if(this.response==null){
 			if(test!=null){
 				return "response";
@@ -163,7 +190,7 @@ public class RequestController {
 			
 			this.subResponse=response.getSubRequests();
 			return "response";
-		}
+		}*/
 		
 	}
 	

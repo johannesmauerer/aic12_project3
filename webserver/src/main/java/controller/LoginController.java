@@ -37,12 +37,12 @@ public class LoginController {
 	}
 	
 	public String loginAction(){
-		    	
+    	
 		/*
 		 * send request to requestService if company already reqistered
 		 */
 		setRequestService(new RequestService());
-		UserDTO response = requestService.findCompany(this.name);
+		String response = requestService.findCompany(this.name);
 		
 		/*
 		 * if company not yet registered
@@ -53,8 +53,9 @@ public class LoginController {
 			 */
 			UserDTO user = new UserDTO();
 			user.setCompanyName(this.name);
+			System.out.println("USER: " + user.getCompanyName() + " created.");
 			requestService.insertCompany(user);
-			
+			System.out.println("USER: " + user.getCompanyName() + " put into database.");
 			return "login";
 			
 		} 
@@ -87,8 +88,9 @@ public class LoginController {
 		requestStats.add(s2);
 		requestStats.add(s3);*/
 		
-		
+		System.out.println("USER: " + this.name + " - getting requests.");
 		SentimentRequestList listObject = requestService.getCompanyRequests(this.name);
+		System.out.println("USER: " + this.name + " - requests obtained.");
 		setPastRequest(listObject.getList());
 			
 		/*List<SentimentRequest> subRequests = pastRequests.getList();
