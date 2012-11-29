@@ -19,18 +19,19 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 
 	private Client client;
 	private final String SERVER_URI;
-//	@Autowired protected ManagementConfig propConfig;
+//	@Autowired
+	protected ManagementConfig propConfig = new ManagementConfig();
 	
 	public DownloadManagerClientRestImpl() {
 		ClientConfig config = new DefaultClientConfig();
         config.getFeatures()
         	.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
         client = Client.create(config);
-        SERVER_URI = "http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/";
+//        SERVER_URI = "http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/";
         // TODO fix spring setup to be able to use @autowired propConfig
-//        SERVER_URI = propConfig.getProperty("downloadManagerServer") + "/" +
-//        		propConfig.getProperty("downloadManagerDeployment") + "/" +
-//        		propConfig.getProperty("downloadManagerRestPath") + "/";
+        SERVER_URI = propConfig.getProperty("downloadManagerServer") + "/" +
+        		propConfig.getProperty("downloadManagerDeployment") + "/" +
+        		propConfig.getProperty("downloadManagerRestPath") + "/";
 	}
 	
 	@Override
