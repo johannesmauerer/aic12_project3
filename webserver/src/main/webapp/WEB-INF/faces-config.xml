@@ -21,7 +21,40 @@
 	    <navigation-case>
 	    	<from-action>#{user.loginAction}</from-action>
 	        <from-outcome>login</from-outcome>
+	        <to-view-id>/requestFirstTime.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{user.loginAction}</from-action>
+	        <from-outcome>loggedIn</from-outcome>
 	        <to-view-id>/request.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
+	<!-- from requestFirstTime.xhtml navigation rule -->
+	<navigation-rule>
+    	<from-view-id>/requestFirstTime.xhtml</from-view-id>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.sendToAnalysis}</from-action>
+	        <from-outcome>wait</from-outcome>
+	        <to-view-id>/wait.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.getStatistics}</from-action>
+	        <from-outcome>statistics</from-outcome>
+	        <to-view-id>/statistics.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
+	<!-- from wait.xhtml navigation rule -->
+	<navigation-rule>
+    	<from-view-id>/wait.xhtml</from-view-id>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.refresh}</from-action>
+	        <from-outcome>wait</from-outcome>
+	        <to-view-id>/wait.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.refresh}</from-action>
+	        <from-outcome>response</from-outcome>
+	        <to-view-id>/response.xhtml</to-view-id>
 	    </navigation-case>
 	</navigation-rule>
 	<!-- from request.xhtml navigation rule -->
@@ -32,6 +65,11 @@
 	        <from-outcome>response</from-outcome>
 	        <to-view-id>/response.xhtml</to-view-id>
 	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.getStatistics}</from-action>
+	        <from-outcome>statistics</from-outcome>
+	        <to-view-id>/statistics.xhtml</to-view-id>
+	    </navigation-case>
 	</navigation-rule>
 	<!-- from response.xhtml navigation rule -->
 	<navigation-rule>
@@ -40,9 +78,6 @@
 	        <from-outcome>start</from-outcome>
 	        <to-view-id>/login.xhtml</to-view-id>
 	    </navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-    	<from-view-id>/response.xhtml</from-view-id>
 	    <navigation-case>
 	        <from-outcome>analysis</from-outcome>
 	        <to-view-id>/request.xhtml</to-view-id>

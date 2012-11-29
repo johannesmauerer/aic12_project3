@@ -21,36 +21,13 @@
 					<h:graphicImage value="img/header.jpg"/>
 			</div>
 
-		<h2> Welcome back <i><h:outputText value="#{user.name}" /></i>!</h2> 
+		<h2> Welcome <i><h:outputText value="#{user.name}" /></i>!</h2> 
 		
-		 
-		<h:panelGrid id="panel" columns="5" border="1" cellpadding="0" cellspacing="2">
-
-			    <f:facet name="header">
-					<h:outputText id="title" value="Your previous sentiment analysis results" />
-				</f:facet>
-					<h:outputText value="Id" />
-		            <h:outputText value="Company Name" />
-		        	<h:outputText value="From" />
-		            <h:outputText value="To" />
-		            <h:outputText value="Number of Tweets" />
-		            
-				<c:forEach items="#{user.pastRequest}" var="pastReq">
-			        
-			            <h:outputText value="#{pastReq.id}" />
-			            <h:outputText value="#{pastReq.companyName}" />
-			        	<h:outputText value="#{pastReq.from}" />
-			            <h:outputText value="#{pastReq.to}" />
-			            <h:outputText value="#{pastReq.numberOfTweets}" />
-			    </c:forEach>
-			</h:panelGrid>
-			 
 		<h:form>
 			<div id="buttons">
 				<h:commandButton value="See Analysis Statistics" action="#{sentimentRequest.getAnalysisStatistics}"></h:commandButton>
 			</div>
 		</h:form>
-
 		<!-- setting companyName -->
 		<c:set value="#{user.name}" target="#{sentimentRequest}" property="companyName" />
 

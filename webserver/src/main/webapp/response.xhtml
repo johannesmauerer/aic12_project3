@@ -26,9 +26,24 @@
 		<f:view>
 			<h:form>
 				<div>
-					<h3>We found <i><h:outputText value="#{sentimentResponse.numberOfTweets}"/></i> concerning your company.</h3>
+					<h:panelGrid id="panel" columns="4" border="1" cellpadding="0" cellspacing="2">
 
-					<h3>Your final sentiment is<i><h:outputText value="#{sentimentResponse.sentiment}"/></i>.</h3>
+			    <f:facet name="header">
+					<h:outputText id="title" value="Your previous sentiment analysis results" />
+				</f:facet>
+					<h:outputText value="From" />
+		            <h:outputText value="To" />
+		        	<h:outputText value="Sentiment" />
+		            <h:outputText value="Number of Tweets" />
+			            
+				<c:forEach items="#{user.subResponse}" var="subReq">
+			        
+			            <h:outputText value="#{subReq.from}" />
+			            <h:outputText value="#{subReq.to}" />
+			            <h:outputText value="#{subReq.sentiment}" />
+			            <h:outputText value="#{subReq.numberOfTweets}" />
+			    </c:forEach>
+			</h:panelGrid>
 				</div>	
 
 				<div id="buttons">

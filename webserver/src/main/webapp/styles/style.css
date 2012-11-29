@@ -14,6 +14,12 @@
 #buttons {
 	margin-top: 1em;
 }
+#title {
+	foln-color: #240A80;
+}
+#panel {
+	background-color: #E4EBED;
+}
 #footer {
 	text-align: left;
 	font-size: 0.8em;
