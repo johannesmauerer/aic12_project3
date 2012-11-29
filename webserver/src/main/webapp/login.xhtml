@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+	<ui:composition >
+
+		<h:head >
+			<title>Advanced Internet Computing</title>
+			<link href="styles/style.css" rel="stylesheet" type="text/css"/>
+
+		</h:head>
+		<h:body id="body">
+
+			<div id="header">
+
+					<h:graphicImage value="img/header.jpg"/>
+			</div>
+			<f:view>
+			<h2>What does twitter says about your company?</h2> 
+
+				<h:form>
+					<h4>Enter your company name:</h4><h:inputText required="true" value="#{user.name}"></h:inputText>
+					<div id="buttons">
+						<h:commandButton value="Login" action="#{user.loginAction}" ></h:commandButton>
+			    	</div>
+
+				</h:form>
+				<div id="footer">
+					<h:graphicImage value="img/icone.jpg"/> 2012 AIC - Cloud computing
+				</div>
+			</f:view>
+		</h:body>
+	</ui:composition>
+</html>

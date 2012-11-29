@@ -14,14 +14,14 @@ public class DownloadManagerCallbackClientRestImpl implements
 		DownloadManagerCallbackClient {
 
 	private Client client;
-	
+
 	public DownloadManagerCallbackClientRestImpl() {
 		ClientConfig config = new DefaultClientConfig();
         config.getFeatures()
         	.put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
         client = Client.create(config);
 	}
-	
+
 	@Override
 	public void notifyInitialDownloadFinished(SentimentRequest req, String callback) {
 		WebResource resource = client.resource(callback);

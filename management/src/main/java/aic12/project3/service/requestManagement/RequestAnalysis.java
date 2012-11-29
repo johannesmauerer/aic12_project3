@@ -14,18 +14,18 @@ public abstract class RequestAnalysis implements Observer {
 	 * @param req
 	 */
 	public abstract void acceptRequest(SentimentRequest req);
-	
+
 	/**
 	 * Observer method, handling of updates in requestQueue
 	 */
 	public void update(Observable arg0, Object arg1) {
 		this.updateInQueue((String) arg1);
 	}
-	
+
 	/**
 	 * Delegated via Observer method
 	 * @param id
 	 */
 	protected abstract void updateInQueue(String id);
-	
+
 }

@@ -178,6 +178,7 @@ public class JCloudsNodeManager implements INodeManager{
 		return nodeList;
 	}
 
+
 	@Override
 	public String getIp(final String id) {
 		init();

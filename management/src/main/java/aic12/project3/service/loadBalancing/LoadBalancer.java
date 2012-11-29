@@ -80,7 +80,7 @@ public abstract class LoadBalancer implements Observer
 	 * @throws LoadBalancerException
 	 */
 	protected abstract String startNode();
-	
+
 	/**
 	 * Stops a node
 	 * @param id
@@ -88,7 +88,7 @@ public abstract class LoadBalancer implements Observer
 	public void stopNode(String id){
 		nm.stopNode(id);
 	}
-	
+
 	/**
 	 * Deal with currently Idle nodes
 	 * @param id

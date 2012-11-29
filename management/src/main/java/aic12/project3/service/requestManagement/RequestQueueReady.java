@@ -18,7 +18,7 @@ public abstract class RequestQueueReady extends Observable {
 
 	protected static Logger logger = Logger.getRootLogger();	
 	protected HashMap<String, SentimentRequest> readyQueue = new HashMap<String, SentimentRequest>();
-	
+
 	/**
 	 * Add a new request to the queue or update existing request
 	 * @param req The Request
@@ -38,14 +38,14 @@ public abstract class RequestQueueReady extends Observable {
 	public int getRequestQueueSize() {
 		return readyQueue.size();
 	}
-	
+
 	/**
 	 * Empty the request queue
 	 */
 	public void clearRequestQueue(){
 		this.readyQueue.clear();
 	}
-	
+
 	/**
 	 * Get a specific request by its ID
 	 * @param id
@@ -54,13 +54,13 @@ public abstract class RequestQueueReady extends Observable {
 	public SentimentRequest getRequest(String id){
 		return this.readyQueue.get(id);
 	}
-	
+
 	/**
 	 * Save a request to Database
 	 * @param req
 	 */
 	protected abstract void saveRequestToDB(String id);
-	
+
 	/**
 	 * Delete a request from the queue
 	 * @param id

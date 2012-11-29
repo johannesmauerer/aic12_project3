@@ -29,9 +29,9 @@ import aic12.project3.service.SpringTest;
 
 
 public class RequestAnalysisTest extends SpringTest {
-	
+
 	@Autowired RequestAnalysis requestAnalysis;
-	
+
 	@Test
 	public void databaseConnection(){
 
@@ -53,10 +53,13 @@ public class RequestAnalysisTest extends SpringTest {
 	        }
 	        */
 	}
-	
+
 	@Test
 	public void acceptRequestTest(){
 		/*
+=======
+
+>>>>>>> branch 'master' of https://github.com/johannesmauerer/aic12_project3.git
 		SentimentRequest req = new SentimentRequest();
 		req.setId(UUID.randomUUID().toString());
 		req.setState(REQUEST_QUEUE_STATE.NEW);
@@ -64,6 +67,7 @@ public class RequestAnalysisTest extends SpringTest {
 		req.setFrom(new Date());
 		req.setTo(new Date());
 		requestAnalysis.acceptRequest(req);
+<<<<<<< HEAD
 		*/
 		
 	}

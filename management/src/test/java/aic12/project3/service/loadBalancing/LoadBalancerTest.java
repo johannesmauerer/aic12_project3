@@ -22,15 +22,15 @@ public class LoadBalancerTest extends SpringTest {
 
 	@Autowired RequestQueueReady rqr;
 	@Autowired LoadBalancer lb;
-	
-	
+
+
 	@Test
 	public void testLoadBalancerBasic(){
 		// Check if init works
 		HashMap<String, Node> nodes = lb.getNodes();
 		printMap(nodes);
 	}
-	
+
 	public static void printMap(Map mp) {
 	    Iterator it = mp.entrySet().iterator();
 	    while (it.hasNext()) {

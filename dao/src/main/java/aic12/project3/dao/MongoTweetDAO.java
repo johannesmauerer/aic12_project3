@@ -27,23 +27,23 @@ import aic12.project3.dao.util.DateCountResult;
 
 public class MongoTweetDAO implements ITweetDAO{
 	private static Logger log = Logger.getLogger(MongoTweetDAO.class);
-	
+
 	private static MongoTweetDAO instance = new MongoTweetDAO();
-	
+
 	private MongoOperations mongoOperation;
-	
+
 	private MongoTweetDAO(){
 		super();
 		log.debug("constr");
 		ApplicationContext ctx = new GenericXmlApplicationContext("mongo-config.xml");
 		mongoOperation = (MongoOperations)ctx.getBean("mongoOperation");
 	}
-	
+
 	public static MongoTweetDAO getInstance() {
 		log.debug("getInstance()");
 		return instance;
 	}
-	
+
 	@Override
 	public void storeTweet(TweetDTO tweet) {
 		//Upsert workaround for addtoset (as niot fully implemented in springdata)
@@ -58,7 +58,7 @@ public class MongoTweetDAO implements ITweetDAO{
 			storeTweet(t);
 		}
 	}
-	
+
 	public void insertTweet(TweetDTO tweet) {
 		mongoOperation.insert(tweet);
 	}
@@ -67,7 +67,7 @@ public class MongoTweetDAO implements ITweetDAO{
 	public List<TweetDTO> searchTweet(String company, Date fromDate, Date toDate) {
 		return mongoOperation.find(new Query(Criteria.where("date").gte(fromDate).lte(toDate).and("companies").is(company)),TweetDTO.class, "tweets");
 	}
-	
+
 	@Override
 	public int indexCompany(String company){
 		List<TweetDTO> result = mongoOperation.find(new Query(Criteria.where("text").regex(company).and("companies").ne(company)),TweetDTO.class, "tweets");
@@ -92,7 +92,7 @@ public class MongoTweetDAO implements ITweetDAO{
 	public Long countTweet(String company, Date fromDate, Date toDate) {
 		return mongoOperation.count(new Query(Criteria.where("date").gte(fromDate).lte(toDate).and("companies").is(company)), "tweets");
 	}
-	
+
 	public HashMap<Date,Integer> countTweetPerDay(String company, Date fromDate, Date toDate){
 		HashMap<Date,Integer> ret = new HashMap<Date,Integer>();
 		GroupByResults<DateCountResult> result = mongoOperation.group(Criteria.where("date").gte(fromDate).lte(toDate).and("companies").is(company), 

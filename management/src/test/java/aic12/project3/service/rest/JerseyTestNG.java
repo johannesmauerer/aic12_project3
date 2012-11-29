@@ -15,9 +15,9 @@ import com.sun.jersey.test.framework.WebAppDescriptor;
 
 public class JerseyTestNG {
 
-	
+
 	 private static JerseyTest jersyTest;
-	 
+
 	 @BeforeSuite()
 	    public void init() {
 	        jersyTest = new JerseyTest( new WebAppDescriptor.Builder(
@@ -31,7 +31,7 @@ public class JerseyTestNG {
 
 	        };
 	    }
-	 
+
 	  public WebResource resource() {
 	        return jersyTest.resource();
 	    }
@@ -51,6 +51,6 @@ public class JerseyTestNG {
 	        throws Exception {
 	        jersyTest.tearDown();
 	    }
-	
-	
+
+
 }

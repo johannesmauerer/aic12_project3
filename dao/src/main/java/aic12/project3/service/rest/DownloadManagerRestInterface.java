@@ -23,16 +23,16 @@ public class DownloadManagerRestInterface {
 
 	private static Logger log =
 			Logger.getLogger(DownloadManagerRestInterface.class);
-	
+
 //	@Autowired
 	private DownloadManagerService dlManagerService;
-	
+
 	public DownloadManagerRestInterface() { 
 		// this should be handled by spring instead...
 		dlManagerService = DownloadManagerServiceImpl.getInstance();
 	}
-	
-	
+
+
 	@POST
     @Path("isinitaldownloadfinished")
     @Consumes("application/json")
@@ -41,7 +41,7 @@ public class DownloadManagerRestInterface {
 		log.info("isInitialDownloadFinished");
 		return dlManagerService.isInitialDownloadFinished(company);
 	}
-	
+
     @POST
     @Path("notifyoninitialdownloadfinished")
     @Consumes("application/json")

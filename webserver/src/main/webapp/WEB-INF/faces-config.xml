@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+    http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+    version="2.0">
+    <managed-bean>
+	  <managed-bean-name>user</managed-bean-name>
+	  <managed-bean-class>controller.LoginController</managed-bean-class>
+	  <managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+	  <managed-bean-name>sentimentRequest</managed-bean-name>
+	  <managed-bean-class>controller.RequestController</managed-bean-class>
+	  <managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<!-- from login.xhtml navigation rule -->
+	<navigation-rule>
+    	<from-view-id>/login.xhtml</from-view-id>
+	    <navigation-case>
+	    	<from-action>#{user.loginAction}</from-action>
+	        <from-outcome>login</from-outcome>
+	        <to-view-id>/requestFirstTime.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{user.loginAction}</from-action>
+	        <from-outcome>loggedIn</from-outcome>
+	        <to-view-id>/request.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
+	<!-- from requestFirstTime.xhtml navigation rule -->
+	<navigation-rule>
+    	<from-view-id>/requestFirstTime.xhtml</from-view-id>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.sendToAnalysis}</from-action>
+	        <from-outcome>wait</from-outcome>
+	        <to-view-id>/wait.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.getStatistics}</from-action>
+	        <from-outcome>statistics</from-outcome>
+	        <to-view-id>/statistics.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
+	<!-- from wait.xhtml navigation rule -->
+	<navigation-rule>
+    	<from-view-id>/wait.xhtml</from-view-id>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.refresh}</from-action>
+	        <from-outcome>wait</from-outcome>
+	        <to-view-id>/wait.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.refresh}</from-action>
+	        <from-outcome>response</from-outcome>
+	        <to-view-id>/response.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	        <from-outcome>request</from-outcome>
+	        <to-view-id>/request.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
+	<!-- from request.xhtml navigation rule -->
+	<navigation-rule>
+    	<from-view-id>/request.xhtml</from-view-id>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.sendToAnalysis}</from-action>
+	        <from-outcome>response</from-outcome>
+	        <to-view-id>/response.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	    	<from-action>#{sentimentRequest.getStatistics}</from-action>
+	        <from-outcome>statistics</from-outcome>
+	        <to-view-id>/statistics.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
+	<!-- from response.xhtml navigation rule -->
+	<navigation-rule>
+    	<from-view-id>/response.xhtml</from-view-id>
+	    <navigation-case>
+	        <from-outcome>start</from-outcome>
+	        <to-view-id>/login.xhtml</to-view-id>
+	    </navigation-case>
+	    <navigation-case>
+	        <from-outcome>analysis</from-outcome>
+	        <to-view-id>/request.xhtml</to-view-id>
+	    </navigation-case>
+	</navigation-rule>
+</faces-config>

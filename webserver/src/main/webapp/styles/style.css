@@ -1,0 +1,27 @@
+#header {
+	background-color: #E8F4F5;
+	background-repeat: repeat-x;	
+	display: block;
+	border: 1px solid #333366;
+}
+#body {
+	border: 1px solid #003366;	
+	font-family: sans-serif;
+	font-size: 80%;
+	border: 1px solid #003366;	
+	background-color: #ffffff;
+}
+#buttons {
+	margin-top: 1em;
+}
+#title {
+	foln-color: #240A80;
+}
+#panel {
+	background-color: #E4EBED;
+}
+#footer {
+	text-align: left;
+	font-size: 0.8em;
+	font-family: sans-serif;
+}

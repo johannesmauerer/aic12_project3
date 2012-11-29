@@ -3,18 +3,18 @@ package aic12.project3.service.nodeManagement;
 import aic12.project3.common.enums.NODE_STATUS;
 
 public class Node{
-	
+
 	private String id;
 	private String name;
 	private NODE_STATUS status;
 	private String ip;
 	private String lastVisitID;
-	
+
 	public Node(String name, String id){
 		this.name = name;
 		this.id = id;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -41,7 +41,7 @@ public class Node{
 	public void setStatus(NODE_STATUS status) {
 		this.status = status;
 	}
-	
+
 	public String toString(){
 		return this.id + ": Name: " + this.name + "Status: " + this.status.toString();
 	}

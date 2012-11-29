@@ -13,9 +13,9 @@ public class TwitterAPITest {
 
 	public static void main(String args[]) {
 		TwitterAPI api = TwitterAPIImpl.getInstance();
-		
+
 		String company = "Linux";
-		
+
 //		List<TweetDTO> tweets = api.getAllTweets(company);
 //		System.out.println(tweets);
 //		System.out.println(tweets.size());

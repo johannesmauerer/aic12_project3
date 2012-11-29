@@ -33,19 +33,19 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 			Collections.synchronizedMap(
 					new HashMap<String, DownloadThread>());
 	private Map<SentimentRequest, String> notifyOnDownloadFinishMap = Collections.synchronizedMap(new HashMap<SentimentRequest, String>());
-	
+
 	@Autowired
 	private TwitterAPI twitterAPI;
 	@Autowired
 	private DownloadManagerCallbackClient restClient;
-	
+
 	private static Logger log;
-	
+
 	private DownloadManagerServiceImpl() {
 		 log = Logger.getLogger(DownloadManagerServiceImpl.class);
 		 log.debug("constr");
 	}
-	
+
 	public static DownloadManagerServiceImpl getInstance() {
 		log.debug("getInstance()");
 		return instance;
@@ -57,7 +57,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		initialDownloadsMap.put(company, thread);
 		thread.start();
 	}
-	
+
 	@Override
 	public void registerForTwitterStream(String company) {
 		twitterAPI.registerForTwitterStream(company);
@@ -85,10 +85,10 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 			log.warn("initialDownloadFinished called with wrong thread reference!");
 			return; // some thing bad may happen otherwise...
 		}
-		
+
 		// remove from initalDownloadMap
 		initialDownloadsMap.remove(company);
-		
+
 		// check if we need to notify about finishing
 		Set<Entry<SentimentRequest, String>> entries = notifyOnDownloadFinishMap.entrySet();
 		synchronized(notifyOnDownloadFinishMap) {
@@ -96,7 +96,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 
 			while(it.hasNext()) {
 				Entry<SentimentRequest, String> e = it.next();
-				
+
 				if(e.getKey().getCompanyName().equals(company)) {
 					SentimentRequest req = e.getKey();
 					log.debug("notifying that download finished. req: " + req);
@@ -108,7 +108,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		}
 	}
 
-	
+
 	// TEST IF methods
 	@Override
 	public void setInitialDownloadsMap(Map<String, DownloadThread> dlMap) {
@@ -125,7 +125,7 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 		this.twitterAPI = twitterAPI;
 	}
 
-	
+
 	public static void recreateInstance() {
 		log.debug("recreateInstance()");
 		instance = new DownloadManagerServiceImpl();

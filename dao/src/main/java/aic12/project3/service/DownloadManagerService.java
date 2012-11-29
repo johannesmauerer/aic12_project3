@@ -5,7 +5,7 @@ import aic12.project3.common.beans.SentimentRequest;
 public interface DownloadManagerService {
 
 	public void startInitialDownload(String company);
-	
+
 	public boolean isInitialDownloadFinished(String company);
 
 	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callbackUrl);

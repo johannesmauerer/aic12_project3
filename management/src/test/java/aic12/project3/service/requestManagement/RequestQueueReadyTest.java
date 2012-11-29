@@ -18,7 +18,7 @@ public class RequestQueueReadyTest extends SpringTest {
 	@Autowired RequestQueueReady rqr;
 	@Test
 	public void testAddRequest() {
-		
+
 		//rqr.addRequest(new SentimentRequest());
 		//fail("Not yet implemented");
 	}
@@ -33,7 +33,7 @@ public class RequestQueueReadyTest extends SpringTest {
 		assertEquals(rqr.getRequestQueueSize(),3);
 		//fail("Not yet implemented");
 		 * */
-		 
+
 	}
 
 	@Test

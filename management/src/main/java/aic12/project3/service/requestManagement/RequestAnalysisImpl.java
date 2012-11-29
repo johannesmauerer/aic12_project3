@@ -133,10 +133,10 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	 */
 	@Override
 	protected void updateInQueue(String id) {
-		
+
 		// TODO: Remove
 		logger.info("New Update in Request Queue");
-		
+
 		switch (requestQueueReady.getRequest(id).getState()){
 		case NEW:
 			// Never applicable
@@ -152,7 +152,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 			SentimentRequest req = requestQueueReady.getRequest(id);
 			req.setState(REQUEST_QUEUE_STATE.ARCHIVED);
 			requestQueueReady.addRequest(req);
-			
+
 			// Delete from requestQueueReady
 			requestQueueReady.deleteRequestFromQueue(id);
 			break;

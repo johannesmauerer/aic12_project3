@@ -9,7 +9,7 @@ import aic12.project3.dao.tweetsManagement.DownloadManagerClientRestImpl;
 public class DownloadManagerTest {
 
 	public static void main(String[] args) {
-		
+
 		DownloadManagerClient client = new DownloadManagerClientRestImpl();
 		SentimentRequest req = new SentimentRequest(UUID.randomUUID().toString());
 		req.setCompanyName("microsoft");

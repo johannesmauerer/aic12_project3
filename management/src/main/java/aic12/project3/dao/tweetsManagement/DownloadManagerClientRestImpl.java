@@ -21,7 +21,7 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 	private final String SERVER_URI;
 //	@Autowired
 	protected ManagementConfig propConfig = new ManagementConfig();
-	
+
 	public DownloadManagerClientRestImpl() {
 		ClientConfig config = new DefaultClientConfig();
         config.getFeatures()
@@ -33,7 +33,7 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
         		propConfig.getProperty("downloadManagerDeployment") + "/" +
         		propConfig.getProperty("downloadManagerRestPath") + "/";
 	}
-	
+
 	@Override
 	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callback) {
 		SentimentRequestWithCallback reqWithCallback = new SentimentRequestWithCallback(req, callback);
@@ -59,7 +59,7 @@ public class DownloadManagerClientRestImpl implements DownloadManagerClient {
 		ressource.accept(MediaType.APPLICATION_JSON)
 			.type(MediaType.APPLICATION_JSON).post(companyName);
 	}
-	
+
 	@Override
 	public void registerForTwitterStream(String companyName) {
 		WebResource ressource = client.resource(SERVER_URI +

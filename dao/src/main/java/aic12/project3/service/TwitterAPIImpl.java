@@ -27,13 +27,13 @@ import twitter4j.TwitterStreamFactory;
 import aic12.project3.common.dto.TweetDTO;
 
 public class TwitterAPIImpl implements TwitterAPI {
-	
+
 	private static final int TWEETS_CACHE_SIZE = 5;
 
 	private static Logger log = Logger.getLogger(TwitterAPIImpl.class);
 
 	private static TwitterAPIImpl instance = new TwitterAPIImpl();
-	
+
 	private TwitterStream stream;
 	private List<String> trackedCompanies = new LinkedList<String>();
 
@@ -41,7 +41,7 @@ public class TwitterAPIImpl implements TwitterAPI {
 		stream = new TwitterStreamFactory().getInstance();
 	    stream.addListener(new WriteCachedToDaoStreamListener(TWEETS_CACHE_SIZE, this));
 	}
-	
+
 	public static TwitterAPIImpl getInstance() {
 		log.debug("getInstance()");
 		return instance;
@@ -53,9 +53,9 @@ public class TwitterAPIImpl implements TwitterAPI {
 		if(!validReqeuest(company)) {
 			return new LinkedList<TweetDTO>();
 		}
-		
+
 		List<TweetDTO> tweetDTOs = new LinkedList<TweetDTO>();
-		
+
 		Twitter twitter = new TwitterFactory().getInstance();
 
 		try {
@@ -85,10 +85,10 @@ public class TwitterAPIImpl implements TwitterAPI {
             		javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR)
             			.entity("Failed to retrieve tweets").build());
         }
-		
+
 		return tweetDTOs;
 	}
-	
+
 	@Override
 	public void registerForTwitterStream(String company) {
 		log.debug("registerForTwitterStream");
@@ -99,7 +99,7 @@ public class TwitterAPIImpl implements TwitterAPI {
 		/* TODO WARNING streamingAPI might
 			not compatible with google app engine (maybe this has changed)
 		 */
-		
+
 		trackedCompanies.add(company);
 		FilterQuery query = new FilterQuery().track(trackedCompanies.toArray(new String[trackedCompanies.size()]));
 		stream.filter(query);
