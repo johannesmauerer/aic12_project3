@@ -1,10 +1,24 @@
 package aic12.project3.service.requestManagement;
 
+import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
+
+import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
+
+import aic12.project3.service.util.ManagementConfig;
 
 /**
  * Main implementation of the Request Queue
@@ -15,6 +29,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 
 	private static RequestQueueReadyImpl instance = new RequestQueueReadyImpl();
 
+	@Autowired private ManagementConfig config;
 	/**
 	 * Singleton method
 	 */
@@ -36,8 +51,9 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		// Put request into Queue
 		readyQueue.put(req.getId(), req);
 
+		// TODO: ENable
 		// And save request to DB
-		saveRequestToDB(req.getId());
+		// saveRequestToDB(req.getId());
 
 		// Inform all Observers
 		super.setChanged();
@@ -60,7 +76,22 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	@Override
 	protected void saveRequestToDB(String id){
 		// TODO
-		// Call Database Interface and save request
+		SentimentRequest s = readyQueue.get(id);
+
+		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
+				.path(config.getProperty("databaseDeployment"))
+				.path(config.getProperty("databaseRequestRestPath"))
+				.path("insert")
+				.build();
+
+		// Jersey Client Config
+		ClientConfig config = new DefaultClientConfig();
+		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+		Client client = Client.create(config);
+
+		WebResource resource = client.resource(uri);
+		SentimentRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentRequest.class, s);
+
 	}
 
 	/**

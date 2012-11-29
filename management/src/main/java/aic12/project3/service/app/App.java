@@ -1,6 +1,9 @@
 package aic12.project3.service.app;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -11,7 +14,6 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
-import aic12.project3.service.communication.CommunicationServiceImpl;
 import aic12.project3.service.loadBalancing.LoadBalancer;
 import aic12.project3.service.requestManagement.RequestAnalysis;
 import aic12.project3.service.requestManagement.RequestAnalysisImpl;
@@ -83,7 +85,7 @@ public class App {
 		logger.info(s.createRequest("ABC", (new Date(System.currentTimeMillis()-40000000)).getTime(), (new Date(System.currentTimeMillis())).getTime()));
 		
 		*/
-
+	/*
 		ApplicationContext ctx = new GenericXmlApplicationContext("applicationContext.xml");
 		BeanFactory factory = ctx;
 
@@ -97,7 +99,47 @@ public class App {
 		req.setTo(new Date());
 
 		ra.acceptRequest(req);
-
+		*/
+		
+		// Dates
+				SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.S" );
+				df.setTimeZone( TimeZone.getDefault() );
+				
+				Date dt1 = new Date();
+				Date dt2 = new Date();
+				try {
+					 dt1 = df.parse( "2012-11-10 04:05:06.7" );
+					 dt2 = df.parse( "2012-11-20 04:05:06.7" );
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				SentimentRequest req = new SentimentRequest();
+				
+				
+				req.setId(UUID.randomUUID().toString());
+				req.setState(REQUEST_QUEUE_STATE.NEW);
+				req.setCompanyName("Microsoft");
+				req.setFrom(dt1);
+				req.setTo(dt2);
+				ApplicationContext ctx = new GenericXmlApplicationContext("applicationContextTest.xml");
+				BeanFactory factory = ctx;
+				
+				RequestAnalysis ra = (RequestAnalysis) factory.getBean("requestAnalysis");
+				
+				
+				
+				ra.acceptRequest(req);
+				
+				try {
+					Thread.sleep(10000);
+					logger.info("MOOOOOOAAAAAARRRR");
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+						
 		//System.out.println(LoadBalancer.getInstance().callRequest());
 	}
 }

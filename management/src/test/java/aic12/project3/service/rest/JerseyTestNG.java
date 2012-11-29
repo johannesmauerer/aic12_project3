@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeTest;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.spi.spring.container.servlet.SpringServlet;
 import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
@@ -22,7 +23,7 @@ public class JerseyTestNG {
 	        jersyTest = new JerseyTest( new WebAppDescriptor.Builder(
 	            "aic12.project3.service.rest" ).contextPath( "" )
 	            .contextParam(
-	                "contextConfigLocation", "classpath:applicationContext.xml" )
+	                "contextConfigLocation", "classpath:applicationContextTest.xml" )
 	            .servletClass( SpringServlet.class )
 	            .contextListenerClass( ContextLoaderListener.class )
 	            .requestListenerClass( RequestContextListener.class )
@@ -38,7 +39,6 @@ public class JerseyTestNG {
 	    public Client client() {
 	        return jersyTest.client();
 	    }
-
 
 	    @BeforeTest
 	    public void setUp()

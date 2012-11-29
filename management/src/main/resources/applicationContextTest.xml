@@ -8,16 +8,16 @@
 	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
  
 	<context:component-scan base-package="aic12"/>
-
+	
 	<!-- Normal runtime beans -->
 	<bean id="requestAnalysis" class="aic12.project3.service.requestManagement.RequestAnalysisImpl"/>
 	<bean id="requestQueueReady" class="aic12.project3.service.requestManagement.RequestQueueReadyImpl" factory-method="getInstance"/>
 	<bean id="loadBalancer" class="aic12.project3.service.loadBalancing.LoadBalancerTime" factory-method="getInstance" init-method="init" />
     <bean id="statistics" class="aic12.project3.service.statistics.StatisticsImpl" />
-    <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" />
+    <bean id="nodeManager" class="aic12.project3.service.nodeManagement.MockNodeManager" factory-method="getInstance" />
     <bean id="config" class="aic12.project3.service.util.ManagementConfig" />
     <bean id="downloadManagerClient" class="aic12.project3.dao.tweetsManagement.DownloadManagerClientRestImpl" />
-     
+
             
 <bean id="log4jInitialization"
  class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">

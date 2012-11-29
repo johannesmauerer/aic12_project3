@@ -3,6 +3,7 @@ package aic12.project3.service.requestManagement;
 import java.util.Observable;
 import java.util.Observer;
 
+import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 
 

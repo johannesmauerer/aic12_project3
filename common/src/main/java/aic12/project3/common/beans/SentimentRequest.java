@@ -25,6 +25,7 @@ public class SentimentRequest
     private long timestampProcessingDone;
     private long timestampRequestFinished;
     private List<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
+    private int numberOfParts;
 
 
     public SentimentRequest() { }
@@ -214,6 +215,14 @@ public class SentimentRequest
 	 */
 	public void setSubRequests(List<SentimentProcessingRequest> subRequests) {
 		this.subRequests = subRequests;
+	}
+	
+	public void setParts(int i){
+		this.numberOfParts = i;
+	}
+	
+	public int getParts(){
+		return this.numberOfParts;
 	}
 
 

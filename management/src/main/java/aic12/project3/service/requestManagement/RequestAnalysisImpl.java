@@ -9,10 +9,12 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.dao.tweetsManagement.DownloadManagerClient;
+import aic12.project3.service.util.ManagementConfig;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -27,6 +29,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 	@Autowired private RequestQueueReady requestQueueReady;
 	@Autowired private DownloadManagerClient downloadManager;
+	@Autowired protected ManagementConfig config;
 	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
 
 	/**
@@ -42,7 +45,13 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 			requestQueueReady.addRequest(req);
 
 			// Check if Tweets are there
-			// this.checkDownloaded(req.getId());			
+			// this.checkDownloaded(req.getId());
+			// TODO: Important, change!
+			logger.info("No check if downloaded");
+			logger.info("Request with company Name " + req.getCompanyName() + " ready for processing");
+			req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
+			requestQueueReady.addRequest(req);
+			
 		} else {
 			// Update request in Request Queue
 			requestQueueReady.addRequest(req);
@@ -78,8 +87,8 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 		} else {
 			// Send to download Manager
-			// TODO implement callback
-			downloadManager.notifyOnInitialDownloadFinished(req, "");
+			downloadManager.notifyOnInitialDownloadFinished(req, 
+					config.getProperty("downloadManagerCallbackURL"));
 		}
 
 	}
@@ -92,9 +101,9 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	private int getNumberOfTweets(SentimentRequest req){
 
 		// Build URI for REST Call
-		URI uri = UriBuilder.fromUri("http://128.130.172.202:8080")
-				.path("cloudservice-dao-1.0-SNAPSHOT")
-				.path("tweetdao")
+		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
+				.path(config.getProperty("databaseDeployment"))
+				.path(config.getProperty("databaseTweetRestPath"))
 				.path("find")
 				.queryParam("company", req.getCompanyName())
 				.queryParam("fromdate", req.getFrom())
