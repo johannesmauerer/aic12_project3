@@ -46,11 +46,13 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 			// Check if Tweets are there
 			// this.checkDownloaded(req.getId());
+			
 			// TODO: Important, change!
 			logger.info("No check if downloaded");
 			logger.info("Request with company Name " + req.getCompanyName() + " ready for processing");
 			req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
 			requestQueueReady.addRequest(req);
+			
 			
 		} else {
 			// Update request in Request Queue

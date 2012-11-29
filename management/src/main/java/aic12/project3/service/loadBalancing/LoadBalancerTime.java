@@ -278,7 +278,8 @@ public class LoadBalancerTime extends LoadBalancer {
 
 		Node n = nodes.get(this.getMostAvailableNode());
 		while (n!=null && processQueue.size()>0){
-			pollAndSend(this.getMostAvailableNode());			
+			pollAndSend(n.getId());	
+			n = nodes.get(this.getMostAvailableNode());
 		}
 
 	}
@@ -538,6 +539,27 @@ public class LoadBalancerTime extends LoadBalancer {
 		combineQueue.put(req.getParentID(), list);
 		
 		this.combineParts(req.getParentID());
+		
+		/*
+		 * Also change node state
+		 */
+		String id = this.processRequest_nodes.get(req.getId());
+		Node n = nodes.get(id);
+		n.setStatus(NODE_STATUS.IDLE);
+		
+		// Idle Handling
+		// Idle handling
+		String lastVisit = UUID.randomUUID().toString();
+		n.setLastVisitID(lastVisit);
+
+		nodes.put(id, n);
+
+		// Also do idle node handling
+		idleNodeHandling(id,lastVisit);
+		
+		// And remove from processRequest_nodes mapping
+		processRequest_nodes.remove(req.getId());
+		
 	}
 
 	/**
