@@ -15,6 +15,7 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.rest.DownloadManagerCallbackClient;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
@@ -97,8 +98,10 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 				Entry<SentimentRequest, String> e = it.next();
 				
 				if(e.getKey().getCompanyName().equals(company)) {
-					log.debug("notifying that download finished. req: " + e.getKey());
-					restClient.notifyInitialDownloadFinished(e.getKey(), e.getValue());
+					SentimentRequest req = e.getKey();
+					log.debug("notifying that download finished. req: " + req);
+					req.setState(REQUEST_QUEUE_STATE.DOWNLOADED); // TODO maybe this should be moved to management
+					restClient.notifyInitialDownloadFinished(req, e.getValue());
 					it.remove();
 				}
 			}

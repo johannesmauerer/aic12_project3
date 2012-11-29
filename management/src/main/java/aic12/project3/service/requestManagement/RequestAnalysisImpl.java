@@ -29,7 +29,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 	@Autowired private RequestQueueReady requestQueueReady;
 	@Autowired private DownloadManagerClient downloadManager;
-	@Autowired private ManagementConfig config;
+	@Autowired protected ManagementConfig config;
 	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
 
 	/**
@@ -87,8 +87,8 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 		} else {
 			// Send to download Manager
-			// TODO implement callback
-			downloadManager.notifyOnInitialDownloadFinished(req, "");
+			downloadManager.notifyOnInitialDownloadFinished(req, 
+					config.getProperty("downloadManagerCallbackURL"));
 		}
 
 	}
