@@ -61,10 +61,10 @@ public class SentimentService
         ClassifierBuilder cb = new ClassifierBuilder();
         WekaClassifier wc1 = cb.retrieveClassifier("weka.classifiers.bayes.NaiveBayes");
         WekaClassifier wc2 = cb.retrieveClassifier("weka.classifiers.trees.J48");
-        WekaClassifier wc3 = cb.retrieveClassifier("wlsvm.WLSVM");
+        //WekaClassifier wc3 = cb.retrieveClassifier("wlsvm.WLSVM");
         classifiers.add(wc1);
         classifiers.add(wc2);
-        classifiers.add(wc3);
+        //classifiers.add(wc3);
         wm = new WeightedMajority(classifiers);
 
         // Running test classification for further caching
