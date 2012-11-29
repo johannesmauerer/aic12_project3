@@ -19,7 +19,7 @@
  
   <!-- Factory bean that creates the Mongo instance -->
   <bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
-    <property name="host" value="localhost:44444"/>
+    <property name="host" value="10.99.0.141:44444"/>
   </bean>
  
  
