@@ -135,7 +135,7 @@ public class RequestController {
     	StatisticsBean test = new StatisticsBean();
     	test.setAverageDurationPerRequest(4464);
     	test.setAverageProcessingDurationPerTweet(4464);
-    	test.setAverageTotalDurationPerTweet(4564);
+    	test.setAverageTotalDurationPerTweet(4);
     	test.setMaximumDurationOfRequest(545646);
     	test.setMinimumDurationOfRequest(98789749);
     	this.statistics=test;*/
@@ -154,6 +154,7 @@ public class RequestController {
 
 	public String refresh(){
 		        
+		/*
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
     	req.setNumberOfTweets(657000);
     	req.setSentiment(0.13f);
@@ -178,8 +179,9 @@ public class RequestController {
     	pr3.setFrom(new Date());
     	pr3.setTo(new Date());
     	
-    	return "response";
-		/*getResponseFromDB();
+    	return "response";*/
+    	
+		getResponseFromDB();
 		if(this.response==null){
 			if(test!=null){
 				return "response";
@@ -190,7 +192,7 @@ public class RequestController {
 			
 			this.subResponse=response.getSubRequests();
 			return "response";
-		}*/
+		}
 		
 	}
 	

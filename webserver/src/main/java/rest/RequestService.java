@@ -31,7 +31,7 @@ public class RequestService {
 	protected WebResource service;
 
 	private final String managementServiceUri = "http://128.130.172.202:8080/management"; 
-	private final String mongoServiceUri = "http://128.130.172.202:8080/dao"; //"http://10.99.0.141:44444/sentimentanalysis";
+	private final String mongoServiceUri = "http://128.130.172.202:8080/dao";//"http://128.130.172.202:8080/dao"; //"http://10.99.0.141:44444/sentimentanalysis";
 	
 	public String findCompany(String companyName) {
 
@@ -180,7 +180,7 @@ public class RequestService {
 		service = client.resource(uri);
 
 		StatisticsBean response = service.accept(MediaType.APPLICATION_JSON)
-				.type(MediaType.APPLICATION_JSON).get(StatisticsBean.class);
+				.get(StatisticsBean.class);
 		
 		return response;
 	}
