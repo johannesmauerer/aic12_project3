@@ -26,21 +26,27 @@
 		<f:view>
 			<h:form>
 				<div>
-					<h:panelGrid id="panel" columns="3" border="1" cellpadding="0" cellspacing="2">
+					<h:panelGrid id="panel" columns="7" border="1" cellpadding="0" cellspacing="2">
 
 			    <f:facet name="header">
 					<h:outputText id="title" value="Your previous sentiment analysis results" />
 				</f:facet>
+					<h:outputText value="Company Name" />
 					<h:outputText value="From" />
 		            <h:outputText value="To" />
 		            <h:outputText value="Number of Tweets" />
-			            
-				<c:forEach items="#{sentimentRequest.subResponse}" var="subReq">
-			        
-			            <h:outputText value="#{subReq.from}" />
-			            <h:outputText value="#{subReq.to}" />
-			            <h:outputText value="#{subReq.numberOfTweets}" />
-			    </c:forEach>
+			        <h:outputText value="Minimum" />
+		            <h:outputText value="Maximum" />
+		            <h:outputText value="Sentiment" />
+		                
+			        <h:outputText value="#{sentimentRequest.companyName}" />
+		            <h:outputText value="#{sentimentRequest.from}" />
+		            <h:outputText value="#{sentimentRequest.to}" />
+		            <h:outputText value="#{sentimentRequest.numberOfTweets}" />
+		            <h:outputText value="#{sentimentRequest.minimumSentiment}" />
+		            <h:outputText value="#{sentimentRequest.maximumSentiment}" />
+		            <h:outputText value="#{sentimentRequest.sentiment}" />
+		            
 			</h:panelGrid>
 				</div>	
 
