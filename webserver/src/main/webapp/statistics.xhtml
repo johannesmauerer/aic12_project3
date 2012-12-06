@@ -15,12 +15,12 @@
 		<title>Advanced Internet Computing</title>
 		<link href="styles/style.css" rel="stylesheet" type="text/css" />
 	</h:head>
-	<h:body id="body">
-
+	<h:body>
+		<div id="box">
 		<div id="header">
 			<h:graphicImage value="img/header.jpg" />
 		</div>
-
+<div id="bodyPart">
 		<h2>
 			<i><h:outputText value="#{user.name}" /></i>! Find sentiment analysis statistics here:
 		</h2>
@@ -52,13 +52,15 @@
 					</h:panelGroup>
 				</f:facet>
 			</h:panelGrid>
-			<div id="footer">
+		</f:view>
+		</div>
+		<div id="footer">
 				<p>
 					<h:graphicImage value="img/icone.jpg" />
 					2012 AIC - Cloud computing
 				</p>
 			</div>
-		</f:view>
+		</div>
 	</h:body>
 
 </ui:composition>
