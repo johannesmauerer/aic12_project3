@@ -40,3 +40,42 @@ background-color:#FFFFFF;
 #footer {
 	margin-left: 12px;
 }
+#firstRow{
+	background-color: #E8F4F5;
+	margin: 5px;
+}
+#secondRow{
+	background-color: #e7edf5;
+	margin: 5px;
+}
+
+table {
+	-webkit-border-radius: 9px;
+	-moz-border-radius: 9px;
+	border-radius: 9px 9px 9px 9px;
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #33CCFF;
+	border-collapse: collapse;
+}
+table th {
+	background-color:#33CCFF;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #33CCFF;
+}
+table tr {
+	background-color:#E8F4F5;
+}
+table tr:hover {
+	background-color:#a9e9ff;
+}
+table td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #33CCFF;
+}

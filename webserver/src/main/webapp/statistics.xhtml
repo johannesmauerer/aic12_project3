@@ -26,7 +26,7 @@
 		</h2>
 
 		<f:view>
-			<h:panelGrid id="panel" columns="2" border="1" cellpadding="0" cellspacing="2">
+			<h:panelGrid id="panel" columns="2" border="0" cellpadding="0" cellspacing="2">
 				<f:facet name="header">
 					<h:outputText id="title" value="Request Statistics" />
 				</f:facet>
@@ -44,14 +44,10 @@
 				
 				<h:outputText value="Minimum Duration of Request" />
 				<h:outputText value="#{sentimentRequest.statistics.minimumDurationOfRequest}" />
-				<f:facet name="footer">
-					<h:panelGroup style="display:block; text-align:center">
+			</h:panelGrid>
 						<h:form>
 							<h:commandButton value="OK" action="request" />
 						</h:form>
-					</h:panelGroup>
-				</f:facet>
-			</h:panelGrid>
 		</f:view>
 		</div>
 		<div id="footer">
