@@ -13,7 +13,7 @@ body {
 }
 #box{
 margin-top: 2em;
-width:90%;
+width: 80%;
 -webkit-border-radius: 9px 9px 9px 9px;
 -moz-border-radius: 9px 9px 9px 9px;
 border-radius: 9px 9px 9px 9px;
@@ -23,30 +23,23 @@ background-color:#FFFFFF;
  box-shadow: #666666 5px 5px 5px;
  margin-left: auto;
  margin-right: auto;
+ min-height: 80%;
 }
 #bodyPart{
 	margin-left: 12px;
-	height: 50%;
+	height:auto;
 }
 #buttons {
 	margin-top: 1em;
 }
 #title {
-	foln-color: #240A80;
+	font-color: #240A80;
 }
 #panel {
 	background-color: #FFFFFF;
 }
 #footer {
 	margin-left: 12px;
-}
-#firstRow{
-	background-color: #E8F4F5;
-	margin: 5px;
-}
-#secondRow{
-	background-color: #e7edf5;
-	margin: 5px;
 }
 
 table {
@@ -78,4 +71,22 @@ table td {
 	padding: 8px;
 	border-style: solid;
 	border-color: #33CCFF;
+}
+#calenderInput{
+	float: left;
+}
+
+#calendar{
+	float:left;
+}
+
+#clearLeft{
+	clear:left;
+}
+
+#calendarText{
+	float:left;
+	width: 40px;
+	margin-right: 12px;
+	margin-top: -12px;
 }
