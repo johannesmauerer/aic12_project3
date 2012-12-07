@@ -62,9 +62,13 @@
 
 		<f:view>
 			<h:form>
-				<div>
-					<h3>Choose period for your sentiment analysis:</h3>
+			<h3>Choose period for your sentiment analysis:</h3>
+				<p>
+				<span id="calenderInput">
+						<div id="calendarText">
 					<h4>From:</h4>
+					</div>
+					<div id="calendar">
 					<rich:calendar value="#{sentimentRequest.from}"
                         popup="true"
                         time="dd/MM/yyyy"
@@ -73,7 +77,15 @@
                         cellHeight="22px" 
                         style="width:200px"
                         required="true"/>
+                    </div>
+                   </span>
+                   </p>
+                   <div id="clearLeft"></div>	
+                   <span id="calenderInput">
+                   	<div id="calendarText">
 					<h4>To:</h4> 
+					</div>
+					<div id="calendar">
 					<rich:calendar value="#{sentimentRequest.to}"
                         popup="true"
                         time="dd/MM/yyyy"
@@ -82,7 +94,9 @@
                         cellHeight="22px" 
                         style="width:200px"
                         required="true"/> 
-				</div>	
+                     </div>
+				</span>
+				<div id="clearLeft"></div>	
 
 				<div id="buttons">
 					<h:commandButton value="Start anylysis" action="#{sentimentRequest.sendToAnalysis}"></h:commandButton>
