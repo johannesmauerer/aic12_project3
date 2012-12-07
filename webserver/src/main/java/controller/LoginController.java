@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import com.mongodb.util.JSON;
 import rest.RequestService;
 import util.SentimentRequestStats;
 
+import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.SentimentRequestList;
 import aic12.project3.common.dto.UserDTO;
@@ -23,7 +25,6 @@ public class LoginController {
 	//private static Logger myLogger = Logger.getLogger("JULI"); //import java.util.logging.Logger;
 	
 	private String name;
-	private List<SentimentRequest> pastRequest;
 	
 	private List<SentimentRequestStats> requestStats = new ArrayList<SentimentRequestStats>();
 	private RequestService requestService;
@@ -112,12 +113,131 @@ public class LoginController {
 //		
 		//TESTING
 		  if(this.name.equals("jana")){
+			  transformRequest();
 			return "loggedIn";
 		}else{
 			return "login";
 		}
 		
 		
+	}
+	
+	private void transformRequest(){
+		/*
+		 * Test
+		 */
+		SentimentProcessingRequest req = new SentimentProcessingRequest();
+		req.setNumberOfTweets(657000);
+		req.setSentiment(0.13f);
+
+		SentimentProcessingRequest pr1 = new SentimentProcessingRequest();
+		pr1.setNumberOfTweets(12);
+		pr1.setSentiment(0.56f);
+
+		SentimentProcessingRequest pr2 = new SentimentProcessingRequest();
+		pr2.setNumberOfTweets(15);
+		pr2.setSentiment(0.9f);
+
+		SentimentProcessingRequest pr3 = new SentimentProcessingRequest();
+		pr3.setNumberOfTweets(9751);
+		pr3.setSentiment(0.13f);
+
+		List<SentimentProcessingRequest> subs1 = new ArrayList<SentimentProcessingRequest>();
+		subs1.add(req);
+		subs1.add(pr3);
+		subs1.add(pr2);
+		subs1.add(pr1);
+
+		List<SentimentProcessingRequest> subs2 = new ArrayList<SentimentProcessingRequest>();
+		subs2.add(req);
+		subs2.add(pr2);
+		subs2.add(pr1);
+		
+		List<SentimentProcessingRequest> subs3 = new ArrayList<SentimentProcessingRequest>();
+		subs3.add(req);
+		subs3.add(pr2);
+		
+		SentimentRequest response = new SentimentRequest();
+		response.setSubRequests(subs1);
+		System.out.println("1 subs: " + response.getSubRequests().size());
+		response.setFrom(new Date());
+		response.setTo(new Date());
+		
+		SentimentRequest response2 = new SentimentRequest();
+		response2.setSubRequests(subs2);
+		System.out.println("2 subs: " + response2.getSubRequests().size());
+		response2.setFrom(new Date());
+		response2.setTo(new Date());
+		
+		SentimentRequest response3 = new SentimentRequest();
+		response3.setSubRequests(subs3);
+		System.out.println("3 subs: " + response3.getSubRequests().size());
+		response3.setFrom(new Date());
+		response3.setTo(new Date());
+		
+		List<SentimentRequest> listR = new ArrayList<SentimentRequest>();
+		listR.add(response);
+		listR.add(response2);
+		listR.add(response3);
+		
+		SentimentRequestList userRequests = new SentimentRequestList(listR);
+		/*
+		 * End test
+		 */
+		
+//		SentimentRequestList userRequests = requestService.getCompanyRequests(this.name);
+					
+		float sumSentiment = 0;
+		int finalNumberOfTweets = 0;
+		int numberOfSubrequests = 0;
+
+		//for chacun de requests de l'utilisateur
+		for(int i=0; i<userRequests.getList().size();i++){
+			System.out.println("Nr Subs: " + userRequests.getList().get(i).getSubRequests().size());
+		}
+		
+		
+		/*
+		 * calculating request details
+		 */
+		for (SentimentRequest userRequest : userRequests.getList()) {
+			
+			
+			
+			System.out.println("SUBS: " + userRequest.getSubRequests().size());
+			numberOfSubrequests = userRequest.getSubRequests().size();
+			SentimentRequestStats stats = new SentimentRequestStats();
+			stats.setFrom(userRequest.getFrom());
+			stats.setTo(userRequest.getTo());
+			
+			sumSentiment = 0;
+			finalNumberOfTweets = 0;
+			
+			for (SentimentProcessingRequest subrequest : userRequest.getSubRequests()) {
+
+				sumSentiment += subrequest.getSentiment();
+				System.out.println("Sentiment: " + sumSentiment);
+				finalNumberOfTweets += subrequest.getNumberOfTweets();
+				System.out.println("Tweets: " + finalNumberOfTweets);
+				
+			}
+			
+			
+			float finalSentiment = sumSentiment / numberOfSubrequests;
+
+			double standardError = 1.96 * Math.sqrt(finalSentiment
+					* (1 - finalSentiment) / (finalNumberOfTweets - 1));
+			
+			stats.setSentiment(finalSentiment);
+			stats.setTweets(finalNumberOfTweets);
+			stats.setIntervalMin(finalSentiment - standardError);
+			stats.setIntervalMax(finalSentiment + standardError);
+			
+			
+			requestStats.add(stats);
+			System.out.println("NR REQUESTS STATS: " + requestStats.size());
+		}
+
 	}
 
 	public RequestService getRequestService() {
@@ -134,14 +254,6 @@ public class LoginController {
 
 	public void setRequestStats(List<SentimentRequestStats> requestStats) {
 		this.requestStats = requestStats;
-	}
-
-	public List<SentimentRequest> getPastRequest() {
-		return pastRequest;
-	}
-
-	public void setPastRequest(List<SentimentRequest> pastRequest) {
-		this.pastRequest = pastRequest;
 	}
 
 }

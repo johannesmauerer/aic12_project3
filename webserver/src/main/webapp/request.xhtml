@@ -24,24 +24,30 @@
 		<h2> Welcome back <i><h:outputText value="#{user.name}" /></i>!</h2> 
 		
 		 
-		<h:panelGrid id="panel" columns="5" border="1" cellpadding="0" cellspacing="2">
+		<h:panelGrid id="panel" columns="7" border="1" cellpadding="0" cellspacing="2">
 
 			    <f:facet name="header">
 					<h:outputText id="title" value="Your previous sentiment analysis results" />
 				</f:facet>
-					<h:outputText value="Id" />
+					
 		            <h:outputText value="Company Name" />
-		        	<h:outputText value="From" />
+					<h:outputText value="From" />
 		            <h:outputText value="To" />
 		            <h:outputText value="Number of Tweets" />
+			        <h:outputText value="Minimum" />
+		            <h:outputText value="Maximum" />
+		            <h:outputText value="Sentiment" />
 		            
-				<c:forEach items="#{user.pastRequest}" var="pastReq">
+				<c:forEach items="#{user.requestStats}" var="reqStats">
 			        
-			            <h:outputText value="#{pastReq.id}" />
-			            <h:outputText value="#{pastReq.companyName}" />
-			        	<h:outputText value="#{pastReq.from}" />
-			            <h:outputText value="#{pastReq.to}" />
-			            <h:outputText value="#{pastReq.numberOfTweets}" />
+			        <h:outputText value="#{user.name}" />
+			        <h:outputText value="#{reqStats.from}" />
+		            <h:outputText value="#{reqStats.to}" />
+		            <h:outputText value="#{reqStats.tweets}" />
+		            <h:outputText value="#{reqStats.intervalMin}" />
+		            <h:outputText value="#{reqStats.intervalMax}" />
+		            <h:outputText value="#{reqStats.sentiment}" />
+		        	
 			    </c:forEach>
 			</h:panelGrid>
 			 

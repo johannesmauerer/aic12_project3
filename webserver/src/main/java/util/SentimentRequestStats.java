@@ -1,11 +1,15 @@
 package util;
 
+import java.util.Date;
+
 public class SentimentRequestStats {
 
 	private float sentiment;
 	private int tweets;
 	private double intervalMin;
 	private double intervalMax;
+	private Date from;
+	private Date to;
 	
 	public float getSentiment() {
 		return sentiment;
@@ -30,5 +34,17 @@ public class SentimentRequestStats {
 	}
 	public void setIntervalMax(double intervalMax) {
 		this.intervalMax = intervalMax;
+	}
+	public Date getFrom() {
+		return from;
+	}
+	public void setFrom(Date from) {
+		this.from = from;
+	}
+	public Date getTo() {
+		return to;
+	}
+	public void setTo(Date to) {
+		this.to = to;
 	}
 }
