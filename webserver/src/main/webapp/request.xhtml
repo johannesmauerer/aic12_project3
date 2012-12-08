@@ -23,7 +23,7 @@
 		<div id="bodyPart">
 		<h2> Welcome back <i><h:outputText value="#{user.name}" /></i>!</h2> 
 		
-		 
+		<div id="scrollableTable">
 		<h:panelGrid id="panel" columns="7" border="1" cellpadding="0" cellspacing="2">
 
 			    <f:facet name="header">
@@ -50,7 +50,7 @@
 		        	
 			    </c:forEach>
 			</h:panelGrid>
-			 
+			 </div> 
 		<h:form>
 			<div id="buttons">
 				<h:commandButton value="See Analysis Statistics" action="#{sentimentRequest.getAnalysisStatistics}"></h:commandButton>

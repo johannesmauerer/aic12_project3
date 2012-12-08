@@ -37,6 +37,12 @@ background-color:#FFFFFF;
 }
 #panel {
 	background-color: #FFFFFF;
+	
+}
+#scrollableTable{
+	height: 150px;
+	overflow: auto;
+	width: 70%;
 }
 #footer {
 	margin-left: 12px;
