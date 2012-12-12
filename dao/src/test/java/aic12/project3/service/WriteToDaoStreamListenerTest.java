@@ -13,33 +13,32 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import twitter4j.Status;
 
+import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.dao.ITweetDAO;
-import aic12.project3.service.WriteCachedToDaoStreamListener;
+import aic12.project3.service.WriteToDaoStreamListener;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath:/app-config.xml")
-public class WriteCachedToDaoStreamListenerTest {
-	
+public class WriteToDaoStreamListenerTest {
+
 	@Before
 	public void setUp() {
 	}
-	
+
 	@Test
 	public void test_onStatus_verifyWriteToDao() {
-		int cacheSize = 2;
 		// mock twitterAPI
 		TwitterAPI api = mock(TwitterAPI.class);
-		
-		WriteCachedToDaoStreamListener listener = new WriteCachedToDaoStreamListener(cacheSize, api);
-		
+
+		WriteToDaoStreamListener listener = new WriteToDaoStreamListener(api);
+
 		//mock dao
 		ITweetDAO daoMock = mock(ITweetDAO.class);
 		listener.setTweetDao(daoMock);
-		
+
 		listener.onStatus(mock(Status.class));
-		listener.onStatus(mock(Status.class));
-		
-		verify(daoMock, times(1)).storeTweet(anyList()); // TODO check that this list contains those 2 tweets
-		verify(api, times(2)).getTrackedCompanies();
+
+		verify(daoMock, times(1)).storeTweet(any(TweetDTO.class));
+		verify(api, times(1)).getTrackedCompanies();
 	}
 }

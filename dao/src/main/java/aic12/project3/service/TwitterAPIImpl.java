@@ -27,8 +27,6 @@ import twitter4j.TwitterStreamFactory;
 import aic12.project3.common.dto.TweetDTO;
 
 public class TwitterAPIImpl implements TwitterAPI {
-	
-	private static final int TWEETS_CACHE_SIZE = 5;
 
 	private static Logger log = Logger.getLogger(TwitterAPIImpl.class);
 
@@ -39,7 +37,7 @@ public class TwitterAPIImpl implements TwitterAPI {
 
 	private TwitterAPIImpl() {
 		stream = new TwitterStreamFactory().getInstance();
-	    stream.addListener(new WriteCachedToDaoStreamListener(TWEETS_CACHE_SIZE, this));
+	    stream.addListener(new WriteToDaoStreamListener(this));
 	}
 	
 	public static TwitterAPIImpl getInstance() {
