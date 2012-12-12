@@ -18,6 +18,9 @@ public class DownloadManagerRestTest {
 
 	private static Client client;
 	private static SentimentRequest request;
+	private static String server_port = "http://localhost:8080";
+//	private static String server_port = "http://128.130.172.202:8080";
+	private static String dao = "dao";
 
 	public static void main(String[] args)
 	{
@@ -32,15 +35,15 @@ public class DownloadManagerRestTest {
 		client = Client.create(config);
 
 //		postRequestInitialDownload();
-//		postRequestRegisterForStream();
-		getNotifyOnFinish();
+		postRequestRegisterForStream();
+//		getNotifyOnFinish();
 
 	}
 
 	private static void getNotifyOnFinish() {
 		System.out.println("sending get request (registerfortwitterstream): " + request);
 		WebResource resource = client.resource
-				("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/" +
+				(server_port + "/" + dao + "/downloadmanager/" +
 						"notifyoninitialdownloadfinished");
         Boolean response = resource.queryParam("company", "microsoft")
         		.queryParam("callback", "").get(Boolean.class);
@@ -50,22 +53,33 @@ public class DownloadManagerRestTest {
 	public static void postRequestRegisterForStream(){
 		System.out.println("sending post request (registerfortwitterstream): " + request);
 		WebResource resource = client.resource
-				("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/" +
+				(server_port + "/" + dao + "/downloadmanager/" +
 						"registerfortwitterstream");
 		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,
-						request);
+						request.getCompanyName());
 		System.out.println("got: " + response);
 	}
 
 	public static void postRequestInitialDownload(){
 		System.out.println("sending post request (initial download): " + request);
 		WebResource resource2 = client.resource
-				("http://localhost:8080/cloudservice-dao-1.0-SNAPSHOT/downloadmanager/" +
+				(server_port + "/" + dao + "/downloadmanager/" +
 						"startinitialdownload");
 		ClientResponse response2 = resource2.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON).post(ClientResponse.class,
-						request);
+						request.getCompanyName());
+		System.out.println("got: " + response2);
+	}
+	
+	public static void postRequestIsInitialDownloadFinished(){
+		System.out.println("sending post request (is initial download finished): " + request);
+		WebResource resource2 = client.resource
+				(server_port + "/" + dao + "/downloadmanager/" +
+						"isinitaldownloadfinished");
+		boolean response2 = resource2.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON).post(Boolean.class,
+						request.getCompanyName());
 		System.out.println("got: " + response2);
 	}
 }
