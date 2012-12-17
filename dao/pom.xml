@@ -16,6 +16,10 @@
 
 	<packaging>war</packaging>
 
+	<build>
+		<finalName>dao</finalName>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>aic12.project3</groupId>

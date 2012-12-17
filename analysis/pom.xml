@@ -17,6 +17,7 @@
 	<packaging>war</packaging>
 
 	<build>
+		<finalName>analysis</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

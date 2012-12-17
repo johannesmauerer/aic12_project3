@@ -147,6 +147,7 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<finalName>management</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
