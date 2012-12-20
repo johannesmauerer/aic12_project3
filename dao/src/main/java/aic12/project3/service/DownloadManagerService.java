@@ -8,8 +8,6 @@ public interface DownloadManagerService {
 	
 	public boolean isInitialDownloadFinished(String company);
 
-	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callbackUrl);
-
 	/**
 	 * this method should only be called by the thread which was downloading these initial tweets.
 	 * @param thread thread which downloaded tweets

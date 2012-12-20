@@ -22,9 +22,6 @@
   
   <modules>
     <module>dao</module>
-    <module>webserver</module>
-    <module>management</module>
-    <module>analysis</module>
     <module>common</module>
   </modules>
   

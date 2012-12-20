@@ -43,16 +43,6 @@ public class DownloadManagerRestInterface {
 	}
 	
     @POST
-    @Path("notifyoninitialdownloadfinished")
-    @Consumes("application/json")
-    @Produces("application/json")
-    public boolean notifyOnInitialDownloadFinished (SentimentRequestWithCallback req) {
-    	log.info("notifyOnInitialDownloadFinished; requestWithCallback: " + req);
-    	dlManagerService.notifyOnInitialDownloadFinished(req.getRequest(), req.getCallbackUrl());
-    	return true;
-	}
-    
-    @POST
     @Path("startinitialdownload")
     @Consumes("application/json")
     public void startInitialDownload(String company) {

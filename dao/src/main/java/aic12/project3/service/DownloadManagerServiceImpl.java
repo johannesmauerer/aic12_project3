@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
-import aic12.project3.service.rest.DownloadManagerCallbackClient;
 import aic12.project3.service.test.DownloadManagerServiceTestIF;
 
 
@@ -36,8 +35,6 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	
 	@Autowired
 	private TwitterAPI twitterAPI;
-	@Autowired
-	private DownloadManagerCallbackClient restClient;
 	
 	private static Logger log;
 	
@@ -73,11 +70,6 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	}
 
 	@Override
-	public void notifyOnInitialDownloadFinished(SentimentRequest req, String callbackUrl) {
-		notifyOnDownloadFinishMap.put(req, callbackUrl);
-	}
-
-	@Override
 	public void initialDownloadFinished(String company, DownloadThread thread) {
 		log.debug("initialDownloadFinished for company: " + company);
 		// check if we got the same reference to thread object
@@ -101,7 +93,6 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 					SentimentRequest req = e.getKey();
 					log.debug("notifying that download finished. req: " + req);
 					req.setState(REQUEST_QUEUE_STATE.DOWNLOADED); // TODO maybe this should be moved to management
-					restClient.notifyInitialDownloadFinished(req, e.getValue());
 					it.remove();
 				}
 			}
@@ -129,11 +120,6 @@ public class DownloadManagerServiceImpl implements DownloadManagerService,
 	public static void recreateInstance() {
 		log.debug("recreateInstance()");
 		instance = new DownloadManagerServiceImpl();
-	}
-
-	@Override
-	public void setRestClient(DownloadManagerCallbackClient restClient) {
-		this.restClient = restClient;
 	}
 
 }
