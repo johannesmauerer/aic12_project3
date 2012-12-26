@@ -22,14 +22,20 @@
 			</div>
 			<div id="bodyPart">
 			<f:view>
-			<h2>What does twitter says about your company?</h2> 
+			<h2>What does twitter say about your company?</h2> 
 
 				<h:form>
 					<h4>Enter your company name:</h4><h:inputText required="true" value="#{user.name}"></h:inputText>
 					<div id="buttons">
 						<h:commandButton value="Login" action="#{user.loginAction}" ></h:commandButton>
+						<h:commandButton value="Hello" action="#{user.testSayHello}">
+				    		 <f:ajax render="output" />
+				    		 <!-- <f:ajax event="keyup" execute="user.loggedIn==true" render="backWelcome scrollableTable" /> -->
+				  		</h:commandButton>
 					</div>
 
+					<h:outputText id="output" value="#{user.helloMessage}" />
+					
 				</h:form>
 			</f:view>
 			</div>

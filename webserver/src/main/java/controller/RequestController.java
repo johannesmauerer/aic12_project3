@@ -36,7 +36,6 @@ public class RequestController {
 
 	private RequestService requestService;
 
-
 	private UUID generateId() {
 		return UUID.randomUUID();
 	};
@@ -273,12 +272,7 @@ public class RequestController {
 	}
 
 	public void acceptRequest(SentimentRequest req) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void acceptHello() {
-		// TODO Auto-generated method stub
+		// TODO Implement accepting response 
 		
 	}
 

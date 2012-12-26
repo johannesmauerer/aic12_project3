@@ -27,6 +27,7 @@ public class LoginController {
 	private String name;
 
 	private String loggedIn = "false";
+	private String  helloMessage;
 	
 	private List<SentimentRequestStats> requestStats = new ArrayList<SentimentRequestStats>();
 	//private RequestService requestService;
@@ -258,6 +259,34 @@ public class LoginController {
 
 	public void setLoggedIn(String loggedIn) {
 		this.loggedIn = loggedIn;
+	}
+	
+	public void testSayHello(){
+	 
+		RequestService requestService = new RequestService();
+
+		System.out.println("REQUEST SERVICE CREATED");
+		String response = requestService.helloWorld();
+	  
+		System.out.println("FINAL RESPONSE DONE");
+		System.out.println("RESPONSE: " + response + ".");
+		if(response != null && !response.equals("")){
+		  this.helloMessage=response;
+	  
+		} else {
+		  
+			this.helloMessage = "error calling";  
+	  
+		}
+	  
+  }
+
+	public String getHelloMessage() {
+		return helloMessage;
+	}
+
+	public void setHelloMessage(String helloMessage) {
+		this.helloMessage = helloMessage;
 	}
 
 }

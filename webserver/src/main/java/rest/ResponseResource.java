@@ -39,6 +39,7 @@ public class ResponseResource {
 	@Path("/hello")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String sayHello() {
+		System.out.println("IN RESSOURCE");
 		return "Hello Jersey";
 		//serv.acceptHello();
 	}

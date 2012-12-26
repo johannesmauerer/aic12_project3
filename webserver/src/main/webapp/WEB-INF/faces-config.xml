@@ -24,20 +24,6 @@
 	        <to-view-id>/request.xhtml</to-view-id>
 	    </navigation-case>
 	</navigation-rule>
-	<!-- from requestFirstTime.xhtml navigation rule -->
-	<navigation-rule>
-    	<from-view-id>/requestFirstTime.xhtml</from-view-id>
-	    <navigation-case>
-	    	<from-action>#{sentimentRequest.sendToAnalysis}</from-action>
-	        <from-outcome>response</from-outcome>
-	        <to-view-id>/response.xhtml</to-view-id>
-	    </navigation-case>
-	   	<navigation-case>
-	    	<from-action>#{sentimentRequest.getStatistics}</from-action>
-	        <from-outcome>statistics</from-outcome>
-	        <to-view-id>/statistics.xhtml</to-view-id>
-	    </navigation-case>
-	</navigation-rule>
 	<!-- from request.xhtml navigation rule -->
 	<navigation-rule>
     	<from-view-id>/request.xhtml</from-view-id>
