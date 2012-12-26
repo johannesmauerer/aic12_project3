@@ -185,4 +185,24 @@ public class RequestService {
 		return response;
 	}
 
+	public String getHello() {
+		// Jersey Client Config
+		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+		client = Client.create(config);
+
+		// Request
+		URI uri = UriBuilder.fromUri("http://128.130.172.202:8080/JavaServerFaces")
+				.path("send")
+				.path("hello")
+				.build();
+
+		// WebResource
+		service = client.resource(uri);
+
+		String response = service.accept(MediaType.APPLICATION_JSON)
+				.get(String.class);
+		
+		return response;
+	}
+
 }

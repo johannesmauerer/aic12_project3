@@ -31,7 +31,7 @@ public class RequestController {
 	private double minimumSentiment;
 	private double maximumSentiment;
 	private float sentiment;
-	
+		
 	private StatisticsBean statistics;
 
 	private RequestService requestService;
@@ -190,18 +190,7 @@ public class RequestController {
 				+ maximumSentiment + ")");
 	}
 
-	/*
-	 * public String refresh(){
-	 * 
-	 * 
-	 * 
-	 * getResponseFromDB(); if(this.response==null){ if(test!=null){ return
-	 * "response"; } return "wait"; } else{
-	 * 
-	 * this.subResponse=response.getSubRequests(); return "response"; }
-	 * 
-	 * }
-	 */
+	
 
 	public UUID getId() {
 		return id;
@@ -281,6 +270,16 @@ public class RequestController {
 
 	public void setSentiment(float sentiment) {
 		this.sentiment = sentiment;
+	}
+
+	public void acceptRequest(SentimentRequest req) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void acceptHello() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

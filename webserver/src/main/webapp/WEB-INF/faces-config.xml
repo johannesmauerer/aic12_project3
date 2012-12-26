@@ -21,11 +21,6 @@
 	    <navigation-case>
 	    	<from-action>#{user.loginAction}</from-action>
 	        <from-outcome>login</from-outcome>
-	        <to-view-id>/requestFirstTime.xhtml</to-view-id>
-	    </navigation-case>
-	    <navigation-case>
-	    	<from-action>#{user.loginAction}</from-action>
-	        <from-outcome>loggedIn</from-outcome>
 	        <to-view-id>/request.xhtml</to-view-id>
 	    </navigation-case>
 	</navigation-rule>

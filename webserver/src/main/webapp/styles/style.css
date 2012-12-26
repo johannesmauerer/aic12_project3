@@ -40,6 +40,7 @@ background-color:#FFFFFF;
 	
 }
 #scrollableTable{
+	background-color: #FFFFFF;
 	height: 150px;
 	overflow: auto;
 	width: 70%;

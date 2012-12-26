@@ -25,9 +25,11 @@ public class LoginController {
 	//private static Logger myLogger = Logger.getLogger("JULI"); //import java.util.logging.Logger;
 	
 	private String name;
+
+	private String loggedIn = "false";
 	
 	private List<SentimentRequestStats> requestStats = new ArrayList<SentimentRequestStats>();
-	private RequestService requestService;
+	//private RequestService requestService;
 	
 	public String getName() {
 		return name;
@@ -42,7 +44,7 @@ public class LoginController {
 //		/*
 //		 * send request to requestService if company already reqistered
 //		 */
-//		setRequestService(new RequestService());
+//		RequestService requestService = new RequestService();
 //		String response = requestService.findCompany(this.name);
 //		
 //		/*
@@ -114,12 +116,14 @@ public class LoginController {
 		//TESTING
 		  if(this.name.equals("jana")){
 			  transformRequest();
-			return "loggedIn";
+			  this.setLoggedIn("true");
+			
 		}else{
-			return "login";
+			this.setLoggedIn("false");
+			
 		}
 		
-		
+		  return "login";
 	}
 	
 	private void transformRequest(){
@@ -240,20 +244,20 @@ public class LoginController {
 
 	}
 
-	public RequestService getRequestService() {
-		return requestService;
-	}
-
-	public void setRequestService(RequestService requestService) {
-		this.requestService = requestService;
-	}
-
 	public List<SentimentRequestStats> getRequestStats() {
 		return requestStats;
 	}
 
 	public void setRequestStats(List<SentimentRequestStats> requestStats) {
 		this.requestStats = requestStats;
+	}
+
+	public String getLoggedIn() {
+		return loggedIn;
+	}
+
+	public void setLoggedIn(String loggedIn) {
+		this.loggedIn = loggedIn;
 	}
 
 }
