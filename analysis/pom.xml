@@ -52,11 +52,6 @@
 			<version>${org.twitter4j.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>unknown</groupId>
-			<artifactId>libsvm</artifactId>
-			<version>unknown</version>
-		</dependency>
-		<dependency>
 			<groupId>nz.ac.waikato.cms.weka</groupId>
 			<artifactId>weka-stable</artifactId>
 			<version>3.6.8</version>
@@ -81,6 +76,11 @@
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>${com.sun.jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>tw.edu.ntu.csie</groupId>
+			<artifactId>libsvm</artifactId>
+			<version>3.1</version>
 		</dependency>
 	</dependencies>
 </project>

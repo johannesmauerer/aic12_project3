@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 import aic12.project3.common.beans.SentimentProcessingRequest;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -16,8 +17,10 @@ public class TestClient
 {
     public static void main(String[] args)
     {
+    	String serverUri = "128.130.172.202:8080/analysis";
+    	
         SentimentProcessingRequest request = new SentimentProcessingRequest();
-        request.setCompanyName("microsoft");
+        request.setCompanyName("Google");
         request.setFrom(new Date());
         request.setTo(new Date());
 
@@ -27,18 +30,31 @@ public class TestClient
 
         // Synchonous call
         {
-            WebResource resource = client.resource("http://localhost:8080/cloudservice-analysis-1.0-SNAPSHOT/sentiment/analyze");
-            SentimentProcessingRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentProcessingRequest.class, request);
+            WebResource resource = client.resource("http://"+serverUri+"/sentiment/analyze");
+            //SentimentProcessingRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentProcessingRequest.class, request);
 
-            double interval = 1.96 * Math.sqrt(response.getSentiment() * (1 - response.getSentiment()) / (response.getNumberOfTweets() - 1));
+            ClientResponse response2 = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, request);
+            
+            // Check for errors
+            if (response2.getStatus()!=200){
+            	System.out.println(response2.getStatus() + ":" + response2.getEntity(String.class));
+            } else {
+            	SentimentProcessingRequest response = response2.getEntity(SentimentProcessingRequest.class);
+                
+                double interval = 1.96 * Math.sqrt(response.getSentiment() * (1 - response.getSentiment()) / (response.getNumberOfTweets() - 1));
+                
+                System.out.println("Amount: " + response.getNumberOfTweets() + " - Sentiment: (" + (response.getSentiment() - interval) + " < " + response.getSentiment() + " < "
+                        + (response.getSentiment() + interval) + ")");
+            }
+            
+            /*
 
-            System.out.println("Amount: " + response.getNumberOfTweets() + " - Sentiment: (" + (response.getSentiment() - interval) + " < " + response.getSentiment() + " < "
-                    + (response.getSentiment() + interval) + ")");
+                    */
         }
 
         // Asynchronous call
         {
-            WebResource resource = client.resource("http://localhost:8080/cloudservice-analysis-1.0-SNAPSHOT/sentiment/analyzeAsync");
+            WebResource resource = client.resource("http://"+serverUri+"/sentiment/analyzeAsync");
             String response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, request);
             System.out.println(response);
         }
