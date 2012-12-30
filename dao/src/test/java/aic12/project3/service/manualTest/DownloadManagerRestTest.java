@@ -18,9 +18,9 @@ public class DownloadManagerRestTest {
 
 	private static Client client;
 	private static SentimentRequest request;
-	private static String server_port = "http://localhost:8080";
-//	private static String server_port = "http://128.130.172.202:8080";
-	private static String dao = "dao";
+//	private static String server_port = "http://localhost:8080";
+	private static String server_port = "http://128.130.172.202:8080";
+	private static String dao = "downloadManager";
 
 	public static void main(String[] args)
 	{

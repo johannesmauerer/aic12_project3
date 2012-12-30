@@ -36,6 +36,8 @@ public class WriteToDaoStreamListener implements StatusListener {
 		String text = status.getText();
 		Date date = status.getCreatedAt();
 		
+		log.debug("text: " + text);
+		
 		TweetDTO tweet = new TweetDTO(Long.toString(id), text, date);
 		
 		// check tweet for registered companies
