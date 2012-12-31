@@ -42,7 +42,7 @@ public class WriteToDaoStreamListener implements StatusListener {
 		
 		// check tweet for registered companies
 		for(String companyName : twitterApi.getTrackedCompanies()) {
-			if(status.getText().contains(companyName)) {
+			if(status.getText().toLowerCase().contains(companyName)) {
 				tweet.getCompanies().add(companyName);
 			}
 		}

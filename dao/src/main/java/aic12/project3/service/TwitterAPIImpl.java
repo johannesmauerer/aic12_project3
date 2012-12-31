@@ -97,8 +97,9 @@ public class TwitterAPIImpl implements TwitterAPI {
 		/* TODO WARNING streamingAPI might
 			not compatible with google app engine (maybe this has changed)
 		 */
-		
-		trackedCompanies.add(company);
+		String company_lower = company.toLowerCase();
+		trackedCompanies.add(company_lower);
+		log.debug("now tracking: " + trackedCompanies);
 		FilterQuery query = new FilterQuery().track(trackedCompanies.toArray(new String[trackedCompanies.size()]));
 		stream.filter(query);
 	}
