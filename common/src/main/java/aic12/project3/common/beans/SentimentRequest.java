@@ -20,11 +20,12 @@ public class SentimentRequest
     private Date to;
     private int numberOfTweets;
     private REQUEST_QUEUE_STATE state;
-    private long timestampRequestSent;
+    private long timestampRequestSending;
     private long timestampProcessingStart;
     private long timestampProcessingDone;
-    private long timetsampRequestFinished;
+    private long timestampRequestFinished;
     private List<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
+    private int numberOfParts;
 
 
     public SentimentRequest() { }
@@ -147,17 +148,17 @@ public class SentimentRequest
 	}
 
 	/**
-	 * @return the timestampRequestSent
+	 * @return the timestampRequestSending
 	 */
-	public long getTimestampRequestSent() {
-		return timestampRequestSent;
+	public long getTimestampRequestSending() {
+		return timestampRequestSending;
 	}
 
 	/**
-	 * @param timestampRequestSent the timestampRequestSent to set
+	 * @param timestampRequestSending the timestampRequestSending to set
 	 */
-	public void setTimestampRequestSent(long timestampRequestSent) {
-		this.timestampRequestSent = timestampRequestSent;
+	public void setTimestampRequestSending(long timestampRequestSending) {
+		this.timestampRequestSending = timestampRequestSending;
 	}
 
 	/**
@@ -189,17 +190,17 @@ public class SentimentRequest
 	}
 
 	/**
-	 * @return the timetsampRequestFinished
+	 * @return the timestampRequestFinished
 	 */
-	public long getTimetsampRequestFinished() {
-		return timetsampRequestFinished;
+	public long getTimestampRequestFinished() {
+		return timestampRequestFinished;
 	}
 
 	/**
-	 * @param timetsampRequestFinished the timetsampRequestFinished to set
+	 * @param timestampRequestFinished the timestampRequestFinished to set
 	 */
-	public void setTimetsampRequestFinished(long timetsampRequestFinished) {
-		this.timetsampRequestFinished = timetsampRequestFinished;
+	public void setTimestampRequestFinished(long timestampRequestFinished) {
+		this.timestampRequestFinished = timestampRequestFinished;
 	}
 
 	/**
@@ -215,6 +216,14 @@ public class SentimentRequest
 	public void setSubRequests(List<SentimentProcessingRequest> subRequests) {
 		this.subRequests = subRequests;
 	}
-
 	
+	public void setParts(int i){
+		this.numberOfParts = i;
+	}
+	
+	public int getParts(){
+		return this.numberOfParts;
+	}
+
+
 }
