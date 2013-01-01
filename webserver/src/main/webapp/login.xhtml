@@ -29,12 +29,11 @@
 					<div id="buttons">
 						<h:commandButton value="Login" action="#{user.loginAction}" ></h:commandButton>
 						<h:commandButton value="Hello" action="#{user.testSayHello}">
-				    		 <f:ajax render="output" />
-				    		 <!-- <f:ajax event="keyup" execute="user.loggedIn==true" render="backWelcome scrollableTable" /> -->
+				    		 <f:ajax render="outputGet" />
 				  		</h:commandButton>
 					</div>
 
-					<h:outputText id="output" value="#{user.helloMessage}" />
+					<h:outputText id="outputGet" value="#{user.helloMessage}" />
 					
 				</h:form>
 			</f:view>

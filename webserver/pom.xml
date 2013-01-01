@@ -182,7 +182,21 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       		<artifactId>jersey-client</artifactId>
       		<version>${com.sun.jersey.version}</version>
     	</dependency>
+    	<!-- primefaces -->
+    	<dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>3.0.M4</version>
+        </dependency>
 	</dependencies>
+	<repositories>
+        <repository>  
+            <id>prime-repo</id>  
+            <name>PrimeFaces Maven Repository</name>  
+            <url>http://repository.primefaces.org</url>  
+            <layout>default</layout>  
+        </repository>
+    </repositories>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

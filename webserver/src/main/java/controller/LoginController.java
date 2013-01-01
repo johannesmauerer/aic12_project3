@@ -16,6 +16,7 @@ import util.SentimentRequestStats;
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.SentimentRequestList;
+import aic12.project3.common.beans.StatisticsBean;
 import aic12.project3.common.dto.UserDTO;
 
 @ManagedBean
@@ -25,20 +26,12 @@ public class LoginController {
 	//private static Logger myLogger = Logger.getLogger("JULI"); //import java.util.logging.Logger;
 	
 	private String name;
-
-	private String loggedIn = "false";
-	private String  helloMessage;
+	private String registered = "false";
+	private String  helloMessage = "none yet";
 	
 	private List<SentimentRequestStats> requestStats = new ArrayList<SentimentRequestStats>();
-	//private RequestService requestService;
-	
-	public String getName() {
-		return name;
-	}
- 
-	public void setName(String name) {
-		this.name = name;
-	}
+
+	private StatisticsBean statistics;
 	
 	public String loginAction(){
 //    	
@@ -60,7 +53,8 @@ public class LoginController {
 //			System.out.println("USER: " + user.getCompanyName() + " created.");
 //			requestService.insertCompany(user);
 //			System.out.println("USER: " + user.getCompanyName() + " put into database.");
-//			return "login";
+//			
+//			this.setRegistered("false");
 //			
 //		} 
 //		/*
@@ -111,16 +105,17 @@ public class LoginController {
 //				
 //			}*/
 //			
-//			return "loggedIn";
+//		    this.setRegistered("true");
 //		}
-//		
+//		return "login";
+		
 		//TESTING
 		  if(this.name.equals("jana")){
 			  transformRequest();
-			  this.setLoggedIn("true");
+			  this.setRegistered("true");
 			
 		}else{
-			this.setLoggedIn("false");
+			this.setRegistered("false");
 			
 		}
 		
@@ -128,9 +123,82 @@ public class LoginController {
 	}
 	
 	private void transformRequest(){
+		
 		/*
 		 * Test
 		 */
+		SentimentRequestList userRequests = mockUserRequests();
+		/*
+		 * End test
+		 */
+		
+//		SentimentRequestList userRequests = requestService.getCompanyRequests(this.name);
+					
+		float sumSentiment = 0;
+		int finalNumberOfTweets = 0;
+		int numberOfSubrequests = 0;
+
+		/*
+		 * calculating request details
+		 */
+		for (SentimentRequest userRequest : userRequests.getList()) {
+			
+			numberOfSubrequests = userRequest.getSubRequests().size();
+			SentimentRequestStats stats = new SentimentRequestStats();
+			stats.setFrom(userRequest.getFrom());
+			stats.setTo(userRequest.getTo());
+			
+			sumSentiment = 0;
+			finalNumberOfTweets = 0;
+			
+			for (SentimentProcessingRequest subrequest : userRequest.getSubRequests()) {
+
+				sumSentiment += subrequest.getSentiment();
+				finalNumberOfTweets += subrequest.getNumberOfTweets();
+				
+			}
+			
+			
+			float finalSentiment = sumSentiment / numberOfSubrequests;
+
+			double standardError = 1.96 * Math.sqrt(finalSentiment
+					* (1 - finalSentiment) / (finalNumberOfTweets - 1));
+			
+			stats.setSentiment(finalSentiment);
+			stats.setTweets(finalNumberOfTweets);
+			stats.setIntervalMin(finalSentiment - standardError);
+			stats.setIntervalMax(finalSentiment + standardError);
+			
+			
+			requestStats.add(stats);
+		}
+
+	}
+	
+	public String getAnalysisStatistics() {
+
+//		RequestService requestService = new RequestService();
+
+//		this.statistics = requestService.getStatistics();
+
+		/*
+		 * TEST
+		 */
+		 StatisticsBean test = new StatisticsBean();
+		 test.setAverageDurationPerRequest(4464);
+		 test.setAverageProcessingDurationPerTweet(4464);
+		 test.setAverageTotalDurationPerTweet(4);
+		 test.setMaximumDurationOfRequest(545646);
+		 test.setMinimumDurationOfRequest(98789749); this.statistics=test;
+		 /*
+		  * END TEST
+		  */
+
+		return "statistics";
+	}
+	
+	private SentimentRequestList mockUserRequests(){
+		
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
 		req.setNumberOfTweets(657000);
 		req.setSentiment(0.13f);
@@ -164,19 +232,16 @@ public class LoginController {
 		
 		SentimentRequest response = new SentimentRequest();
 		response.setSubRequests(subs1);
-		System.out.println("1 subs: " + response.getSubRequests().size());
 		response.setFrom(new Date());
 		response.setTo(new Date());
 		
 		SentimentRequest response2 = new SentimentRequest();
 		response2.setSubRequests(subs2);
-		System.out.println("2 subs: " + response2.getSubRequests().size());
 		response2.setFrom(new Date());
 		response2.setTo(new Date());
 		
 		SentimentRequest response3 = new SentimentRequest();
 		response3.setSubRequests(subs3);
-		System.out.println("3 subs: " + response3.getSubRequests().size());
 		response3.setFrom(new Date());
 		response3.setTo(new Date());
 		
@@ -185,66 +250,32 @@ public class LoginController {
 		listR.add(response2);
 		listR.add(response3);
 		
-		SentimentRequestList userRequests = new SentimentRequestList(listR);
-		/*
-		 * End test
-		 */
-		
-//		SentimentRequestList userRequests = requestService.getCompanyRequests(this.name);
-					
-		float sumSentiment = 0;
-		int finalNumberOfTweets = 0;
-		int numberOfSubrequests = 0;
-
-		//for chacun de requests de l'utilisateur
-		for(int i=0; i<userRequests.getList().size();i++){
-			System.out.println("Nr Subs: " + userRequests.getList().get(i).getSubRequests().size());
-		}
-		
-		
-		/*
-		 * calculating request details
-		 */
-		for (SentimentRequest userRequest : userRequests.getList()) {
-			
-			
-			
-			System.out.println("SUBS: " + userRequest.getSubRequests().size());
-			numberOfSubrequests = userRequest.getSubRequests().size();
-			SentimentRequestStats stats = new SentimentRequestStats();
-			stats.setFrom(userRequest.getFrom());
-			stats.setTo(userRequest.getTo());
-			
-			sumSentiment = 0;
-			finalNumberOfTweets = 0;
-			
-			for (SentimentProcessingRequest subrequest : userRequest.getSubRequests()) {
-
-				sumSentiment += subrequest.getSentiment();
-				System.out.println("Sentiment: " + sumSentiment);
-				finalNumberOfTweets += subrequest.getNumberOfTweets();
-				System.out.println("Tweets: " + finalNumberOfTweets);
-				
-			}
-			
-			
-			float finalSentiment = sumSentiment / numberOfSubrequests;
-
-			double standardError = 1.96 * Math.sqrt(finalSentiment
-					* (1 - finalSentiment) / (finalNumberOfTweets - 1));
-			
-			stats.setSentiment(finalSentiment);
-			stats.setTweets(finalNumberOfTweets);
-			stats.setIntervalMin(finalSentiment - standardError);
-			stats.setIntervalMax(finalSentiment + standardError);
-			
-			
-			requestStats.add(stats);
-			System.out.println("NR REQUESTS STATS: " + requestStats.size());
-		}
-
+		return new SentimentRequestList(listR);
 	}
 
+	
+	public void testSayHello(){
+	 
+		RequestService requestService = new RequestService();
+
+		String response = requestService.helloWorld();
+	  
+		if(response != null && !response.equals("")){
+		  this.helloMessage=response;
+	  
+		} else {
+			this.helloMessage = "error calling";    
+		}
+	}	
+
+	public String getName() {
+		return name;
+	}
+ 
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public List<SentimentRequestStats> getRequestStats() {
 		return requestStats;
 	}
@@ -252,41 +283,29 @@ public class LoginController {
 	public void setRequestStats(List<SentimentRequestStats> requestStats) {
 		this.requestStats = requestStats;
 	}
-
-	public String getLoggedIn() {
-		return loggedIn;
-	}
-
-	public void setLoggedIn(String loggedIn) {
-		this.loggedIn = loggedIn;
-	}
 	
-	public void testSayHello(){
-	 
-		RequestService requestService = new RequestService();
-
-		System.out.println("REQUEST SERVICE CREATED");
-		String response = requestService.helloWorld();
-	  
-		System.out.println("FINAL RESPONSE DONE");
-		System.out.println("RESPONSE: " + response + ".");
-		if(response != null && !response.equals("")){
-		  this.helloMessage=response;
-	  
-		} else {
-		  
-			this.helloMessage = "error calling";  
-	  
-		}
-	  
-  }
-
 	public String getHelloMessage() {
 		return helloMessage;
 	}
 
 	public void setHelloMessage(String helloMessage) {
 		this.helloMessage = helloMessage;
+	}
+
+	public String getRegistered() {
+		return registered;
+	}
+
+	public void setRegistered(String registered) {
+		this.registered = registered;
+	}
+
+	public StatisticsBean getStatistics() {
+		return statistics;
+	}
+
+	public void setStatistics(StatisticsBean statistics) {
+		this.statistics = statistics;
 	}
 
 }

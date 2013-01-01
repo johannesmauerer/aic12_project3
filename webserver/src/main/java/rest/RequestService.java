@@ -32,6 +32,7 @@ public class RequestService {
 
 	private final String managementServiceUri = "http://128.130.172.202:8080/management"; 
 	private final String mongoServiceUri = "http://128.130.172.202:8080/dao";//"http://128.130.172.202:8080/dao"; //"http://10.99.0.141:44444/sentimentanalysis";
+	private final String webserverURI = "http://localhost:8080/webserver/rest"; 
 	
 	public String findCompany(String companyName) {
 
@@ -143,24 +144,24 @@ public class RequestService {
 	}
 
 	 public SentimentRequest getRequestResponse(UUID id){
-	    
-    	  
-    	// Jersey Client Config
+	   
+		// Jersey Client Config
  		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
  		client = Client.create(config);
 
  		// Request
- 		URI uri = UriBuilder.fromUri(mongoServiceUri)
- 				.path("requestdao")
- 				.path("getrequestbyid")
- 				.queryParam("id", id.toString())
+ 		URI uri = UriBuilder.fromUri(webserverURI)
+ 				.path("send")
+ 				.path("response")
+ 				.queryParam("id", id)
  				.build();
 
  		// WebResource
  		service = client.resource(uri);
 
  		SentimentRequest response = service.accept(MediaType.APPLICATION_JSON)
- 				.type(MediaType.APPLICATION_JSON).get(SentimentRequest.class);
+ 											.type(MediaType.APPLICATION_JSON)
+ 											.post(SentimentRequest.class);
  		
  		return response;
     }
@@ -187,26 +188,19 @@ public class RequestService {
 
 	public String helloWorld() {
 		// Jersey Client Config
-		System.out.println("IN REQ SERVICE");
 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-		System.out.println("CONFIG DONE");
 		client = Client.create(config);
-		System.out.println("Client DONE");
 		
 		// Request
-		URI uri = UriBuilder.fromUri("http://localhost:8080/webserver/rest")
+		URI uri = UriBuilder.fromUri(webserverURI)
 				.path("send")
 				.path("hello")
 				.build();
-		System.out.println("URL DONE");
 
 		// WebResource
 		service = client.resource(uri);
-		System.out.println("service DONE");
 
 		String response = service.get(String.class);
-
-		System.out.println("response DONE");
 		
 		return response;
 	}

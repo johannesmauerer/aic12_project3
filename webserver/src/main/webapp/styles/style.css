@@ -8,7 +8,9 @@ body {
 	font-size: 80%;	
 	background-color: #33CCFF;
 }
-
+#outputGet{
+	display: none;
+}
 #form{
 }
 #box{
@@ -40,9 +42,8 @@ background-color:#FFFFFF;
 	
 }
 #scrollableTable{
-	background-color: #FFFFFF;
-	height: 150px;
 	overflow: auto;
+	height: 70%;
 	width: 70%;
 }
 #footer {
