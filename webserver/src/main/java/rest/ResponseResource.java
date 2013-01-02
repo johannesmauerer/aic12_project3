@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -13,15 +15,27 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
+
+import util.ILoggingObserver;
+
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 
 import com.sun.jersey.spi.resource.Singleton;
 
+import controller.LoggingController;
+
 @Singleton
 @Path("/send")
 public class ResponseResource {
-
+		
+	private static ArrayList<ILoggingObserver> _loggingObservers = new ArrayList<ILoggingObserver>();
+	
 	/**
 	 * Sends request response to Web Interface
 	 * @param reqId id of processed request
@@ -34,7 +48,7 @@ public class ResponseResource {
 		System.out.println("IN RESOURCE");
 		// returned finished request
 		//TODO not finished
-		
+
 		/*
 		 * Test
 		 */
@@ -77,7 +91,7 @@ public class ResponseResource {
 		/*
 		 * End test
 		 */
-		
+
 		return response;
 	}
 
@@ -86,8 +100,33 @@ public class ResponseResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String sayHello() {
 		return "Hello Jersey";
-		//serv.acceptHello();
+	}
+
+	public static boolean registerLoggingObserver(ILoggingObserver loggingObserver){
+		if(!_loggingObservers.contains(loggingObserver))
+			return _loggingObservers.add(loggingObserver);
+		System.out.println("REGITERED");
+		
+		return false;
 	}
 	
+	public static boolean removeLoggingObserver(ILoggingObserver loggingObserver){
+		if(_loggingObservers.contains(loggingObserver))
+			return _loggingObservers.remove(loggingObserver);
+		
+		return false;
+	}
 	
+	@GET
+	@Path("/log")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String log(@QueryParam("message")String message){
+
+		for(ILoggingObserver loggingObserver: _loggingObservers){
+			loggingObserver.log(message);
+		}
+		return message;
+	}
+
+
 }
