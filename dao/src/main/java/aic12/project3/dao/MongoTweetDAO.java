@@ -49,7 +49,7 @@ public class MongoTweetDAO implements ITweetDAO{
 		//Upsert workaround for addtoset (as niot fully implemented in springdata)
 		BasicDBList list = new BasicDBList();
 		list.addAll(tweet.getCompanies());
-		mongoOperation.upsert(new Query(Criteria.where("_id").is(tweet.getTwitterId())), new Update().set("date", tweet.getDate()).addToSet("companies", BasicDBObjectBuilder.start("$each", list).get()), "tweets");
+		mongoOperation.upsert(new Query(Criteria.where("_id").is(tweet.getTwitterId())), new Update().set("date", tweet.getDate()).set("text", tweet.getText()).addToSet("companies", BasicDBObjectBuilder.start("$each", list).get()), "tweets");
 	}
 
 	@Override
@@ -59,6 +59,7 @@ public class MongoTweetDAO implements ITweetDAO{
 		}
 	}
 	
+	@Override
 	public void insertTweet(TweetDTO tweet) {
 		mongoOperation.insert(tweet);
 	}
