@@ -20,6 +20,7 @@ public class RemoteLoggerGETImpl extends RemoteLogger {
 	private WebResource resource;
 
 	private RemoteLoggerGETImpl(Class clazz) {
+		log.info("new RemoteLoggerGETImpl");
 		classToLog = clazz.getName();
 		ConfigReader config = new ConfigReader("remoteLogging.properties");
 		String remoteLogURIBuilder = config.getProperty("remoteLogURI");
@@ -39,8 +40,9 @@ public class RemoteLoggerGETImpl extends RemoteLogger {
 	@Override
 	protected void pushLogMessage(Priority lvl, String msg) {
 		log.log(classToLog, lvl, msg, null);
-		resource.queryParam("message", classToLog + ": " + msg);
-		resource.get(String.class);
+
+		// push message async
+		(new Thread(new RemoteLoggerThread(resource, /*classToLog + ": " + */msg))).start();
 	}
 
 }
