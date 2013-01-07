@@ -82,6 +82,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	@Override
 	protected void saveRequestToDB(String id){
 		// TODO
+		logger.info("Saving Request to DB");
 		SentimentRequest s = readyQueue.get(id);
 
 		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
@@ -89,6 +90,8 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 				.path(config.getProperty("databaseRequestRestPath"))
 				.path("insert")
 				.build();
+		
+		logger.info("Database Server is " + config.getProperty("databaseServer"));
 
 		// Jersey Client Config
 		ClientConfig config = new DefaultClientConfig();
@@ -96,7 +99,10 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		Client client = Client.create(config);
 
 		WebResource resource = client.resource(uri);
-		resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
+		ClientResponse resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
+		
+		logger.info("Saving done");
+		
 
 	}
 

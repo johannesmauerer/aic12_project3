@@ -1,5 +1,6 @@
 package aic12.project3.service.loadBalancing;
 
+import java.net.NoRouteToHostException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +27,7 @@ import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.nodeManagement.Node;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -480,6 +482,7 @@ public class LoadBalancerTime extends LoadBalancer {
 			public void run()
 			{
 				boolean alive = false;
+				boolean ipReady = false;
 				
 
 				do {
@@ -487,8 +490,36 @@ public class LoadBalancerTime extends LoadBalancer {
 					// Receive answer true or false (alive or unalive
 					String ip = nm.getIp(id);
 					if (ip!=null && !ip.equals("")){
-						alive = true;
+						ipReady = true;
 						logger.info("Awaked node with ip " + ip);
+					}
+					
+					// Now check if the tomcat server is running
+					if (ipReady){
+						ClientConfig config = new DefaultClientConfig();
+				        config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+				        Client client = Client.create(config);
+				        
+				       
+				        try {
+				        	 WebResource resource = client.resource("http://"+ip+":8080/analysis/sentiment/amialive");
+					            //SentimentProcessingRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentProcessingRequest.class, request);
+
+						        logger.info("Checking if Node with IP " + ip + " has a running tomcat & sentiment deployment");
+						        
+				            String response2 = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(String.class);
+				            if (response2.equals("alive")){
+				            	logger.info("Node with IP " + ip + " IS RUNNING WITH TOMCAT! ALL GOOD");
+				            	alive = true;
+				            }
+				            else logger.info("There seems to be a problem with node with IP" + ip);
+
+				        } catch (Exception e) {
+				        	logger.error("Error while trying to get alive message from node with IP " + ip, e);
+				        }
+
+			            
+			            
 					}
 					
 					if (alive){

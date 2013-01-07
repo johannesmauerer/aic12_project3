@@ -8,26 +8,16 @@
 	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
  
 	<context:component-scan base-package="aic12"/>
+	<context:annotation-config />
 
 	<!-- Normal runtime beans -->
 	<bean id="requestAnalysis" class="aic12.project3.service.requestManagement.RequestAnalysisImpl"/>
 	<bean id="requestQueueReady" class="aic12.project3.service.requestManagement.RequestQueueReadyImpl" factory-method="getInstance"/>
 	<bean id="loadBalancer" class="aic12.project3.service.loadBalancing.LoadBalancerTime" factory-method="getInstance" init-method="init" />
     <bean id="statistics" class="aic12.project3.service.statistics.StatisticsImpl" />
-    <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" />
+    <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" init-method="initOnce"/>
     <bean id="config" class="aic12.project3.service.util.ManagementConfig" />
     <bean id="downloadManagerClient" class="aic12.project3.dao.tweetsManagement.DownloadManagerClientRestImpl" />
      
-            
-<bean id="log4jInitialization"
- class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-   <property name="targetClass"
-      value="org.springframework.util.Log4jConfigurer" />
-   <property name="targetMethod" value="initLogging" />
-   <property name="arguments">
-      <list>
-         <value>src/main/java/log4j.properties</value>
-      </list>
-   </property>
-</bean>
+      
 </beans>

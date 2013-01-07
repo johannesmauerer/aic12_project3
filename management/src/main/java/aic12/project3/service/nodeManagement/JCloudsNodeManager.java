@@ -40,7 +40,7 @@ public class JCloudsNodeManager implements INodeManager{
 		return instance;
 	}
 	
-	private void initOnce(){
+	protected void initOnce(){
 
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			public void uncaughtException(Thread t, Throwable e) {
