@@ -82,9 +82,9 @@ public class RequestService {
 
 		req.setId(UUID.randomUUID().toString());
 		req.setState(REQUEST_QUEUE_STATE.NEW);
-		req.setCompanyName("Google");
-		DateTime cleanFrom = new DateTime(2013,1,1,0,0,0,0);
-		DateTime cleanTo = new DateTime(2013,1,6,11,11,11,0);
+		req.setCompanyName("microsoft");
+		DateTime cleanFrom = new DateTime(2013,1,4,2,6,0,0);
+		DateTime cleanTo = new DateTime(2013,1,4,11,11,11,0);
 		req.setFrom(cleanFrom.toDate());
         req.setTo(cleanTo.toDate());
         
@@ -109,7 +109,7 @@ public class RequestService {
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
 
 		req.setId(UUID.randomUUID().toString());
-		req.setCompanyName("Google");
+		req.setCompanyName("google");
 		DateTime cleanFrom = new DateTime(1,1,2013,0,0,0,0);
 		DateTime cleanTo = new DateTime(1,6,2013,11,11,11,0);
 		req.setFrom(cleanFrom.toDate());

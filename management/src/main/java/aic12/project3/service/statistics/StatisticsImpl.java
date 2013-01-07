@@ -1,6 +1,9 @@
 package aic12.project3.service.statistics;
 
+import java.net.URI;
+
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -92,5 +95,22 @@ public class StatisticsImpl implements Statistics
         }
 
         return bean;
+    }
+    
+    public long getNumberOfTweetsForRequest(SentimentRequest req){
+		URI uri = UriBuilder.fromUri("http://localhost:8080")
+				.path("dao")
+				.path("tweetdao")
+				.path("getnumberoftweetforrequest")
+				.build();
+
+		// Jersey Client Config
+		ClientConfig config = new DefaultClientConfig();
+		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+		Client client = Client.create(config);
+
+		WebResource resource = client.resource(uri);
+		Long resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Long.class, req);
+		return resp;
     }
 }

@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.beans.TweetCountDetail;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.util.ManagementConfig;
 
@@ -30,9 +31,9 @@ public class TestDatabaseClass {
 
 		req.setId(UUID.randomUUID().toString());
 		req.setState(REQUEST_QUEUE_STATE.NEW);
-		req.setCompanyName("google");
-		DateTime cleanFrom = new DateTime(2013,1,1,0,0,0,0);
-		DateTime cleanTo = new DateTime(2013,1,6,11,11,11,0);
+		req.setCompanyName("microsoft");
+		DateTime cleanFrom = new DateTime(2013,1,4,2,6,0,0);
+		DateTime cleanTo = new DateTime(2013,1,4,11,11,11,0);
 		req.setFrom(cleanFrom.toDate());
         req.setTo(cleanTo.toDate());
 

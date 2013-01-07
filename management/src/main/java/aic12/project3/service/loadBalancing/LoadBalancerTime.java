@@ -16,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Hours;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -183,8 +184,12 @@ public class LoadBalancerTime extends LoadBalancer {
 		// Nodes are not allowed to be stopped right now
 		nodesToRunCurrently = runningNodes;
 		
+		// Request
+		SentimentRequest req = rqr.getRequest(id);
+		
 		// Gather some important variables
-		int numOfTweets = rqr.getRequest(id).getNumberOfTweets();
+		int numOfTweets = (int) stats.getNumberOfTweetsForRequest(req);
+		logger.info("Number of Tweets " + numOfTweets);
 		int processQueueSize = processQueue.size();
 		int tweetsInProcessQueue = 0;
 		for (SentimentProcessingRequest r : processQueue){
@@ -196,27 +201,18 @@ public class LoadBalancerTime extends LoadBalancer {
 		long timeToStartup = Long.parseLong(config.getProperty("timeToStartup"));
 		
 		// Days between Start and End
-		DateTime cleanFrom = new DateTime(rqr.getRequest(id).getFrom());
-		DateTime cleanTo = new DateTime(rqr.getRequest(id).getTo());  
-		int dayDifference = Days.daysBetween(cleanFrom, cleanTo).getDays();
-		logger.info("Days difference: " + dayDifference);
+		DateTime cleanFrom = new DateTime(req.getFrom());
+		DateTime cleanTo = new DateTime(req.getTo());  
+		
+		int hourDifference = Hours.hoursBetween(cleanFrom, cleanTo).getHours();
+
+		logger.info("Hours " + hourDifference);
 		/*
 		 * Calculate wanted Nodes and wanted Parts
 		 */
 		int wantedNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
-		int wantedParts = wantedNodes;
-		// When there is less days than parts
-		//if (wantedParts>dayDifference){
-		//	wantedParts = dayDifference;
-		//}
-		// TODO: Remove
+		int wantedParts = (int) Math.ceil(numOfTweets/1000);
 		logger.info("Wanted Nodes: " + wantedNodes + " and wanted parts: " + wantedParts); 
-		
-		
-		// Nodes/Splits wanted in the end (after calculations):
-		//wantedNodes = runningNodes;
-		//wantedParts = wantedNodes;
-		
 		
 		/*
 		 * Already start missing Nodes if necessary
@@ -236,11 +232,12 @@ public class LoadBalancerTime extends LoadBalancer {
 		// 1) A)
 		Date[] startDates = new Date[wantedParts];
 		Date[] endDates = new Date[wantedParts];
-		int daysPerNode = (int) Math.ceil(dayDifference / ((double) wantedNodes));
+		int hoursPerNode = (int) Math.ceil(hourDifference / ((double) wantedNodes));
 		for (int i=0; i<wantedParts; i++){
-			startDates[i] = cleanFrom.plusDays(daysPerNode*(i)).toDate();
-			endDates[i] = cleanFrom.plusDays(daysPerNode*(i+1)).toDate();
-			logger.info("Dates for " + i + " set " + wantedParts);
+			startDates[i] = cleanFrom.plusHours(hoursPerNode*i).toDate();
+			endDates[i] = cleanFrom.plusHours(hoursPerNode*(i+1)).toDate();
+			
+			logger.info("Dates for " + i + " set " + wantedParts + " from " + startDates[i].toGMTString() + " to " + endDates[i].toGMTString());
 		}
 		
 		// Save amount of parts in request
@@ -280,63 +277,48 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	private void pollAndSend() {
 
-		/*
-		 * Do as long as there are requests and nodes available
-		 */
-		while (processQueue.size()>0){
-			Node n = nodes.get(this.getMostAvailableNode());
-			if (n!=null){
-				if (n.getStatus()==NODE_STATUS.IDLE){
-					pollAndSend(n.getId());					
-				}
-			}
-		}
-
-	}
-
-	private void pollAndSend(String id) {
-
-		// Available Node
-		String nextNode = id;
-
+		logger.info("New Poll and Send call");
 		// See if queue is non-empty
 		if (processQueue.size()>0){
 			/*
 			 * Check Status of next node
 			 */
-			if (nextNode == null){
-				// No Node available currently
-				// Request stays in ReadyQueue until Node is available
-
-			} else {
-				
-				// Take Node
-				Node n = nodes.get(nextNode);
-				// Idle handling
-				String lastVisit = UUID.randomUUID().toString();
-				n.setLastVisitID(lastVisit);
-				n.setStatus(NODE_STATUS.BUSY);
-				// Save node
-				nodes.put(nextNode, n);
-
-				// Get Next request
-				SentimentProcessingRequest req = processQueue.poll();
-
-				// Send to node
-				sendRequestToNode(id,req);
-
-				// Also save assignment
-				processRequest_nodes.put(req.getId(), nextNode);
-				
-				logger.info("SentimentProcessingRequest with " + req.getCompanyName() + ":" + req.getCompanyName() + " to be sent to node " + n.getId());
-
+			synchronized(nodes){
+				Node n = nodes.get(this.getMostAvailableNode());
+				if (n == null){
+					// No Node available currently
+					// Request stays in ReadyQueue until Node is available
+	
+				} else {
+					
+						// Idle handling
+						String lastVisit = UUID.randomUUID().toString();
+						n.setLastVisitID(lastVisit);
+						n.setStatus(NODE_STATUS.BUSY);
+						
+						// Save node
+						nodes.put(n.getId(), n);
+					
+	
+					// Get Next request
+					SentimentProcessingRequest req = processQueue.poll();
+	
+					// Send to node
+					sendRequestToNode(n.getId(),req);
+	
+					// Also save assignment
+					processRequest_nodes.put(req.getId(), n.getId());
+					
+					logger.info("SentimentProcessingRequest with id " + req.getId() + " to be sent to node " + n.getIp());
+	
+				}
 			}
-
 		}
+
 
 	}
 
-	private synchronized void sendRequestToNode(final String id, final SentimentProcessingRequest req){
+	private void sendRequestToNode(final String id, final SentimentProcessingRequest req){
 
 		new Thread()
 		{
@@ -445,6 +427,8 @@ public class LoadBalancerTime extends LoadBalancer {
 		/*
 		 * Start Thread to shut down Node if its IDLE for too long
 		 */
+		// CHeck if work is available
+		pollAndSend();
 		new Thread()
 		{
 			@Override
@@ -551,7 +535,7 @@ public class LoadBalancerTime extends LoadBalancer {
 						idleNodeHandling(id,lastVisit);
 
 						// Start polling next request (if available) onto node
-						pollAndSend(n.getId());
+						pollAndSend();
 						
 						// TODO: remove
 						logger.info(n.getId() + " is now alive and IDLE");
