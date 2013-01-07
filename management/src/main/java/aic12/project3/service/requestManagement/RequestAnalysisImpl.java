@@ -137,30 +137,33 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 		// TODO: Remove
 		logger.info("New Update in Request Queue");
 
-		switch (requestQueueReady.getRequest(id).getState()){
-		case NEW:
-			// Never applicable
-			break;
+		if (requestQueueReady.getRequest(id) != null){
+			switch (requestQueueReady.getRequest(id).getState()){
+			case NEW:
+				// Never applicable
+				break;
 
-		case DOWNLOADED:
-			// Downloaded: Check again for downloaded and continue
-			this.checkDownloaded(id);
-			break;
+			case DOWNLOADED:
+				// Downloaded: Check again for downloaded and continue
+				this.checkDownloaded(id);
+				break;
 
-		case FINISHED:
-			// Processing done, so archive Request
-			SentimentRequest req = requestQueueReady.getRequest(id);
-			req.setState(REQUEST_QUEUE_STATE.ARCHIVED);
-			requestQueueReady.addRequest(req);
+			case FINISHED:
+				// Processing done, so archive Request
+				SentimentRequest req = requestQueueReady.getRequest(id);
+				req.setState(REQUEST_QUEUE_STATE.ARCHIVED);
+				requestQueueReady.addRequest(req);
 
-			// Delete from requestQueueReady
-			requestQueueReady.deleteRequestFromQueue(id);
-			break;
+				// Delete from requestQueueReady
+				requestQueueReady.deleteRequestFromQueue(id);
+				break;
 
-		default:
-			break;
+			default:
+				break;
 
+			}			
 		}
+
 
 	}
 

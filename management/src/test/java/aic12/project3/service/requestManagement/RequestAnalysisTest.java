@@ -26,11 +26,13 @@ import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.SpringTest;
+import aic12.project3.service.util.ManagementConfig;
 
 
 public class RequestAnalysisTest extends SpringTest {
 
 	@Autowired RequestAnalysis requestAnalysis;
+	@Autowired ManagementConfig config;
 
 	@Test
 	public void databaseConnection(){
