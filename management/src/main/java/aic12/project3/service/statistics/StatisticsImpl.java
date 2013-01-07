@@ -70,9 +70,9 @@ public class StatisticsImpl implements Statistics
                     bean.setMinimumDurationOfRequest(requestDuration);
                 }
                 
-                if (request.getSubRequests() != null)
+                if (request.getSubRequestsProcessed() != null) // TODO chech if this is correct
                 {
-                    for (SentimentProcessingRequest procrequest : request.getSubRequests())
+                    for (SentimentProcessingRequest procrequest : request.getSubRequestsProcessed())
                     {
                         totalProcessingTime += procrequest.getTimestampAnalyzed() - procrequest.getTimestampDataFetched();
                         totalTotalTime += procrequest.getTimestampAnalyzed() - procrequest.getTimestampStartOfAnalysis();

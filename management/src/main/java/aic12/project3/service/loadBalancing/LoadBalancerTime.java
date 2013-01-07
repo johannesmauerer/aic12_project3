@@ -65,9 +65,9 @@ public class LoadBalancerTime extends LoadBalancer {
 
 	private static LoadBalancerTime instance = new LoadBalancerTime();
 	private Queue<SentimentProcessingRequest> processQueue = new LinkedList<SentimentProcessingRequest>();
-	private Map<String,List<SentimentProcessingRequest>> combineQueue = new HashMap<String,List<SentimentProcessingRequest>>();
 	private int nodesToRunCurrently;
 	final Lock lock = new ReentrantLock();
+	private IHighLevelNodeManager highLvlNodeMan = new HighLevelNodeManagerImpl();
 
 	private LoadBalancerTime(){
 	}
@@ -110,11 +110,11 @@ public class LoadBalancerTime extends LoadBalancer {
 		int minimumNodes = Integer.parseInt(config.getProperty("minimumNodes"));
 		if (minimumNodes > 0){
 			for (int i=0; i < minimumNodes; i++){
-				startNode();
+				highLvlNodeMan.startNode().addObserver(this);
 			}
 		}
 
-		logger.info("Node(s) started, current amount of nodes: " + nodes.size());
+		logger.info("init done");
 
 	}
 
@@ -123,47 +123,46 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	@Override
 	protected void updateInQueue(String id) {
+		SentimentRequest request = rqr.getRequest(id);
 		
-		if (rqr.getRequest(id) != null){
+		if (request != null){
 			/*
 			 * TODO: Remove Logger
 			 */
-			logger.info("QueueUpdate: " + id + " is " + rqr.getRequest(id).getState().toString());
+			logger.info("QueueUpdate: " + id + " is " + request.getState().toString());
 	
 			/*
 			 * TODO: Remove Logger
 			 * Iterate over all nodes and print details
 			 */
-			Iterator it = nodes.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry)it.next();
-				Node n = (Node) pairs.getValue();
-				logger.info("ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
-			}
+//			Iterator it = nodes.entrySet().iterator();
+//			while (it.hasNext()) {
+//				Map.Entry pairs = (Map.Entry)it.next();
+//				Node n = (Node) pairs.getValue();
+//				logger.info("ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
+//			}
 	
 			/*
 			 * Switch between Status of Request
 			 */
-			switch (rqr.getRequest(id).getState()){
+			switch (request.getState()){
 			case READY_TO_PROCESS:
 				logger.info("Time to split");
-				// Create entry in combine Queue
-				combineQueue.put(id, new ArrayList<SentimentProcessingRequest>());
-				
-				// Split request into multiple sub-requests (if necessary)
-				// and add these to Queue for processing
-				splitRequestAndAddToQueue(id);
-	
-				// Change Status of Request
-				SentimentRequest req = rqr.getRequest(id);
-				req.setState(REQUEST_QUEUE_STATE.IN_PROCESS);
-				rqr.addRequest(req);
-	
-				logger.info("Time to send");
-				// Start Request
-				pollAndSend();
+				int parts = (int) Math.ceil(stats.getNumberOfTweetsForRequest(request) / (double) 1000);
+				RequestSplitter.splitRequest(request, parts);
 				break;
 	
+			case SPLIT:
+				logger.info("request was split");
+				// fill processQueue
+				processQueue.addAll(request.getSubRequestsNotProcessed());
+				
+				// TODO calculate expected load
+				
+				// TODO start nodes
+				
+				
+				break;
 			default:
 				break;
 	
@@ -172,104 +171,8 @@ public class LoadBalancerTime extends LoadBalancer {
 
 	}
 
-	/**
-	 * Split a SentimentRequest into multiple SentimentProcessingRequest
-	 * @param id the ID of the SentimentRequest
-	 */
-	private void splitRequestAndAddToQueue(String id) {
-
-		// Get variable from config
-		int runningNodes = nodes.size();
-		
-		// Nodes are not allowed to be stopped right now
-		nodesToRunCurrently = runningNodes;
-		
-		// Request
-		SentimentRequest req = rqr.getRequest(id);
-		
-		// Gather some important variables
-		int numOfTweets = (int) stats.getNumberOfTweetsForRequest(req);
-		logger.info("Number of Tweets " + numOfTweets);
-		int processQueueSize = processQueue.size();
-		int tweetsInProcessQueue = 0;
-		for (SentimentProcessingRequest r : processQueue){
-			tweetsInProcessQueue += r.getNumberOfTweets();
-		}
-		Map<NODE_STATUS, Integer> stateNodeCount = getStateNodeCount();
-		int amountOfNodesMax = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
-		long timeForTweetProcessing = Long.parseLong(config.getProperty("averageProcessingPerTweet"));
-		long timeToStartup = Long.parseLong(config.getProperty("timeToStartup"));
-		
-		// Days between Start and End
-		DateTime cleanFrom = new DateTime(req.getFrom());
-		DateTime cleanTo = new DateTime(req.getTo());  
-		
-		int hourDifference = Hours.hoursBetween(cleanFrom, cleanTo).getHours();
-
-		logger.info("Hours " + hourDifference);
-		/*
-		 * Calculate wanted Nodes and wanted Parts
-		 */
-		int wantedNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
-		int wantedParts = (int) Math.ceil(numOfTweets/1000);
-		logger.info("Wanted Nodes: " + wantedNodes + " and wanted parts: " + wantedParts); 
-		
-		/*
-		 * Already start missing Nodes if necessary
-		 */
-		if (wantedNodes > runningNodes){
-			for (int i=0; i<(wantedNodes-runningNodes); i++){
-				this.startNode();
-				logger.info("New Node started");
-			}
-		}
-		
-		/*
-		 * Split Request into Sub-Request (x as calculated)
-		 * 1) Find dates to split by (A general: divide by days, B advanced: amount of tweets)
-		 * 2) Split with found dates
-		 */
-		// 1) A)
-		Date[] startDates = new Date[wantedParts];
-		Date[] endDates = new Date[wantedParts];
-		int hoursPerNode = (int) Math.ceil(hourDifference / ((double) wantedNodes));
-		for (int i=0; i<wantedParts; i++){
-			startDates[i] = cleanFrom.plusHours(hoursPerNode*i).toDate();
-			endDates[i] = cleanFrom.plusHours(hoursPerNode*(i+1)).toDate();
-			
-			logger.info("Dates for " + i + " set " + wantedParts + " from " + startDates[i].toGMTString() + " to " + endDates[i].toGMTString());
-		}
-		
-		// Save amount of parts in request
-		rqr.getRequest(id).setParts(wantedParts);
-		
-		/*
-		 * Now finally release the requests to the processQueue
-		 */
-		for (int i=0; i<wantedParts; i++){
-			SentimentProcessingRequest s = new SentimentProcessingRequest();
-			s.setCompanyName(rqr.getRequest(id).getCompanyName());
-			s.setFrom(startDates[i]);
-			s.setTo(endDates[i]);
-			s.setParentID(id);
-			this.processQueue.add(s);	
-			logger.info("Part " + i + " stored in Processing Queue");
-		}
-		
-	}
 	
-	private Map<NODE_STATUS, Integer> getStateNodeCount(){
-		Map<NODE_STATUS, Integer> map = new HashMap<NODE_STATUS, Integer>();
-		Iterator it = nodes.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry)it.next();
-			Node n = (Node) pairs.getValue();
-			if (map.get(n.getStatus())==null) map.put(n.getStatus(), 0);
-			else map.put(n.getStatus(), map.get(n.getStatus())+1);
-		}
-		return map;
-	}
-
+	
 	/**
 	 * Send request to node if one is available
 	 * if not then put into Queue.
@@ -283,179 +186,69 @@ public class LoadBalancerTime extends LoadBalancer {
 			/*
 			 * Check Status of next node
 			 */
-			synchronized(nodes){
-				Node n = nodes.get(this.getMostAvailableNode());
+			synchronized(highLvlNodeMan){
+				Node n = highLvlNodeMan.getMostAvailableNode();
 				if (n == null){
 					// No Node available currently
 					// Request stays in ReadyQueue until Node is available
 	
 				} else {
 					
-						// Idle handling
-						String lastVisit = UUID.randomUUID().toString();
-						n.setLastVisitID(lastVisit);
-						n.setStatus(NODE_STATUS.BUSY);
+					// Idle handling
+					String lastVisit = UUID.randomUUID().toString();
+					n.setLastVisitID(lastVisit);
+					n.setStatus(NODE_STATUS.BUSY);
 						
-						// Save node
-						nodes.put(n.getId(), n);
-					
 	
 					// Get Next request
 					SentimentProcessingRequest req = processQueue.poll();
 	
-					// Send to node
-					sendRequestToNode(n.getId(),req);
-	
-					// Also save assignment
-					processRequest_nodes.put(req.getId(), n.getId());
-					
-					logger.info("SentimentProcessingRequest with id " + req.getId() + " to be sent to node " + n.getIp());
-	
+					highLvlNodeMan.sendRequestToNode(n, req);
 				}
 			}
 		}
-
-
 	}
 
-	private void sendRequestToNode(final String id, final SentimentProcessingRequest req){
 
-		new Thread()
-		{
-			@Override
-			public void run()
-			{
-				// Request ready to be put onto Node
-				String server = "http://" + nodes.get(id).getIp() + ":8080";
-				URI uri = UriBuilder.fromUri(server)
-						.path(config.getProperty("sentimentDeployment"))
-						.path(config.getProperty("sentimentCallbackRestPath"))
-						.build();
-				
-				logger.info(uri.toString() + " prepared to send");
-
-				// Jersey Client Config
-				ClientConfig config2 = new DefaultClientConfig();
-				config2.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-				Client client = Client.create(config2);
-				// WebResource
-				WebResource service = client.resource(uri);
-
-				// Prepare Request
-				String callbackURL = (config.getProperty("sentimentCallbackURL"));
-				logger.info("Setting callback address to " + callbackURL);
-				if (callbackURL == null || callbackURL.equals("")){
-					// Fallback
-					callbackURL = "http://128.130.172.202:8080/management/request/acceptProcessingRequest";
-					logger.info("Fallback for callback necessary");
-				}
-				req.setCallbackAddress(callbackURL);
-				logger.info("Callback Address set to " + req.getCallbackAddress());
-				// Call Node, missing IP for Node so far
-				service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(req);
-				logger.info("SentimentProcessingRequest with parent " + req.getCompanyName() + ":" + req.getParentID() + " has been sent to Node " + id + " which has state " + nodes.get(id).getStatus());
-
-			}
-		}.start();
-
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	protected String getMostAvailableNode(){
-		/*
-		 * Iterate through available nodes
-		 */
-		Iterator it = nodes.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry)it.next();
-			Node n = (Node) pairs.getValue();
-			/*
-			 * If a node is IDLE, use it.
-			 */
-			if (n.getStatus() == NODE_STATUS.IDLE){
-				return (String) pairs.getKey();
-			}
-		}
-
-		/*
-		 * Return possible node
-		 */
-		return null;
-
-	}
-
-	/**
-	 * Start a node implementation
-	 */
-	@Override
-	protected String startNode() {
-		/*
-		 * Check if resources to start new node are available
-		 */
-		if (nodes.size()>=Integer.parseInt(config.getProperty("amountOfSentimentNodes"))){
-			/*
-			 * If not available return null
-			 */
-			return null;
-		} else {
-			/*
-			 * Create new Node from available image
-			 */
-			Node n = nm.startNode(config.getProperty("serverNameSentiment"), config.getProperty("sentimentImageId"), config.getProperty("serverFlavor"));
-			n.setName("Sentiment");
-			/*
-			 * Set Node Status to Starting
-			 */
-			n.setStatus(NODE_STATUS.STARTING);
-			nodes.put(n.getId(), n);
-
-			/*
-			 * Start waiter for node to become available
-			 */
-			this.pollStartingNode(n.getId());
-
-			return n.getId();
-		}
-
-	}
 
 	@Override
-	public void idleNodeHandling(final String id, final String lastVisit){
+	public void idleNodeHandling(final String id){
 		/*
 		 * Start Thread to shut down Node if its IDLE for too long
 		 */
 		// CHeck if work is available
 		pollAndSend();
+		
 		new Thread()
 		{
 			@Override
 			public void run()
 			{
 				logger.info("Start waiting to stop Node: " + id + " for " + config.getProperty("nodeIdleTimeout") + " milliseconds");
+				Node node = highLvlNodeMan.getNode(id);
+				String lastVisit = node.getLastVisitID();
 				try {
 					Thread.sleep(Integer.parseInt((String) config.getProperty("nodeIdleTimeout")));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if (nodes.get(id).getStatus()==NODE_STATUS.IDLE){
-					if (nodes.get(id).getLastVisitID().equals(lastVisit)){
-						// Only stop if there are more nodes left
-						logger.info("Node " + id + " is still idle");
-						if (Integer.parseInt(((String) config.getProperty("minimumNodes"))) < nodes.size()){
-							if (nodesToRunCurrently < nodes.size() && nodes.containsKey(id)){
-								stopNode(id);
-								logger.info("Node " + id + " was still idle and has been stopped");								
-							} else {
-								// Stopping IDLE nodes is currently not allowed
-								// Restart idleNodeHandling
-								idleNodeHandling(id,lastVisit);
+				synchronized (node) {
+
+					if (node.getStatus()==NODE_STATUS.IDLE){
+						if (node.getLastVisitID().equals(lastVisit)){
+							// Only stop if there are more nodes left
+							logger.info("Node " + id + " is still idle");
+							if (Integer.parseInt(((String) config.getProperty("minimumNodes"))) < highLvlNodeMan.getNodesCount()){
+								if (nodesToRunCurrently < highLvlNodeMan.getNodesCount()){
+									highLvlNodeMan.stopNode(id);
+									logger.info("Node " + id + " was still idle and has been stopped");								
+								} else {
+									// Stopping IDLE nodes is currently not allowed
+									// Restart idleNodeHandling
+									idleNodeHandling(id);
+								}
 							}
-
-
 						}
 					}
 				}
@@ -464,101 +257,6 @@ public class LoadBalancerTime extends LoadBalancer {
 		}.start();
 	}
 
-	/**
-	 * Start Thread as soon as Node has been started to poll
-	 * a life-signal from node for it to be ready
-	 * @param id
-	 */
-	private void pollStartingNode(final String id){
-		/*
-		 * Start Thread to shut down Node if its IDLE for too long
-		 */
-		new Thread()
-		{
-			@Override
-			public void run()
-			{
-				boolean alive = false;
-				boolean ipReady = false;
-				
-
-				do {
-					// TODO: Send poll request
-					// Receive answer true or false (alive or unalive
-					String ip = nm.getIp(id);
-					if (ip!=null && !ip.equals("")){
-						ipReady = true;
-						logger.info("Node with ip " + ip + " awake");
-					}
-					
-					// Now check if the tomcat server is running
-					if (ipReady){
-						ClientConfig config = new DefaultClientConfig();
-				        config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-				        Client client = Client.create(config);
-				        
-				       
-				        try {
-				        	 WebResource resource = client.resource("http://"+ip+":8080/analysis/sentiment/amialive");
-					            //SentimentProcessingRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentProcessingRequest.class, request);
-
-						        logger.info("Checking if Node with IP " + ip + " has a running tomcat & sentiment deployment");
-						        
-				            String response2 = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(String.class);
-				            if (response2.equals("alive")){
-				            	logger.info("Node with IP " + ip + " IS RUNNING WITH TOMCAT! ALL GOOD");
-				            	alive = true;
-				            }
-				            else logger.info("There seems to be a problem with node with IP" + ip);
-
-				        } catch (Exception e) {
-				        	logger.info("Node with IP " + ip + " not available yet, retrying");
-				        }
-
-			            
-			            
-					}
-					
-					if (alive){
-						// Change status
-						Node n = nodes.get(id);
-						n.setStatus(NODE_STATUS.IDLE);
-						n.setIp(ip);
-						
-						// Idle handling
-						String lastVisit = UUID.randomUUID().toString();
-						n.setLastVisitID(lastVisit);
-
-						nodes.put(id, n);
-
-						// Also do idle node handling
-						idleNodeHandling(id,lastVisit);
-
-						// Start polling next request (if available) onto node
-						pollAndSend();
-						
-						// TODO: remove
-						logger.info(n.getId() + " is now alive and IDLE");
-
-					} else {
-						// Wait for specified Time
-						
-						try {
-							
-							Thread.sleep(Integer.parseInt((String) config.getProperty("pollSentimentAliveInterval")));
-							
-						} catch (NumberFormatException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				} while(nodes.get(id).getStatus()==NODE_STATUS.STARTING);
-			}
-		}.start();
-	}
 
 	/**
 	 * Accepts the processed requests and calls combiner
@@ -567,34 +265,15 @@ public class LoadBalancerTime extends LoadBalancer {
 	public void acceptProcessingRequest(SentimentProcessingRequest req) {
 		
 		logger.info("SentimentProcessingRequest with ID " + req.getId() + " received");
-		
-		logger.info("Adding the SentimentProcessingRequest to combineQueue");
-		List<SentimentProcessingRequest> list = combineQueue.get(req.getParentID());
-		list.add(req);
-		logger.info("Combine Queue now " + list.size() + " entries big");
-		combineQueue.put(req.getParentID(), list);
-		
-		logger.info("Starting to combine parts if possible");
+		SentimentRequest parent = rqr.getRequest(req.getParentID());
+		parent.getSubRequestsNotProcessed().remove(req);
+		parent.getSubRequestsProcessed().add(req);
+		logger.info("SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
+
 		this.combineParts(req.getParentID());
 		
-		/*
-		 * Also change node state
-		 */
-		logger.info("Change node status");
-		String id = this.processRequest_nodes.get(req.getId());
-		Node n = nodes.get(id);
-		n.setStatus(NODE_STATUS.IDLE);
-		
-		// Idle handling
-		String lastVisit = UUID.randomUUID().toString();
-		n.setLastVisitID(lastVisit);
-
-		nodes.put(id, n);
-		idleNodeHandling(id,lastVisit);
-		
-		// And remove from processRequest_nodes mapping
-		processRequest_nodes.remove(req.getId());
-		
+		logger.info("Change node status to idle");
+		highLvlNodeMan.setNodeIdle(req);
 	}
 
 	/**
@@ -603,42 +282,36 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	private void combineParts(String id) {
 		
-		/*
-		 * Needed variables
-		 */
 		int totalTweets = 0;
 		float totalSentiment = 0;
 		
 		/*
 		 * Most importantly: Check if all parts are here
 		 */
-		logger.info("Checking for availability of all parts. Needed parts are " + rqr.getRequest(id).getParts() + " and available are " + combineQueue.get(id).size());
-		if (rqr.getRequest(id).getParts()==combineQueue.get(id).size()){
-			
+		SentimentRequest parentRequest = rqr.getRequest(id);
+		if(parentRequest.getSubRequestsNotProcessed().isEmpty()) {
+
 			logger.info("Combination of parts started");
-			SentimentRequest r = rqr.getRequest(id);
-			
-			for (SentimentProcessingRequest s : combineQueue.get(id)){
-				
+			for (SentimentProcessingRequest s : parentRequest.getSubRequestsProcessed()) {
+
 				totalTweets += s.getNumberOfTweets();
 				logger.info("Number of tweets for this part: " + s.getNumberOfTweets());
 				totalSentiment += s.getSentiment()*s.getNumberOfTweets();
 				logger.info("Sentiment for these tweets: " + s.getSentiment());
-				
-				logger.info("Save part to SentimentRequest");
-				r.getSubRequests().add(s);
 			}
-			
+
 			float weightedSentiment = totalSentiment/totalTweets;
 			logger.info("Total Sentiment: " + weightedSentiment);
 
-			r.setState(REQUEST_QUEUE_STATE.FINISHED);
-			rqr.addRequest(r);
-
+			parentRequest.setState(REQUEST_QUEUE_STATE.FINISHED);
+			rqr.addRequest(parentRequest);
 		}
-		
 	}
-	
-	
 
+	@Override
+	protected void updateInNode(Node node) {
+		if(node.getStatus() == NODE_STATUS.IDLE) {
+			idleNodeHandling(node.getId());
+		}
+	}
 }

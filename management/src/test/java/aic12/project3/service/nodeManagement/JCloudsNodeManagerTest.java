@@ -12,7 +12,7 @@ import aic12.project3.service.util.ManagementConfig;
 
 public class JCloudsNodeManagerTest extends SpringTest {
 
-	@Autowired INodeManager nm;
+	@Autowired ILowLevelNodeManager nm;
 	@Autowired protected ManagementConfig config;
 	
 	@Test

@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
  * @author johannes
  *
  */
-public class MockNodeManager implements INodeManager {
+public class MockNodeManager implements ILowLevelNodeManager {
 	
 	private Logger logger = Logger.getLogger(MockNodeManager.class);
 	private int countNode = 0;

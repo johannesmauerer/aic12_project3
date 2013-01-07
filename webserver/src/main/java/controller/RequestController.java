@@ -190,7 +190,7 @@ public class RequestController {
 		}
 		else{
 			
-			this.subResponse=response.getSubRequests();
+			this.subResponse=response.getSubRequestsNotProcessed();
 			return "response";
 		}
 		

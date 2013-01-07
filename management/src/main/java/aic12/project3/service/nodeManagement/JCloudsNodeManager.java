@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.inject.Module;
 
-public class JCloudsNodeManager implements INodeManager{
+public class JCloudsNodeManager implements ILowLevelNodeManager{
 
 	private static JCloudsNodeManager instance = new JCloudsNodeManager();
 	private ComputeService compute;
