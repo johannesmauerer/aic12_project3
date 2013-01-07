@@ -14,7 +14,7 @@
 	<bean id="requestQueueReady" class="aic12.project3.service.requestManagement.RequestQueueReadyImpl" factory-method="getInstance"/>
 	<bean id="loadBalancer" class="aic12.project3.service.loadBalancing.LoadBalancerTime" factory-method="getInstance" init-method="init" />
     <bean id="statistics" class="aic12.project3.service.statistics.StatisticsImpl" />
-    <bean id="nodeManager" class="aic12.project3.service.nodeManagement.MockNodeManager" factory-method="getInstance" />
+    <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" init-method="initOnce"/>
     <bean id="config" class="aic12.project3.service.util.ManagementConfig" />
     <bean id="downloadManagerClient" class="aic12.project3.dao.tweetsManagement.DownloadManagerClientRestImpl" />
 

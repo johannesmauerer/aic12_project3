@@ -1,6 +1,7 @@
 package aic12.project3.analysis.rest;
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
 
@@ -21,9 +22,9 @@ public class TestClient
     	
         SentimentProcessingRequest request = new SentimentProcessingRequest();
         request.setCompanyName("Google");
-        request.setFrom(new Date());
-        request.setTo(new Date());
-
+        request.setFrom(new Date(2012-1900, 12-1, 2));
+        request.setTo(new Date(2012-1900, 12-1, 14));
+        System.out.println("SPR: " + request.getId() + " - " + request.getCompanyName() + " " + request.getFrom() + " " + request.getTo());
         ClientConfig config = new DefaultClientConfig();
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
         Client client = Client.create(config);

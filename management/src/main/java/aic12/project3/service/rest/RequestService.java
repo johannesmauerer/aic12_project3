@@ -68,9 +68,12 @@ public class RequestService {
 
 		req.setId(UUID.randomUUID().toString());
 		req.setState(REQUEST_QUEUE_STATE.NEW);
-		req.setCompanyName("Microsoft");
-		req.setFrom(new Date());
-		req.setTo(new Date());
+		req.setCompanyName("Google");
+		req.setFrom(new Date(2012-1900, 12-1, 2));
+        req.setTo(new Date(2012-1900, 12-1, 14));
+        
+        serv.acceptRequest(req);
+        
 
 		return req;
 	}

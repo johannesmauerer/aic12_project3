@@ -39,8 +39,9 @@ public class JCloudsNodeManager implements INodeManager{
 	public static JCloudsNodeManager getInstance(){
 		return instance;
 	}
+	
+	private void initOnce(){
 
-	private void init(){
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			public void uncaughtException(Thread t, Throwable e) {
 				if (compute != null) close();
@@ -65,8 +66,11 @@ public class JCloudsNodeManager implements INodeManager{
 		zones = nova.getApi().getConfiguredZones();
 	}
 
+	private void init(){
+	}
+
 	private void close() {
-		compute.getContext().close();
+		//compute.getContext().close();
 	}
 
 	@Override

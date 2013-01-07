@@ -201,9 +201,9 @@ public class LoadBalancerTime extends LoadBalancer {
 		int wantedNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
 		int wantedParts = wantedNodes;
 		// When there is less days than parts
-		if (wantedParts>dayDifference){
-			wantedParts = dayDifference;
-		}
+		//if (wantedParts>dayDifference){
+		//	wantedParts = dayDifference;
+		//}
 		// TODO: Remove
 		logger.info("Wanted Nodes: " + wantedNodes + " and wanted parts: " + wantedParts); 
 		
@@ -275,11 +275,13 @@ public class LoadBalancerTime extends LoadBalancer {
 		/*
 		 * Do as long as there are requests and nodes available
 		 */
-
-		Node n = nodes.get(this.getMostAvailableNode());
-		while (n!=null && processQueue.size()>0){
-			pollAndSend(n.getId());	
-			n = nodes.get(this.getMostAvailableNode());
+		while (processQueue.size()>0){
+			Node n = nodes.get(this.getMostAvailableNode());
+			if (n!=null){
+				if (n.getStatus()==NODE_STATUS.IDLE){
+					pollAndSend(n.getId());					
+				}
+			}
 		}
 
 	}
@@ -337,23 +339,23 @@ public class LoadBalancerTime extends LoadBalancer {
 				String server = "http://" + nodes.get(id).getIp() + ":8080";
 				URI uri = UriBuilder.fromUri(server)
 						.path(config.getProperty("sentimentDeployment"))
-						.path(config.getProperty("sentimentCallbackURL"))
+						.path(config.getProperty("sentimentCallbackRestPath"))
 						.build();
+				
+				logger.info(uri.toString() + " prepared to send");
 
 				// Jersey Client Config
 				ClientConfig config = new DefaultClientConfig();
 				config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 				Client client = Client.create(config);
-
 				// WebResource
 				WebResource service = client.resource(uri);
 
 				// Prepare Request
 				// TODO: Add
 				req.setCallbackAddress((String) config.getProperty("sentimentCallbackURL"));
-
 				// TODO: Call Node, missing IP for Node so far
-				//String response = service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(String.class, req);
+				service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(req);
 				logger.info("SentimentProcessingRequest with parent " + req.getCompanyName() + ":" + req.getParentID() + " has been sent to Node " + id + " which has state " + nodes.get(id).getStatus());
 
 			}
@@ -406,6 +408,7 @@ public class LoadBalancerTime extends LoadBalancer {
 			 * Create new Node from available image
 			 */
 			Node n = nm.startNode(config.getProperty("serverNameSentiment"), config.getProperty("sentimentImageId"), config.getProperty("serverFlavor"));
+			n.setName("Sentiment");
 			/*
 			 * Set Node Status to Starting
 			 */
@@ -483,8 +486,9 @@ public class LoadBalancerTime extends LoadBalancer {
 					// TODO: Send poll request
 					// Receive answer true or false (alive or unalive
 					String ip = nm.getIp(id);
-					if (nm.getIp(id)!=null){
+					if (ip!=null && !ip.equals("")){
 						alive = true;
+						logger.info("Awaked node with ip " + ip);
 					}
 					
 					if (alive){
@@ -547,14 +551,11 @@ public class LoadBalancerTime extends LoadBalancer {
 		Node n = nodes.get(id);
 		n.setStatus(NODE_STATUS.IDLE);
 		
-		// Idle Handling
 		// Idle handling
 		String lastVisit = UUID.randomUUID().toString();
 		n.setLastVisitID(lastVisit);
 
 		nodes.put(id, n);
-
-		// Also do idle node handling
 		idleNodeHandling(id,lastVisit);
 		
 		// And remove from processRequest_nodes mapping
