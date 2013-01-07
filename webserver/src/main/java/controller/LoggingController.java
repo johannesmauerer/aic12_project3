@@ -15,7 +15,7 @@ public class LoggingController implements ILoggingObserver, Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private String logMessage;
+	private String logMessage = "";
 	
 	public LoggingController(){
 		ResponseResource.registerLoggingObserver(this);
@@ -31,6 +31,6 @@ public class LoggingController implements ILoggingObserver, Serializable{
 	
 	@Override
 	public void log(String message) {
-		this.logMessage = message;
+		this.logMessage += message + "\n";
 	}
 }

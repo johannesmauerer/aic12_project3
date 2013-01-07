@@ -92,8 +92,9 @@
 												<f:ajax event="action" render="lastRequest" />
 											</h:commandButton>
 											
+											<br/>
 											<!-- LOGGING OUTPUT -->
-											<h:outputText id="logging" value="#{logging.logMessage}" />
+											<h:inputTextarea id="logging" value="#{logging.logMessage}" cols="50" rows="10" />
 											
 											<div id="scrollableTable">
 												<br />
