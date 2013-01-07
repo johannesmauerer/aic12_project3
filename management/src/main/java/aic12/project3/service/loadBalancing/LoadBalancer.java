@@ -13,13 +13,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.TweetList;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
+import aic12.project3.common.remoteLogging.RemoteLogger;
+import aic12.project3.common.remoteLogging.RemoteLoggerGETImpl;
 import aic12.project3.service.nodeManagement.INodeManager;
 import aic12.project3.service.nodeManagement.Node;
 import aic12.project3.service.requestManagement.RequestAnalysis;
@@ -39,7 +40,7 @@ public abstract class LoadBalancer implements Observer
 	@Autowired protected Statistics stats;
 	@Autowired protected INodeManager nm;
 	@Autowired protected ManagementConfig config;
-	protected static Logger logger = Logger.getRootLogger();
+	protected static RemoteLogger logger = RemoteLoggerGETImpl.getLogger(LoadBalancer.class);
 	protected HashMap<String, Node> nodes = new HashMap<String,Node> ();
 	protected HashMap<String, String> processRequest_nodes = new HashMap<String, String> ();
 
