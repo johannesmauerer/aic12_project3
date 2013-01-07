@@ -515,7 +515,7 @@ public class LoadBalancerTime extends LoadBalancer {
 				            else logger.info("There seems to be a problem with node with IP" + ip);
 
 				        } catch (Exception e) {
-				        	logger.error("Error while trying to get alive message from node with IP " + ip, e);
+				        	logger.info("Error while trying to get alive message from node with IP " + ip + ", retrying");
 				        }
 
 			            
