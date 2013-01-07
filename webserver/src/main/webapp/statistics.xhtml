@@ -23,6 +23,12 @@
 		</div>
 		<div id="bodyPart">
 			<h2>Welcome  <i><h:outputText value="#{user.name}" /></i>!</h2>
+			<h:form>
+				<div id="buttons">
+					<h:commandButton value="OK" action="request" />
+					<h:commandButton value="EXIT" action="start" />
+				</div>
+			</h:form>
 			<h2>Find sentiment analysis statistics here:</h2>
 
 		<f:view>
@@ -83,11 +89,6 @@
 					
 				</div>
 								
-			</h:form>
-			
-			<h:form>
-				<h:commandButton value="OK" action="request" />
-				<h:commandButton value="EXIT" action="start" />
 			</h:form>
 			
 		</f:view>

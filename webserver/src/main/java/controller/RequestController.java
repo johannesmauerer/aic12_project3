@@ -7,11 +7,13 @@ import java.util.UUID;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+
+import org.springframework.scheduling.annotation.Async;
 
 import rest.RequestService;
 import aic12.project3.common.beans.SentimentProcessingRequest;
@@ -20,7 +22,7 @@ import aic12.project3.common.beans.StatisticsBean;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class RequestController {
 
 	private UUID id;
@@ -39,8 +41,9 @@ public class RequestController {
 		return UUID.randomUUID();
 	};
 	
+	@Async
 	public void sendToAnalysis() {
-
+		System.out.println("METHOD CALLED");
 		/*
 		 * generate id
 		 */
@@ -49,7 +52,6 @@ public class RequestController {
 		 * store generated id as attribute of requestController
 		 */
 		this.id = generatedId;
-
 		/*
 		 * create request
 		 */
@@ -61,17 +63,25 @@ public class RequestController {
 		request.setState(REQUEST_QUEUE_STATE.NEW);
 
 		requestService = new RequestService();
-		// requestService.sendRequestToAnalysis(request); TODO
-
-		SentimentRequest response = requestService.getRequestResponse(generatedId);
-
-		calculateResponse(response);
+		requestService.sendRequestToAnalysis(request); 
 		
-		this.response=response;
 	}
 
+	public void getResponseFromDB(){
+	
+		System.out.println("ID: " + this.id);
+		requestService = new RequestService();
+		SentimentRequest requestResponse = requestService.getRequestResponseFromDB(this.id.toString());
+		
+		calculateResponse(requestResponse);
+		
+		
+	}
+	
 	private void calculateResponse(SentimentRequest response) {
 
+		this.response=response;
+		
 		float sumSentiment = 0;
 		int finalNumberOfTweets = 0;
 		int numberOfSubrequests = response.getSubRequests().size();

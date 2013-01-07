@@ -48,8 +48,7 @@
 					</h:form>
 
 					<!-- setting companyName -->
-					<c:set value="#{user.name}" target="#{sentimentRequest}"
-						property="companyName" />
+					<c:set value="#{user.name}" target="#{sentimentRequest}" property="companyName" />
 
 					<f:view>
 						<h:form>
@@ -84,8 +83,12 @@
 								<h:form>
 									<div id="buttons">
 										<h:form>
-											<h:commandButton value="Start analysis"
-												action="#{sentimentRequest.sendToAnalysis}">
+										<p:messages autoUpdate="true" />
+											<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}">
+												<f:ajax event="action"/>
+											</h:commandButton>
+											<h:commandButton id="result" value="Show Response"
+												action="#{sentimentRequest.getResponseFromDB}">
 												<f:ajax event="action" render="lastRequest" />
 											</h:commandButton>
 											

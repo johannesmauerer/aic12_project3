@@ -34,105 +34,73 @@ public class LoginController {
 	private StatisticsBean statistics;
 	
 	public String loginAction(){
-//    	
-//		/*
-//		 * send request to requestService if company already reqistered
-//		 */
-//		RequestService requestService = new RequestService();
-//		String response = requestService.findCompany(this.name);
-//		
-//		/*
-//		 * if company not yet registered
-//		 */
-//		if(response==null){
-//			/*
-//			 * create user
-//			 */
-//			UserDTO user = new UserDTO();
-//			user.setCompanyName(this.name);
-//			System.out.println("USER: " + user.getCompanyName() + " created.");
-//			requestService.insertCompany(user);
-//			System.out.println("USER: " + user.getCompanyName() + " put into database.");
-//			
-//			this.setRegistered("false");
-//			
-//		} 
-//		/*
-//		 * if company already registered
-//		*/ 
-//		else {
-//			
-//			
-//			
-//		/*SentimentRequestStats s1 = new SentimentRequestStats();
-//		s1.setTweets(5);
-//		s1.setSentiment(1.2f);
-//		s1.setIntervalMin(1.0);
-//		s1.setIntervalMax(2.0);
-//		
-//		SentimentRequestStats s2 = new SentimentRequestStats();
-//		s2.setTweets(7);
-//		s2.setSentiment(1.5f);
-//		s2.setIntervalMin(1.3);
-//		s2.setIntervalMax(2.8);
-//		
-//		SentimentRequestStats s3 = new SentimentRequestStats();
-//		s3.setTweets(5);
-//		s3.setSentiment(1.2f);
-//		s3.setIntervalMin(1.0);
-//		s3.setIntervalMax(2.0);
-//		
-//		requestStats.add(s1);
-//		requestStats.add(s2);
-//		requestStats.add(s3);*/
-//		
-//		System.out.println("USER: " + this.name + " - getting requests.");
-//		SentimentRequestList listObject = requestService.getCompanyRequests(this.name);
-//		System.out.println("USER: " + this.name + " - requests obtained.");
-//		setPastRequest(listObject.getList());
-//			
-//		/*List<SentimentRequest> subRequests = pastRequests.getList();
-//			
-//			for(SentimentRequest subRequest : subRequests){
-//				subRequest.getNumberOfTweets();
-//				
-//				
-//			
-//				double interval = 1.96 * Math.sqrt(response.getSentiment() * (1 - response.getSentiment()) / (response.getNumberOfTweets() - 1));
-//				 
-//				System.out.println("Amount: " + response.getNumberOfTweets() + " - Sentiment: (" + (response.getSentiment() - interval) + " < " + response.getSentiment() + " < "
-//				                    + (response.getSentiment() + interval) + ")");
-//				
-//			}*/
-//			
-//		    this.setRegistered("true");
-//		}
-//		return "login";
+    	
+		/*
+		 * send request to requestService if company already reqistered
+		 */
+		RequestService requestService = new RequestService();
+		String response = requestService.findCompany(this.name);
 		
-		//TESTING
-		  if(this.name.equals("jana")){
-			  transformRequest();
-			  this.setRegistered("true");
+		/*
+		 * if company not yet registered
+		 */
+		if(response==null){
+			/*
+			 * create user
+			 */
+			UserDTO user = new UserDTO();
+			user.setCompanyName(this.name);
+			System.out.println("USER: " + user.getCompanyName() + " created.");
+			requestService.insertCompany(user);
+			System.out.println("USER: " + user.getCompanyName() + " put into database.");
 			
-		}else{
 			this.setRegistered("false");
 			
-		}
+		} 
+		/*
+		 * if company already registered
+		*/ 
+		else {
+					
+		System.out.println("USER: " + this.name + " - getting requests.");
+		/*
+		 * get this company's past sentiment analysis results
+		 */
+		SentimentRequestList userRequests = requestService.getCompanyRequests(this.name);
+		transformRequest(userRequests);
+		System.out.println("USER: " + this.name + " - requests obtained.");
+			
+		this.setRegistered("true");
 		
-		  return "login";
+		}
+		return "login";
+		
+//		/*
+//		 * TESTING
+//		 */
+//		  if(this.name.equals("jana")){
+//		/*
+//		 * Test
+//		 */
+//		SentimentRequestList userRequests = mockUserRequests();
+//		/*
+//		 * End test
+//		 */
+//			  transformRequest(userRequests);
+//			  this.setRegistered("true");
+//			
+//		}else{
+//			this.setRegistered("false");
+//			
+//		}
+//		
+//		return "login";
+//		/*
+//		 * END TESTING
+//		 */
 	}
 	
-	private void transformRequest(){
-		
-		/*
-		 * Test
-		 */
-		SentimentRequestList userRequests = mockUserRequests();
-		/*
-		 * End test
-		 */
-		
-//		SentimentRequestList userRequests = requestService.getCompanyRequests(this.name);
+	private void transformRequest(SentimentRequestList userRequests){
 					
 		float sumSentiment = 0;
 		int finalNumberOfTweets = 0;
@@ -177,27 +145,27 @@ public class LoginController {
 	
 	public String getAnalysisStatistics() {
 
-//		RequestService requestService = new RequestService();
+		RequestService requestService = new RequestService();
 
-//		this.statistics = requestService.getStatistics();
+		this.statistics = requestService.getStatistics();
 
-		/*
-		 * TEST
-		 */
-		 StatisticsBean test = new StatisticsBean();
-		 test.setAverageDurationPerRequest(4464);
-		 test.setAverageProcessingDurationPerTweet(4464);
-		 test.setAverageTotalDurationPerTweet(4);
-		 test.setMaximumDurationOfRequest(545646);
-		 test.setMinimumDurationOfRequest(98789749); this.statistics=test;
-		 /*
-		  * END TEST
-		  */
+//		/*
+//		 * TEST
+//		 */
+//		 StatisticsBean test = new StatisticsBean();
+//		 test.setAverageDurationPerRequest(4464);
+//		 test.setAverageProcessingDurationPerTweet(4464);
+//		 test.setAverageTotalDurationPerTweet(4);
+//		 test.setMaximumDurationOfRequest(545646);
+//		 test.setMinimumDurationOfRequest(98789749); this.statistics=test;
+//		 /*
+//		  * END TEST
+//		  */
 
 		return "statistics";
 	}
 	
-	private SentimentRequestList mockUserRequests(){
+	/*private SentimentRequestList mockUserRequests(){
 		
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
 		req.setNumberOfTweets(657000);
@@ -251,9 +219,11 @@ public class LoginController {
 		listR.add(response3);
 		
 		return new SentimentRequestList(listR);
-	}
+	}*/
 
-	
+	/*
+	 * Testing webserver Rest server
+	 */
 	public void testSayHello(){
 	 
 		RequestService requestService = new RequestService();

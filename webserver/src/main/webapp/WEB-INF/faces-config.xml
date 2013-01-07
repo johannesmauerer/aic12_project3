@@ -13,7 +13,7 @@
 	<managed-bean>
 	  <managed-bean-name>sentimentRequest</managed-bean-name>
 	  <managed-bean-class>controller.RequestController</managed-bean-class>
-	  <managed-bean-scope>request</managed-bean-scope>
+	  <managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
 	  <managed-bean-name>logging</managed-bean-name>
