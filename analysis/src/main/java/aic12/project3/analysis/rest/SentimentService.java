@@ -88,12 +88,12 @@ public class SentimentService
 
         try
         {
-            // Get all tweets from DB
-            TweetList tweets = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
+        	// Get all tweets from DB
+        	TweetList tweets = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
 
             try
             {
-                return calculateSentiment(request, tweets.getList());
+            	return calculateSentiment(request, tweets.getList());
             }
             catch (Exception e)
             {
@@ -156,11 +156,14 @@ public class SentimentService
             public void run()
             {
                 request.setTimestampStartOfAnalysis(System.currentTimeMillis());
+                System.out.println("starting analysis at " + request.getTimestampStartOfAnalysis());
 
                 try
                 {
                     // Get all tweets from DB
+                    System.out.println("getting tweets from DB");
                     TweetList tweets = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(TweetList.class, request);
+                	System.out.println("got tweets");
 
                     try
                     {
@@ -168,16 +171,22 @@ public class SentimentService
                         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
                         Client client = Client.create(config);
 
+                        System.out.println("callback: " + request.getCallbackAddress());
                         WebResource resource = client.resource(request.getCallbackAddress());
-                        resource.type(MediaType.APPLICATION_JSON).post(calculateSentiment(request, tweets.getList()));
+                        SentimentProcessingRequest sentiment = calculateSentiment(request, tweets.getList());
+                        System.out.println("calculated sentiment: " + sentiment);
+                        resource.type(MediaType.APPLICATION_JSON).post(sentiment);
+                        System.out.println("sent back sentinemt");
                     }
                     catch (Exception e)
                     {
+                    	System.out.println("exception while calculating sentiment " + e);
                         throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to classify tweets").build());
                     }
                 }
                 catch (Exception e)
                 {
+                	System.out.println("exc while getting tweets " + e);
                     throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Failed to retrieve tweets").build());
                 }
             }
