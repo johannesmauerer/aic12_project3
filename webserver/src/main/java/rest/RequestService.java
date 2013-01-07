@@ -3,16 +3,9 @@ package rest;
 import java.net.URI;
 import java.util.UUID;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-
-import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.SentimentRequestList;
 import aic12.project3.common.beans.StatisticsBean;
@@ -25,7 +18,6 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.core.impl.provider.entity.StringProvider;
 
 public class RequestService {
 

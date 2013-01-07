@@ -165,7 +165,7 @@ public class LoginController {
 		return "statistics";
 	}
 	
-	/*private SentimentRequestList mockUserRequests(){
+	private SentimentRequestList mockUserRequests(){
 		
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
 		req.setNumberOfTweets(657000);
@@ -219,7 +219,7 @@ public class LoginController {
 		listR.add(response3);
 		
 		return new SentimentRequestList(listR);
-	}*/
+	}
 
 	/*
 	 * Testing webserver Rest server

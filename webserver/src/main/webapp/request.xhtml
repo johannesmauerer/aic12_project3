@@ -78,64 +78,59 @@
 								</div>
 							</span>
 							<div id="clearLeft"></div>
+							
+							<div id="buttons">
+									<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}">
+										<f:ajax event="action"/>
+									</h:commandButton>
+									<h:commandButton id="result" value="Show Response"
+										action="#{sentimentRequest.getResponseFromDB}">
+										<f:ajax event="action"/>
+									</h:commandButton>
+									
+									<br/>
+									<!-- LOGGING OUTPUT -->
+									<h:inputTextarea id="logging" value="#{logging.logMessage}" cols="50" rows="10" />
+									
+									<div id="scrollableTable">
+										<br />
+										<p:outputPanel>
+											<h:panelGrid id="lastRequest" columns="7" border="1"
+												cellpadding="0" cellspacing="2">
 
-							<h:form>
-								<h:form>
-									<div id="buttons">
-										<h:form>
-										<p:messages autoUpdate="true" />
-											<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}">
-												<f:ajax event="action"/>
-											</h:commandButton>
-											<h:commandButton id="result" value="Show Response"
-												action="#{sentimentRequest.getResponseFromDB}">
-												<f:ajax event="action" render="lastRequest" />
-											</h:commandButton>
-											
-											<br/>
-											<!-- LOGGING OUTPUT -->
-											<h:inputTextarea id="logging" value="#{logging.logMessage}" cols="50" rows="10" />
-											
-											<div id="scrollableTable">
-												<br />
-												<p:outputPanel>
-													<h:panelGrid id="lastRequest" columns="7" border="1"
-														cellpadding="0" cellspacing="2">
+												<f:facet name="header">
+													<h:outputText id="title"
+														value="RESULT OF YOUR LAST REQUEST" />
+												</f:facet>
 
-														<f:facet name="header">
-															<h:outputText id="title"
-																value="RESULT OF YOUR LAST REQUEST" />
-														</f:facet>
+												<h:outputText value="Company Name" />
+												<h:outputText value="From" />
+												<h:outputText value="To" />
+												<h:outputText value="Number of Tweets" />
+												<h:outputText value="Minimum" />
+												<h:outputText value="Maximum" />
+												<h:outputText value="Sentiment" />
 
-														<h:outputText value="Company Name" />
-														<h:outputText value="From" />
-														<h:outputText value="To" />
-														<h:outputText value="Number of Tweets" />
-														<h:outputText value="Minimum" />
-														<h:outputText value="Maximum" />
-														<h:outputText value="Sentiment" />
+												<h:outputText
+													value="#{sentimentRequest.response.companyName}" />
+												<h:outputText value="#{sentimentRequest.response.from}" />
+												<h:outputText value="#{sentimentRequest.response.to}" />
+												<h:outputText value="#{sentimentRequest.numberOfTweets}" />
+												<h:outputText value="#{sentimentRequest.minimumSentiment}" />
+												<h:outputText value="#{sentimentRequest.maximumSentiment}" />
+												<h:outputText value="#{sentimentRequest.sentiment}" />
 
-														<h:outputText
-															value="#{sentimentRequest.response.companyName}" />
-														<h:outputText value="#{sentimentRequest.response.from}" />
-														<h:outputText value="#{sentimentRequest.response.to}" />
-														<h:outputText value="#{sentimentRequest.numberOfTweets}" />
-														<h:outputText value="#{sentimentRequest.minimumSentiment}" />
-														<h:outputText value="#{sentimentRequest.maximumSentiment}" />
-														<h:outputText value="#{sentimentRequest.sentiment}" />
-
-													</h:panelGrid>
-												</p:outputPanel>
-											</div>
-										</h:form>
+											</h:panelGrid>
+										</p:outputPanel>
 									</div>
+							</div>
 
 
 
-								</h:form>
+								
 
 							</h:form>
-						</h:form>
+						
 					</f:view>
 				</h:form>
 			</div>
