@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.Produces;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -74,23 +75,27 @@ public class RequestService {
 	 */
 	@GET
 	@Path("test")
-	@Produces(MediaType.APPLICATION_JSON)
-	public SentimentRequest getMessage(){
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getMessage(){
 
 		SentimentRequest req = new SentimentRequest();
 
 		req.setId(UUID.randomUUID().toString());
 		req.setState(REQUEST_QUEUE_STATE.NEW);
 		req.setCompanyName("Google");
-		req.setFrom(new Date(2012-1900, 12-1, 2));
-        req.setTo(new Date(2012-1900, 12-1, 14));
+		DateTime cleanFrom = new DateTime(2013,1,1,0,0,0,0);
+		DateTime cleanTo = new DateTime(2013,1,6,11,11,11,0);
+		req.setFrom(cleanFrom.toDate());
+        req.setTo(cleanTo.toDate());
+        
+		logger.info("From date: " + cleanFrom.toDate().toGMTString() + " and To date: " + cleanTo.toDate().toGMTString());
         
         logger.info("Test request created, now sent to RequestService");
         
         serv.acceptRequest(req);
         
 
-		return req;
+		return "Processing started";
 	}
 	
 	/**
@@ -98,15 +103,17 @@ public class RequestService {
 	 */
 	@GET
 	@Path("testNode")
-	@Produces(MediaType.APPLICATION_JSON)
-	public SentimentProcessingRequest getTestNodeAnswer(@QueryParam("nodeid") String nodeid){
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getTestNodeAnswer(@QueryParam("nodeid") String nodeid){
 
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
 
 		req.setId(UUID.randomUUID().toString());
 		req.setCompanyName("Google");
-		req.setFrom(new Date(2012-1900, 12-1, 2));
-        req.setTo(new Date(2012-1900, 12-1, 14));
+		DateTime cleanFrom = new DateTime(1,1,2013,0,0,0,0);
+		DateTime cleanTo = new DateTime(1,6,2013,11,11,11,0);
+		req.setFrom(cleanFrom.toDate());
+        req.setTo(cleanTo.toDate());
         
         logger.info("Test request created, now sent to RequestService");
         
@@ -133,7 +140,7 @@ public class RequestService {
 		logger.info("SentimentProcessingRequest with parent has been sent to Node");
         
 
-		return req;
+		return "Processing request now!";
 	}
 
 

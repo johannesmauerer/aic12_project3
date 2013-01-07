@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentRequest;
@@ -29,14 +30,16 @@ public class TestDatabaseClass {
 
 		req.setId(UUID.randomUUID().toString());
 		req.setState(REQUEST_QUEUE_STATE.NEW);
-		req.setCompanyName("Google");
-		req.setFrom(new Date(2012-1900, 12-1, 2));
-        req.setTo(new Date(2012-1900, 12-1, 14));
+		req.setCompanyName("google");
+		DateTime cleanFrom = new DateTime(2013,1,1,0,0,0,0);
+		DateTime cleanTo = new DateTime(2013,1,6,11,11,11,0);
+		req.setFrom(cleanFrom.toDate());
+        req.setTo(cleanTo.toDate());
 
-		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
-				.path(config.getProperty("databaseDeployment"))
-				.path(config.getProperty("databaseRequestRestPath"))
-				.path("insert")
+		URI uri = UriBuilder.fromUri("http://128.130.172.202:8080")
+				.path("dao")
+				.path("tweetdao")
+				.path("getnumberoftweetforrequest")
 				.build();
 
 		// Jersey Client Config
@@ -45,7 +48,9 @@ public class TestDatabaseClass {
 		Client client = Client.create(config);
 
 		WebResource resource = client.resource(uri);
-		ClientResponse resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, req);
+		Long resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Long.class, req);
+		
+		System.out.println("Amount: " + resp);
 	
 	}
 

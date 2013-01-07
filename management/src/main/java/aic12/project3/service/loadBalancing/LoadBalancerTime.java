@@ -122,48 +122,51 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	@Override
 	protected void updateInQueue(String id) {
-		/*
-		 * TODO: Remove Logger
-		 */
-		logger.info("QueueUpdate: " + id + " is " + rqr.getRequest(id).getState().toString());
-
-		/*
-		 * TODO: Remove Logger
-		 * Iterate over all nodes and print details
-		 */
-		Iterator it = nodes.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry)it.next();
-			Node n = (Node) pairs.getValue();
-			logger.info("ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
-		}
-
-		/*
-		 * Switch between Status of Request
-		 */
-		switch (rqr.getRequest(id).getState()){
-		case READY_TO_PROCESS:
-			logger.info("Time to split");
-			// Create entry in combine Queue
-			combineQueue.put(id, new ArrayList<SentimentProcessingRequest>());
-			
-			// Split request into multiple sub-requests (if necessary)
-			// and add these to Queue for processing
-			splitRequestAndAddToQueue(id);
-
-			// Change Status of Request
-			SentimentRequest req = rqr.getRequest(id);
-			req.setState(REQUEST_QUEUE_STATE.IN_PROCESS);
-			rqr.addRequest(req);
-
-			logger.info("Time to send");
-			// Start Request
-			pollAndSend();
-			break;
-
-		default:
-			break;
-
+		
+		if (rqr.getRequest(id) != null){
+			/*
+			 * TODO: Remove Logger
+			 */
+			logger.info("QueueUpdate: " + id + " is " + rqr.getRequest(id).getState().toString());
+	
+			/*
+			 * TODO: Remove Logger
+			 * Iterate over all nodes and print details
+			 */
+			Iterator it = nodes.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pairs = (Map.Entry)it.next();
+				Node n = (Node) pairs.getValue();
+				logger.info("ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
+			}
+	
+			/*
+			 * Switch between Status of Request
+			 */
+			switch (rqr.getRequest(id).getState()){
+			case READY_TO_PROCESS:
+				logger.info("Time to split");
+				// Create entry in combine Queue
+				combineQueue.put(id, new ArrayList<SentimentProcessingRequest>());
+				
+				// Split request into multiple sub-requests (if necessary)
+				// and add these to Queue for processing
+				splitRequestAndAddToQueue(id);
+	
+				// Change Status of Request
+				SentimentRequest req = rqr.getRequest(id);
+				req.setState(REQUEST_QUEUE_STATE.IN_PROCESS);
+				rqr.addRequest(req);
+	
+				logger.info("Time to send");
+				// Start Request
+				pollAndSend();
+				break;
+	
+			default:
+				break;
+	
+			}
 		}
 
 	}
@@ -239,6 +242,9 @@ public class LoadBalancerTime extends LoadBalancer {
 			endDates[i] = cleanFrom.plusDays(daysPerNode*(i+1)).toDate();
 			logger.info("Dates for " + i + " set " + wantedParts);
 		}
+		
+		// Save amount of parts in request
+		rqr.getRequest(id).setParts(wantedParts);
 		
 		/*
 		 * Now finally release the requests to the processQueue
@@ -347,16 +353,23 @@ public class LoadBalancerTime extends LoadBalancer {
 				logger.info(uri.toString() + " prepared to send");
 
 				// Jersey Client Config
-				ClientConfig config = new DefaultClientConfig();
-				config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-				Client client = Client.create(config);
+				ClientConfig config2 = new DefaultClientConfig();
+				config2.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+				Client client = Client.create(config2);
 				// WebResource
 				WebResource service = client.resource(uri);
 
 				// Prepare Request
-				// TODO: Add
-				req.setCallbackAddress((String) config.getProperty("sentimentCallbackURL"));
-				// TODO: Call Node, missing IP for Node so far
+				String callbackURL = (config.getProperty("sentimentCallbackURL"));
+				logger.info("Setting callback address to " + callbackURL);
+				if (callbackURL == null || callbackURL.equals("")){
+					// Fallback
+					callbackURL = "http://128.130.172.202:8080/management/request/acceptProcessingRequest";
+					logger.info("Fallback for callback necessary");
+				}
+				req.setCallbackAddress(callbackURL);
+				logger.info("Callback Address set to " + req.getCallbackAddress());
+				// Call Node, missing IP for Node so far
 				service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(req);
 				logger.info("SentimentProcessingRequest with parent " + req.getCompanyName() + ":" + req.getParentID() + " has been sent to Node " + id + " which has state " + nodes.get(id).getStatus());
 
@@ -491,7 +504,7 @@ public class LoadBalancerTime extends LoadBalancer {
 					String ip = nm.getIp(id);
 					if (ip!=null && !ip.equals("")){
 						ipReady = true;
-						logger.info("Awaked node with ip " + ip);
+						logger.info("Node with ip " + ip + " awake");
 					}
 					
 					// Now check if the tomcat server is running
@@ -515,7 +528,7 @@ public class LoadBalancerTime extends LoadBalancer {
 				            else logger.info("There seems to be a problem with node with IP" + ip);
 
 				        } catch (Exception e) {
-				        	logger.info("Error while trying to get alive message from node with IP " + ip + ", retrying");
+				        	logger.info("Node with IP " + ip + " not available yet, retrying");
 				        }
 
 			            
@@ -569,15 +582,21 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Override
 	public void acceptProcessingRequest(SentimentProcessingRequest req) {
 		
+		logger.info("SentimentProcessingRequest with ID " + req.getId() + " received");
+		
+		logger.info("Adding the SentimentProcessingRequest to combineQueue");
 		List<SentimentProcessingRequest> list = combineQueue.get(req.getParentID());
 		list.add(req);
+		logger.info("Combine Queue now " + list.size() + " entries big");
 		combineQueue.put(req.getParentID(), list);
 		
+		logger.info("Starting to combine parts if possible");
 		this.combineParts(req.getParentID());
 		
 		/*
 		 * Also change node state
 		 */
+		logger.info("Change node status");
 		String id = this.processRequest_nodes.get(req.getId());
 		Node n = nodes.get(id);
 		n.setStatus(NODE_STATUS.IDLE);
@@ -609,19 +628,25 @@ public class LoadBalancerTime extends LoadBalancer {
 		/*
 		 * Most importantly: Check if all parts are here
 		 */
+		logger.info("Checking for availability of all parts. Needed parts are " + rqr.getRequest(id).getParts() + " and available are " + combineQueue.get(id).size());
 		if (rqr.getRequest(id).getParts()==combineQueue.get(id).size()){
 			
+			logger.info("Combination of parts started");
 			SentimentRequest r = rqr.getRequest(id);
 			
 			for (SentimentProcessingRequest s : combineQueue.get(id)){
 				
 				totalTweets += s.getNumberOfTweets();
+				logger.info("Number of tweets for this part: " + s.getNumberOfTweets());
 				totalSentiment += s.getSentiment()*s.getNumberOfTweets();
+				logger.info("Sentiment for these tweets: " + s.getSentiment());
 				
+				logger.info("Save part to SentimentRequest");
 				r.getSubRequests().add(s);
 			}
 			
 			float weightedSentiment = totalSentiment/totalTweets;
+			logger.info("Total Sentiment: " + weightedSentiment);
 
 			r.setState(REQUEST_QUEUE_STATE.FINISHED);
 			rqr.addRequest(r);
