@@ -7,33 +7,39 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 
-	<ui:composition >
+<ui:composition>
 
-		<h:head >
-			<title>Advanced Internet Computing</title>
-			<link href="styles/style.css" rel="stylesheet" type="text/css"/>
+	<h:head>
+		<title>Advanced Internet Computing</title>
+		<link href="styles/style.css" rel="stylesheet" type="text/css" />
 
-		</h:head>
-		<h:body id="body">
+	</h:head>
 
+	<h:body>
+		<div id="box">
 			<div id="header">
 
-					<h:graphicImage value="img/header.jpg"/>
+				<h:graphicImage value="img/header.jpg" />
 			</div>
-			<f:view>
-			<h2>What does twitter says about your company?</h2> 
+			<div id="bodyPart">
+				<f:view>
+					<h2>What does twitter say about your company?</h2>
 
-				<h:form>
-					<h4>Enter your company name:</h4><h:inputText required="true" value="#{user.name}"></h:inputText>
-					<div id="buttons">
-						<h:commandButton value="Login" action="#{user.loginAction}" ></h:commandButton>
-			    	</div>
+					<h:form>
+						<h4>Enter your company name:</h4>
+						<h:inputText required="true" value="#{user.name}"></h:inputText>
+						<div id="buttons">
+							<h:commandButton value="Login" action="#{user.loginAction}"></h:commandButton>
+						</div>
+					</h:form>
 
-				</h:form>
-				<div id="footer">
-					<h:graphicImage value="img/icone.jpg"/> 2012 AIC - Cloud computing
-				</div>
-			</f:view>
-		</h:body>
-	</ui:composition>
+				</f:view>
+			</div>
+			<div id="footer">
+				<h:graphicImage value="img/icone.jpg" />
+				2012 AIC - Cloud computing
+			</div>
+		</div>
+	</h:body>
+</ui:composition>
 </html>

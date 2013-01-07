@@ -12,17 +12,17 @@
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
-
+	
 	<!-- Welcome page -->
 	<welcome-file-list>
-		<welcome-file>faces/hello.xhtml</welcome-file>
+		<welcome-file>faces/login.xhtml</welcome-file>
 	</welcome-file-list>
-
+	
 	<!-- JSF mapping -->
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
+		<!-- <load-on-startup>1</load-on-startup> -->
 	</servlet>
 
 	<!-- Map these files with JSF -->
@@ -43,4 +43,28 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 
+	<!-- Rest server -->
+	<servlet>
+		<servlet-name>Jersey REST Service</servlet-name>
+		<servlet-class>
+ 			com.sun.jersey.spi.container.servlet.ServletContainer
+		</servlet-class>
+		<init-param>
+	        <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+	        <param-value>true</param-value>
+    	</init-param>
+  		<init-param>
+    		<param-name>com.sun.jersey.config.property.packages</param-name>
+    		<!-- package name of the rest server class -->
+    		<param-value>rest</param-value>
+  		</init-param>
+  		<!-- <load-on-startup>2</load-on-startup> -->
+	</servlet>
+	
+	<servlet-mapping>
+  		<servlet-name>Jersey REST Service</servlet-name>
+  		<!-- url pattern to be inserted in the final url: http://your_domain:port/display-name/url-pattern/path_from_rest_class  -->
+  		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

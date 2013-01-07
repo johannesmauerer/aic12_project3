@@ -10,6 +10,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.SentimentRequestList;
@@ -23,6 +25,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
+import com.sun.jersey.core.impl.provider.entity.StringProvider;
 
 public class RequestService {
 
@@ -30,8 +33,9 @@ public class RequestService {
 	protected Client client;
 	protected WebResource service;
 
-	private final String managementServiceUri = "http://128.130.172.202:8080/management"; 
-	private final String mongoServiceUri = "http://128.130.172.202:8080/dao";//"http://128.130.172.202:8080/dao"; //"http://10.99.0.141:44444/sentimentanalysis";
+	private final String managementServiceUri = "http://localhost:8080/management"; //"http://10.99.0.142:8080/management"; 
+	private final String mongoServiceUri = "http://localhost:8080/dao"; //"http://10.99.0.148:44444/dao"; //"http://10.99.0.148:44444/sentimentanalysis";
+	private final String webserverURI = "http://localhost:8080/webserver/rest"; 
 	
 	public String findCompany(String companyName) {
 
@@ -77,6 +81,9 @@ public class RequestService {
 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 		client = Client.create(config);
 
+		
+		
+		
 		// Request ready to be put onto Node
 		URI uri = UriBuilder.fromUri(mongoServiceUri)
 				.path("userdao")
@@ -103,7 +110,7 @@ public class RequestService {
 		// Jersey Client Config
 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 		client = Client.create(config);
-
+		
 		// Request ready to be put onto Node
 		URI uri = UriBuilder.fromUri(mongoServiceUri)
 				.path("requestdao")
@@ -142,10 +149,9 @@ public class RequestService {
 		
 	}
 
-	 public SentimentRequest getRequestResponse(UUID id){
-	    
-    	  
-    	// Jersey Client Config
+	public SentimentRequest getRequestResponseFromDB(String id){
+		   
+		// Jersey Client Config
  		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
  		client = Client.create(config);
 
@@ -153,14 +159,38 @@ public class RequestService {
  		URI uri = UriBuilder.fromUri(mongoServiceUri)
  				.path("requestdao")
  				.path("getrequestbyid")
- 				.queryParam("id", id.toString())
+ 				.queryParam("id", id)
  				.build();
 
  		// WebResource
  		service = client.resource(uri);
 
  		SentimentRequest response = service.accept(MediaType.APPLICATION_JSON)
- 				.type(MediaType.APPLICATION_JSON).get(SentimentRequest.class);
+ 											.type(MediaType.APPLICATION_JSON)
+ 											.get(SentimentRequest.class);
+ 		
+ 		return response;
+    }
+	
+	public SentimentRequest getRequestResponse(UUID id){
+	   
+		// Jersey Client Config
+ 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+ 		client = Client.create(config);
+
+ 		// Request
+ 		URI uri = UriBuilder.fromUri(webserverURI)
+ 				.path("send")
+ 				.path("response")
+ 				.queryParam("id", id)
+ 				.build();
+
+ 		// WebResource
+ 		service = client.resource(uri);
+
+ 		SentimentRequest response = service.accept(MediaType.APPLICATION_JSON)
+ 											.type(MediaType.APPLICATION_JSON)
+ 											.post(SentimentRequest.class);
  		
  		return response;
     }
@@ -181,6 +211,25 @@ public class RequestService {
 
 		StatisticsBean response = service.accept(MediaType.APPLICATION_JSON)
 				.get(StatisticsBean.class);
+		
+		return response;
+	}
+
+	public String helloWorld() {
+		// Jersey Client Config
+		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+		client = Client.create(config);
+		
+		// Request
+		URI uri = UriBuilder.fromUri(webserverURI)
+				.path("send")
+				.path("hello")
+				.build();
+
+		// WebResource
+		service = client.resource(uri);
+
+		String response = service.get(String.class);
 		
 		return response;
 	}
