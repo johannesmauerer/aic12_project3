@@ -70,6 +70,13 @@ public class SentimentService
         // Running test classification for further caching
         wm.weightedClassify("test");
     }
+    
+    @GET
+    @Path("amialive")
+    @Produces("application/json")
+    public String amIAlive() {
+    	return "alive";
+    }
 
     @POST
     @Path("analyze")
