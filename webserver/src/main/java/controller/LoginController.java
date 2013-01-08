@@ -3,16 +3,12 @@ package controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import com.mongodb.util.JSON;
-
 import rest.RequestService;
 import util.SentimentRequestStats;
-
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.SentimentRequestList;
@@ -50,9 +46,7 @@ public class LoginController {
 			 */
 			UserDTO user = new UserDTO();
 			user.setCompanyName(this.name);
-			System.out.println("USER: " + user.getCompanyName() + " created.");
 			requestService.insertCompany(user);
-			System.out.println("USER: " + user.getCompanyName() + " put into database.");
 			
 			this.setRegistered("false");
 			
@@ -62,13 +56,11 @@ public class LoginController {
 		*/ 
 		else {
 					
-		System.out.println("USER: " + this.name + " - getting requests.");
 		/*
 		 * get this company's past sentiment analysis results
 		 */
 		SentimentRequestList userRequests = requestService.getCompanyRequests(this.name);
 		transformRequest(userRequests);
-		System.out.println("USER: " + this.name + " - requests obtained.");
 			
 		this.setRegistered("true");
 		
@@ -102,16 +94,14 @@ public class LoginController {
 	
 	private void transformRequest(SentimentRequestList userRequests){
 					
-		float sumSentiment = 0;
-		int finalNumberOfTweets = 0;
-		int numberOfSubrequests = 0;
+		double sumSentiment = 0;
+		long finalNumberOfTweets = 0;
 
 		/*
 		 * calculating request details
 		 */
 		for (SentimentRequest userRequest : userRequests.getList()) {
 			
-			numberOfSubrequests = userRequest.getSubRequests().size();
 			SentimentRequestStats stats = new SentimentRequestStats();
 			stats.setFrom(userRequest.getFrom());
 			stats.setTo(userRequest.getTo());
@@ -121,13 +111,14 @@ public class LoginController {
 			
 			for (SentimentProcessingRequest subrequest : userRequest.getSubRequests()) {
 
-				sumSentiment += subrequest.getSentiment();
-				finalNumberOfTweets += subrequest.getNumberOfTweets();
+				long numberOfTweets = subrequest.getNumberOfTweets();
+				sumSentiment += (subrequest.getSentiment()*numberOfTweets);
+				finalNumberOfTweets += numberOfTweets;
 				
 			}
 			
 			
-			float finalSentiment = sumSentiment / numberOfSubrequests;
+			double finalSentiment = sumSentiment / finalNumberOfTweets;
 
 			double standardError = 1.96 * Math.sqrt(finalSentiment
 					* (1 - finalSentiment) / (finalNumberOfTweets - 1));
@@ -165,7 +156,8 @@ public class LoginController {
 		return "statistics";
 	}
 	
-	/*private SentimentRequestList mockUserRequests(){
+	@SuppressWarnings("unused")
+	private SentimentRequestList mockUserRequests(){
 		
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
 		req.setNumberOfTweets(657000);
@@ -219,7 +211,7 @@ public class LoginController {
 		listR.add(response3);
 		
 		return new SentimentRequestList(listR);
-	}*/
+	}
 
 	/*
 	 * Testing webserver Rest server

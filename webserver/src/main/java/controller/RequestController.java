@@ -5,20 +5,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.faces.context.FacesContext;
 
 import org.springframework.scheduling.annotation.Async;
 
 import rest.RequestService;
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.common.beans.StatisticsBean;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 
 @ManagedBean
@@ -30,10 +25,10 @@ public class RequestController {
 	private String companyName;
 	private Date from;
 	private Date to;
-	private int numberOfTweets;
+	private long numberOfTweets;
 	private double minimumSentiment;
 	private double maximumSentiment;
-	private float sentiment;
+	private double sentiment;
 		
 	private RequestService requestService;
 
@@ -72,7 +67,13 @@ public class RequestController {
 		System.out.println("ID: " + this.id);
 		requestService = new RequestService();
 		SentimentRequest requestResponse = requestService.getRequestResponseFromDB(this.id.toString());
-		
+//		/*
+//		 * TEST
+//		 */
+//		SentimentRequest requestResponse = mockSentimentResponse();
+//		/*
+//		 * END TEST
+//		 */
 		calculateResponse(requestResponse);
 		
 		
@@ -82,21 +83,21 @@ public class RequestController {
 
 		this.response=response;
 		
-		float sumSentiment = 0;
-		int finalNumberOfTweets = 0;
-		int numberOfSubrequests = response.getSubRequests().size();
+		double sumSentiment = 0;
+		long finalNumberOfTweets = 0;
 
 		/*
 		 * calculating request details
 		 */
 		for (SentimentProcessingRequest subrequest : response.getSubRequests()) {
 
-			sumSentiment += subrequest.getSentiment();
-			finalNumberOfTweets += subrequest.getNumberOfTweets();
+			long numberOfTweets = subrequest.getNumberOfTweets();
+			sumSentiment += (subrequest.getSentiment()*numberOfTweets);
+			finalNumberOfTweets += numberOfTweets;
 
 		}
 
-		float finalSentiment = sumSentiment / numberOfSubrequests;
+		double finalSentiment = sumSentiment / finalNumberOfTweets;
 
 		double standardError = 1.96 * Math.sqrt(finalSentiment
 				* (1 - finalSentiment) / (finalNumberOfTweets - 1));
@@ -113,7 +114,8 @@ public class RequestController {
 				+ maximumSentiment + ")");
 	}
 
-	/*private SentimentRequest mockSentimentResponse(){
+	@SuppressWarnings("unused")
+	private SentimentRequest mockSentimentResponse(){
 		
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
 		req.setNumberOfTweets(657000);
@@ -147,19 +149,22 @@ public class RequestController {
 
 		SentimentRequest response = new SentimentRequest();
 		response.setSubRequests(subs);
-				
+		response.setFrom(this.from);
+		response.setTo(this.to);
+		response.setCompanyName(this.companyName);
+		
 		return response;
-	}*/
+	}
 
 	public UUID getId() {
 		return id;
 	}
 
-	public int getNumberOfTweets() {
+	public long getNumberOfTweets() {
 		return numberOfTweets;
 	}
 
-	public void setNumberOfTweets(int numberOfTweets) {
+	public void setNumberOfTweets(long numberOfTweets) {
 		this.numberOfTweets = numberOfTweets;
 	}
 
@@ -215,11 +220,11 @@ public class RequestController {
 		this.to = to;
 	}
 
-	public float getSentiment() {
+	public double getSentiment() {
 		return sentiment;
 	}
 
-	public void setSentiment(float sentiment) {
+	public void setSentiment(double sentiment) {
 		this.sentiment = sentiment;
 	}
 
