@@ -2,15 +2,14 @@ package controller;
 
 import java.io.Serializable;
 
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 
 import rest.ResponseResource;
-
 import util.ILoggingObserver;
 
 @ManagedBean
-@SessionScoped
+@ApplicationScoped
 public class LoggingController implements ILoggingObserver, Serializable{
 
 	private static final long serialVersionUID = 1L;

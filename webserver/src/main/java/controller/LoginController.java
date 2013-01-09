@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,9 +16,10 @@ import aic12.project3.common.beans.SentimentRequestList;
 import aic12.project3.common.beans.StatisticsBean;
 import aic12.project3.common.dto.UserDTO;
 
+@SuppressWarnings("serial")
 @ManagedBean
 @SessionScoped
-public class LoginController {
+public class LoginController implements Serializable{
   	
 	//private static Logger myLogger = Logger.getLogger("JULI"); //import java.util.logging.Logger;
 	
