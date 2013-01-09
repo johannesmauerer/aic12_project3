@@ -72,8 +72,9 @@
 							<div id="clearLeft"></div>
 	
 							<div id="buttons">
-								<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}">
-								</h:commandButton>
+							
+								<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}"></h:commandButton>
+							
 								<h:commandButton id="result" value="Show Response" action="#{sentimentRequest.getResponseFromDB}" 
 									onclick="document.getElementById('lastRequestSpan').style.visibility='visible';">									
 									<f:ajax event="action" render="lastRequest" execute="@this" />
