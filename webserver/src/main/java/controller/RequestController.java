@@ -39,7 +39,7 @@ public class RequestController implements Serializable{
 	public void sendToAnalysis() {
 		System.out.println("METHOD CALLED");
 
-    	
+    	/*
 		getResponseFromDB();
 		
 		if(this.response==null){
@@ -51,11 +51,13 @@ public class RequestController implements Serializable{
 //			return "response";
 		}
 
+*/
 		UUID generatedId = generateId();
+		this.id = generatedId;
 		/*
 		 * store generated id as attribute of requestController
 		 */
-		this.id = generatedId;
+		
 		/*
 		 * create request
 		 */
@@ -84,27 +86,6 @@ public class RequestController implements Serializable{
 //		 * END TEST
 //		 */
 		calculateResponse(requestResponse);
-		
-		/*
-		 * generate id
-		 */
-		UUID generatedId = generateId();
-		/*
-		 * store generated id as attribute of requestController
-		 */
-		this.id = generatedId;
-		/*
-		 * create request
-		 */
-		SentimentRequest request = new SentimentRequest();
-		request.setId(generatedId.toString());
-		request.setCompanyName(this.companyName);
-		request.setFrom(this.from);
-		request.setTo(this.to);
-		request.setState(REQUEST_QUEUE_STATE.NEW);
-
-		requestService = new RequestService();
-		requestService.sendRequestToAnalysis(request); 
 		
 	}
 

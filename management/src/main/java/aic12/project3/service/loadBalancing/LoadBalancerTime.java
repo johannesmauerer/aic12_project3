@@ -308,6 +308,7 @@ public class LoadBalancerTime extends LoadBalancer {
 
 			float weightedSentiment = totalSentiment/totalTweets;
 			logger.info("Total Sentiment: " + weightedSentiment);
+			parentRequest.setNumberOfTweets(totalTweets);
 
 			parentRequest.setState(REQUEST_QUEUE_STATE.FINISHED);
 			rqr.addRequest(parentRequest);

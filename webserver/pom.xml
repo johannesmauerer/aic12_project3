@@ -63,9 +63,11 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
+				<!--  
 				<configuration>
 					<outputDirectory>C:\Program Files\Apache Software Foundation\Tomcat 6.0\webapps\</outputDirectory>
 				</configuration>
+				-->
 			</plugin>
 			<!-- 
 			<plugin>
