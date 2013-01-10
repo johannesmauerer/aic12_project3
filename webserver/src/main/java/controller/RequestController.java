@@ -1,14 +1,12 @@
 package controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-
 import org.springframework.scheduling.annotation.Async;
 
 import rest.RequestService;
@@ -16,9 +14,10 @@ import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 
+@SuppressWarnings("serial")
 @ManagedBean
 @SessionScoped
-public class RequestController {
+public class RequestController implements Serializable{
 
 	private UUID id;
 	private SentimentRequest response;
