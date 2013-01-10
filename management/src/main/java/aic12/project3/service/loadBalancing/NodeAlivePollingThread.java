@@ -50,6 +50,7 @@ public class NodeAlivePollingThread extends Thread {
 			// TODO: Send poll request
 			// Receive answer true or false (alive or unalive
 			String ip = lowLvlNodeMan.getIp(node.getId());
+			node.setIp(ip);
 			if (ip!=null && !ip.equals("")){
 				ipReady = true;
 				logger.info("Node with ip " + ip + " awake");
@@ -62,27 +63,26 @@ public class NodeAlivePollingThread extends Thread {
 		        Client client = Client.create(config);
 		       
 		        try {
-		        	 WebResource resource = client.resource("http://"+ip+":8080/analysis/sentiment/amialive");
+		        	 WebResource resource = client.resource("http://"+node.getIp()+":8080/analysis/sentiment/amialive");
 			            //SentimentProcessingRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentProcessingRequest.class, request);
 
-				        logger .info("Checking if Node with IP " + ip + " has a running tomcat & sentiment deployment");
+				        logger .info("Checking if Node with IP " + node.getIp() + " has a running tomcat & sentiment deployment");
 				        
 		            String response2 = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(String.class);
 		            if (response2.equals("alive")){
-		            	logger.info("Node with IP " + ip + " IS RUNNING WITH TOMCAT! ALL GOOD");
+		            	logger.info("Node with IP " + node.getIp() + " IS RUNNING WITH TOMCAT! ALL GOOD");
 		            	alive = true;
 		            }
-		            else logger.info("There seems to be a problem with node with IP" + ip);
+		            else logger.info("There seems to be a problem with node with IP" + node.getIp());
 
 		        } catch (Exception e) {
-		        	logger.info("Node with IP " + ip + " not available yet, retrying");
+		        	logger.info("Node with IP " + node.getIp() + " not available yet, retrying");
 		        }
 			}
 			
 			if (alive){
 				// Change status
 				node.setStatus(NODE_STATUS.IDLE);
-				node.setIp(ip);
 				
 				// Idle handling
 				String lastVisit = UUID.randomUUID().toString();
