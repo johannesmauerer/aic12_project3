@@ -22,12 +22,13 @@ public class RequestSenderThread extends Thread {
 
 	private Node node;
 	private SentimentProcessingRequest request;
-	@Autowired ManagementConfig config;
+	private ManagementConfig config;
 	private Logger logger = Logger.getLogger(RequestSenderThread.class);
 
-	public RequestSenderThread(Node node, SentimentProcessingRequest request) {
+	public RequestSenderThread(Node node, SentimentProcessingRequest request, ManagementConfig config) {
 		this.node = node;
 		this.request = request;
+		this.config = config;
 	}
 
 	@Override

@@ -98,9 +98,9 @@ public class StatisticsImpl implements Statistics
     }
     
     public long getNumberOfTweetsForRequest(SentimentRequest req){
-		URI uri = UriBuilder.fromUri("http://localhost:8080")
-				.path("dao")
-				.path("tweetdao")
+		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
+				.path(config.getProperty("downloadManagerDeployment"))
+				.path(config.getProperty("databaseTweetRestPath"))
 				.path("getnumberoftweetforrequest")
 				.build();
 

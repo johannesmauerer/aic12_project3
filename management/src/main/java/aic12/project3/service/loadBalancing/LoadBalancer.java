@@ -39,7 +39,7 @@ public abstract class LoadBalancer implements Observer
 	@Autowired protected Statistics stats;
 	@Autowired protected ILowLevelNodeManager nm;
 	@Autowired protected ManagementConfig config;
-	protected static Logger logger = Logger.getRootLogger();
+	protected static Logger logger = Logger.getLogger(LoadBalancer.class);
 	
 
 	/**

@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Hours;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -67,7 +68,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	private Queue<SentimentProcessingRequest> processQueue = new LinkedList<SentimentProcessingRequest>();
 	private int nodesToRunCurrently;
 	final Lock lock = new ReentrantLock();
-	private IHighLevelNodeManager highLvlNodeMan = new HighLevelNodeManagerImpl();
+	@Autowired IHighLevelNodeManager highLvlNodeMan;
 
 	private LoadBalancerTime(){
 	}
@@ -104,8 +105,6 @@ public class LoadBalancerTime extends LoadBalancer {
 			}			
 		}
 
-
-		
 		// Try to start the minimum available nodes if more than 0
 		int minimumNodes = Integer.parseInt(config.getProperty("minimumNodes"));
 		if (minimumNodes > 0){
@@ -160,6 +159,12 @@ public class LoadBalancerTime extends LoadBalancer {
 				// TODO calculate expected load
 				
 				// TODO start nodes
+				int amountOfSentimentNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
+				int runningNodes = highLvlNodeMan.getNodesCount();
+				int diff = amountOfSentimentNodes - runningNodes;
+				if (diff > 0){
+					for (int i = 0; i < diff; i++) highLvlNodeMan.startNode().addObserver(this);
+				}
 				
 				
 				break;
@@ -181,6 +186,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	private void pollAndSend() {
 
 		logger.info("New Poll and Send call");
+		logger.info("Size of the process Queue currently: " + processQueue.size());
 		// See if queue is non-empty
 		if (processQueue.size()>0){
 			/*

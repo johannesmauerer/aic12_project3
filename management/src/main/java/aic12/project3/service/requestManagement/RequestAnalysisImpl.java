@@ -43,9 +43,6 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 			// Add Request to queue first
 			requestQueueReady.addRequest(req);
-
-			// Check if Tweets are there
-			// this.checkDownloaded(req.getId());
 			
 			// TODO: Important, change!
 			logger.info("No check if downloaded");

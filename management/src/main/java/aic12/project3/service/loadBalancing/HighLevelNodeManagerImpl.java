@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -22,6 +23,7 @@ import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
 import aic12.project3.service.util.ManagementConfig;
+
 
 public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
@@ -96,8 +98,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 			/*
 			 * Start waiter for node to become available
 			 */
-			
-			new NodeAlivePollingThread(n).start();
+			new NodeAlivePollingThread(n, config, lowLvlNodeMan).start();
 
 			return n;
 		}
@@ -106,7 +107,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public void sendRequestToNode(Node node, SentimentProcessingRequest request) {
-		new RequestSenderThread(node, request).start();
+		new RequestSenderThread(node, request, config).start();
 
 		// Also save assignment
 		processRequest_nodes.put(request.getId(), node);

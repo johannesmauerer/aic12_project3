@@ -13,11 +13,12 @@ import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.requestManagement.RequestQueueReady;
+import aic12.project3.service.requestManagement.RequestQueueReadyImpl;
 
 public class RequestSplitter {
 
 	private static Logger logger = Logger.getLogger(RequestSplitter.class);
-	@Autowired private static RequestQueueReady rqr;
+	private static RequestQueueReady rqr = RequestQueueReadyImpl.getInstance();
 	
 	/**
 	 * Split a SentimentRequest into multiple SentimentProcessingRequest
@@ -61,6 +62,7 @@ public class RequestSplitter {
 			s.setFrom(startDates[i]);
 			s.setTo(endDates[i]);	
 			logger.info("Part " + i + " stored in Processing Queue");
+			request.getSubRequestsNotProcessed().add(s);
 		}
 		
 		request.setState(REQUEST_QUEUE_STATE.SPLIT);

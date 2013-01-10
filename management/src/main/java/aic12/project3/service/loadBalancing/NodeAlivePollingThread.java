@@ -5,7 +5,6 @@ import java.util.UUID;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
@@ -21,12 +20,23 @@ import com.sun.jersey.api.json.JSONConfiguration;
 public class NodeAlivePollingThread extends Thread {
 
 	private Logger logger = Logger.getLogger(NodeAlivePollingThread.class);
-	@Autowired ILowLevelNodeManager lowLvlNodeMan;
+	private ILowLevelNodeManager lowLvlNodeMan;
 	private Node node;
-	@Autowired private ManagementConfig config;
+	private ManagementConfig config;
 	
-	public NodeAlivePollingThread(Node node) {
+	// For dependency injection
+	public void setManagementConfig(ManagementConfig config){
+		this.config = config;
+	}
+	
+	public void setILowLevelNodeManager(ILowLevelNodeManager lowLvlNodeMan){
+		this.lowLvlNodeMan = lowLvlNodeMan;
+	}
+	
+	public NodeAlivePollingThread(Node node, ManagementConfig config, ILowLevelNodeManager lowLvlNodeMan) {
 		this.node = node;
+		this.config= config;
+		this.lowLvlNodeMan = lowLvlNodeMan;
 	}
 
 	@Override
