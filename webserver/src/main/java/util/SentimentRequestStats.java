@@ -1,22 +1,26 @@
 package util;
 
+import java.util.Date;
+
 public class SentimentRequestStats {
 
-	private float sentiment;
-	private int tweets;
+	private double sentiment;
+	private long tweets;
 	private double intervalMin;
 	private double intervalMax;
+	private Date from;
+	private Date to;
 	
-	public float getSentiment() {
+	public double getSentiment() {
 		return sentiment;
 	}
-	public void setSentiment(float sentiment) {
+	public void setSentiment(double sentiment) {
 		this.sentiment = sentiment;
 	}
-	public int getTweets() {
+	public long getTweets() {
 		return tweets;
 	}
-	public void setTweets(int tweets) {
+	public void setTweets(long tweets) {
 		this.tweets = tweets;
 	}
 	public double getIntervalMin() {
@@ -30,5 +34,17 @@ public class SentimentRequestStats {
 	}
 	public void setIntervalMax(double intervalMax) {
 		this.intervalMax = intervalMax;
+	}
+	public Date getFrom() {
+		return from;
+	}
+	public void setFrom(Date from) {
+		this.from = from;
+	}
+	public Date getTo() {
+		return to;
+	}
+	public void setTo(Date to) {
+		this.to = to;
 	}
 }
