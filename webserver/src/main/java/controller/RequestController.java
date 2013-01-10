@@ -86,9 +86,29 @@ public class RequestController {
 //		 */
 		calculateResponse(requestResponse);
 		
-//>>>>>>> branch 'master' of https://github.com/johannesmauerer/aic12_project3.git
+		/*
+		 * generate id
+		 */
+		UUID generatedId = generateId();
+		/*
+		 * store generated id as attribute of requestController
+		 */
+		this.id = generatedId;
+		/*
+		 * create request
+		 */
+		SentimentRequest request = new SentimentRequest();
+		request.setId(generatedId.toString());
+		request.setCompanyName(this.companyName);
+		request.setFrom(this.from);
+		request.setTo(this.to);
+		request.setState(REQUEST_QUEUE_STATE.NEW);
+
+		requestService = new RequestService();
+		requestService.sendRequestToAnalysis(request); 
 		
 	}
+
 	
 	private void calculateResponse(SentimentRequest response) {
 
@@ -100,6 +120,7 @@ public class RequestController {
 		/*
 		 * calculating request details
 		 */
+
 		for (SentimentProcessingRequest subrequest : response.getSubRequestsProcessed()) {
 
 			long numberOfTweets = subrequest.getNumberOfTweets();
@@ -124,6 +145,8 @@ public class RequestController {
 				+ minimumSentiment + " < " + finalSentiment + " < "
 				+ maximumSentiment + ")");
 	}
+
+	
 
 	@SuppressWarnings("unused")
 	private SentimentRequest mockSentimentResponse(){
@@ -159,7 +182,6 @@ public class RequestController {
 		subs.add(pr1);
 
 		SentimentRequest response = new SentimentRequest();
-		response.setSubRequestsProcessed(subs);
 		response.setFrom(this.from);
 		response.setTo(this.to);
 		response.setCompanyName(this.companyName);
@@ -247,4 +269,6 @@ public class RequestController {
 		this.response = response;
 	}
 
+
 }
+

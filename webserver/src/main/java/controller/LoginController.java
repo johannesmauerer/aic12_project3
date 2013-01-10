@@ -108,7 +108,7 @@ public class LoginController {
 			
 			sumSentiment = 0;
 			finalNumberOfTweets = 0;
-			
+
 			for (SentimentProcessingRequest subrequest : userRequest.getSubRequestsProcessed()) {
 
 				long numberOfTweets = subrequest.getNumberOfTweets();
@@ -202,6 +202,8 @@ public class LoginController {
 		
 		SentimentRequest response3 = new SentimentRequest();
 		response.setSubRequestsNotProcessed(subs3);
+		response.setFrom(new Date());
+		response.setTo(new Date());
 		response3.setFrom(new Date());
 		response3.setTo(new Date());
 		
