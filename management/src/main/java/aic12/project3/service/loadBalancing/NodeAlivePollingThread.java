@@ -9,7 +9,9 @@ import org.apache.log4j.Logger;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
+import aic12.project3.service.util.LoggerLevel;
 import aic12.project3.service.util.ManagementConfig;
+import aic12.project3.service.util.ManagementLogger;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -23,6 +25,8 @@ public class NodeAlivePollingThread extends Thread {
 	private ILowLevelNodeManager lowLvlNodeMan;
 	private Node node;
 	private ManagementConfig config;
+	private ManagementLogger managementLogger;
+	private String clazzName = "NodeAlivePollingThread";
 	
 	// For dependency injection
 	public void setManagementConfig(ManagementConfig config){
@@ -33,10 +37,11 @@ public class NodeAlivePollingThread extends Thread {
 		this.lowLvlNodeMan = lowLvlNodeMan;
 	}
 	
-	public NodeAlivePollingThread(Node node, ManagementConfig config, ILowLevelNodeManager lowLvlNodeMan) {
+	public NodeAlivePollingThread(Node node, ManagementConfig config, ILowLevelNodeManager lowLvlNodeMan, ManagementLogger managementLogger) {
 		this.node = node;
 		this.config= config;
 		this.lowLvlNodeMan = lowLvlNodeMan;
+		this.managementLogger = managementLogger;
 	}
 
 	@Override
@@ -53,7 +58,7 @@ public class NodeAlivePollingThread extends Thread {
 			node.setIp(ip);
 			if (ip!=null && !ip.equals("")){
 				ipReady = true;
-				logger.info("Node with ip " + ip + " awake");
+				managementLogger.log(clazzName, LoggerLevel.INFO, "Node with ip " + ip + " awake");
 			}
 			
 			// Now check if the tomcat server is running
@@ -70,13 +75,13 @@ public class NodeAlivePollingThread extends Thread {
 				        
 		            String response2 = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(String.class);
 		            if (response2.equals("alive")){
-		            	logger.info("Node with IP " + node.getIp() + " IS RUNNING WITH TOMCAT! ALL GOOD");
+		            	managementLogger.log(clazzName, LoggerLevel.INFO, "Node with IP " + node.getIp() + " IS RUNNING WITH TOMCAT! ALL GOOD");
 		            	alive = true;
 		            }
-		            else logger.info("There seems to be a problem with node with IP" + node.getIp());
+		            else managementLogger.log(clazzName, LoggerLevel.INFO, "There seems to be a problem with node with IP" + node.getIp());
 
 		        } catch (Exception e) {
-		        	logger.info("Node with IP " + node.getIp() + " not available yet, retrying");
+		        	managementLogger.log(clazzName, LoggerLevel.INFO, "Node with IP " + node.getIp() + " not available yet, retrying");
 		        }
 			}
 			
@@ -89,7 +94,7 @@ public class NodeAlivePollingThread extends Thread {
 				node.setLastVisitID(lastVisit);
 				
 				// TODO: remove
-				logger.info(node.getId() + " is now alive and IDLE");
+				managementLogger.log(clazzName, LoggerLevel.INFO, node.getId() + " is now alive and IDLE");
 
 			} else {
 				// Wait for specified Time

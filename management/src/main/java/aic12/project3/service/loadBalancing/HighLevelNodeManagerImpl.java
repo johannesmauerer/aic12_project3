@@ -2,27 +2,17 @@ package aic12.project3.service.loadBalancing;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import javax.ws.rs.core.MediaType;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.core.util.FeaturesAndProperties;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
 import aic12.project3.service.util.ManagementConfig;
+import aic12.project3.service.util.ManagementLogger;
 
 
 public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
@@ -31,6 +21,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	private HashMap<String, Node> processRequest_nodes = new HashMap<String, Node> (); // requestID <-> Node
 	@Autowired ILowLevelNodeManager lowLvlNodeMan;
 	@Autowired private ManagementConfig config;
+	@Autowired private ManagementLogger managementLogger;
 	
 	@Override
 	public HashMap<String, Node> getNodes() {
@@ -98,7 +89,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 			/*
 			 * Start waiter for node to become available
 			 */
-			new NodeAlivePollingThread(n, config, lowLvlNodeMan).start();
+			new NodeAlivePollingThread(n, config, lowLvlNodeMan, managementLogger).start();
 
 			return n;
 		}
@@ -107,7 +98,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public void sendRequestToNode(Node node, SentimentProcessingRequest request) {
-		new RequestSenderThread(node, request, config).start();
+		new RequestSenderThread(node, request, config, managementLogger).start();
 
 		// Also save assignment
 		processRequest_nodes.put(request.getId(), node);

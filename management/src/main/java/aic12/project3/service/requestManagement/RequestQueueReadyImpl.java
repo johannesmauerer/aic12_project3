@@ -19,7 +19,9 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
+import aic12.project3.service.util.LoggerLevel;
 import aic12.project3.service.util.ManagementConfig;
+import aic12.project3.service.util.ManagementLogger;
 
 /**
  * Main implementation of the Request Queue
@@ -31,6 +33,9 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	private static RequestQueueReadyImpl instance = new RequestQueueReadyImpl();
 
 	@Autowired private ManagementConfig config;
+	@Autowired private ManagementLogger managementLogger;
+	String clazzName = "RequestQueueReady";
+	
 	/**
 	 * Singleton method
 	 */
@@ -66,7 +71,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		super.notifyObservers(req.getId());
 
 		// TODO: Remove
-		logger.info("Request added");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Request added");
 	}
 
 	/**
@@ -82,7 +87,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	@Override
 	protected void saveRequestToDB(String id){
 		// TODO
-		logger.info("Saving Request to DB");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving Request to DB");
 		SentimentRequest s = readyQueue.get(id);
 
 		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
@@ -91,7 +96,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 				.path("insert")
 				.build();
 		
-		logger.info("Database Server is " + config.getProperty("databaseServer"));
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Database Server is " + config.getProperty("databaseServer"));
 
 		// Jersey Client Config
 		ClientConfig config = new DefaultClientConfig();
@@ -101,7 +106,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		WebResource resource = client.resource(uri);
 		ClientResponse resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
 		
-		logger.info("Saving done");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving done");
 		
 
 	}

@@ -1,15 +1,11 @@
 package aic12.project3.service.util;
 
-import java.io.File;
 import java.util.*;
-
-import org.apache.log4j.Logger;
  
 public class ManagementConfig 
 {
    Properties configFile;
    
-   private Logger logger = Logger.getRootLogger();
    private String propertyFile = "config.properties";
    
    public ManagementConfig()

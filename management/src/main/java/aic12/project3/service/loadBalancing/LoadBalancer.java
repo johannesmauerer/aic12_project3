@@ -1,31 +1,17 @@
 package aic12.project3.service.loadBalancing;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.UUID;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
-import aic12.project3.common.beans.TweetList;
-import aic12.project3.common.enums.NODE_STATUS;
-import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
-import aic12.project3.service.requestManagement.RequestAnalysis;
 import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.service.statistics.Statistics;
 import aic12.project3.service.util.ManagementConfig;
+import aic12.project3.service.util.ManagementLogger;
 
 /**
  * Load Balancer (Singleton)
@@ -39,7 +25,7 @@ public abstract class LoadBalancer implements Observer
 	@Autowired protected Statistics stats;
 	@Autowired protected ILowLevelNodeManager nm;
 	@Autowired protected ManagementConfig config;
-	protected static Logger logger = Logger.getLogger(LoadBalancer.class);
+	@Autowired protected ManagementLogger managementLogger;
 	
 
 	/**

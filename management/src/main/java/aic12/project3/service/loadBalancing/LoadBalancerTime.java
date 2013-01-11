@@ -1,39 +1,20 @@
 package aic12.project3.service.loadBalancing;
 
-import java.net.NoRouteToHostException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Hours;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.nodeManagement.Node;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
+import aic12.project3.service.util.LoggerLevel;
 
 /**
  * Time based implementation of Load Balancer
@@ -69,7 +50,8 @@ public class LoadBalancerTime extends LoadBalancer {
 	private int nodesToRunCurrently;
 	final Lock lock = new ReentrantLock();
 	@Autowired IHighLevelNodeManager highLvlNodeMan;
-
+	private String clazzName = "LoadBalancer";
+	
 	private LoadBalancerTime(){
 	}
 
@@ -113,7 +95,7 @@ public class LoadBalancerTime extends LoadBalancer {
 			}
 		}
 
-		logger.info("init done");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "init done");
 
 	}
 
@@ -128,7 +110,7 @@ public class LoadBalancerTime extends LoadBalancer {
 			/*
 			 * TODO: Remove Logger
 			 */
-			logger.info("QueueUpdate: " + id + " is " + request.getState().toString());
+			managementLogger.log(clazzName, LoggerLevel.INFO, "QueueUpdate: " + id + " is " + request.getState().toString());
 	
 			/*
 			 * TODO: Remove Logger
@@ -138,7 +120,7 @@ public class LoadBalancerTime extends LoadBalancer {
 //			while (it.hasNext()) {
 //				Map.Entry pairs = (Map.Entry)it.next();
 //				Node n = (Node) pairs.getValue();
-//				logger.info("ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
+//				managementLogger.log(clazzName, LoggerLevel.INFO, "ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
 //			}
 	
 			/*
@@ -146,13 +128,13 @@ public class LoadBalancerTime extends LoadBalancer {
 			 */
 			switch (request.getState()){
 			case READY_TO_PROCESS:
-				logger.info("Time to split");
+				managementLogger.log(clazzName, LoggerLevel.INFO, "Time to split");
 				int parts = (int) Math.ceil(stats.getNumberOfTweetsForRequest(request) / (double) 1000);
 				RequestSplitter.splitRequest(request, parts);
 				break;
 	
 			case SPLIT:
-				logger.info("request was split");
+				managementLogger.log(clazzName, LoggerLevel.INFO, "request was split");
 				// fill processQueue
 				processQueue.addAll(request.getSubRequestsNotProcessed());
 				
@@ -185,8 +167,8 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	private void pollAndSend() {
 
-		logger.info("New Poll and Send call");
-		logger.info("Size of the process Queue currently: " + processQueue.size());
+		managementLogger.log(clazzName, LoggerLevel.INFO, "New Poll and Send call");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Size of the process Queue currently: " + processQueue.size());
 		// See if queue is non-empty
 		if (processQueue.size()>0){
 			/*
@@ -230,7 +212,7 @@ public class LoadBalancerTime extends LoadBalancer {
 			@Override
 			public void run()
 			{
-				logger.info("Start waiting to stop Node: " + id + " for " + config.getProperty("nodeIdleTimeout") + " milliseconds");
+				managementLogger.log(clazzName, LoggerLevel.INFO, "Start waiting to stop Node: " + id + " for " + config.getProperty("nodeIdleTimeout") + " milliseconds");
 				Node node = highLvlNodeMan.getNode(id);
 				String lastVisit = node.getLastVisitID();
 				try {
@@ -244,11 +226,11 @@ public class LoadBalancerTime extends LoadBalancer {
 					if (node.getStatus()==NODE_STATUS.IDLE){
 						if (node.getLastVisitID().equals(lastVisit)){
 							// Only stop if there are more nodes left
-							logger.info("Node " + id + " is still idle");
+							managementLogger.log(clazzName, LoggerLevel.INFO, "Node " + id + " is still idle");
 							if (Integer.parseInt(((String) config.getProperty("minimumNodes"))) < highLvlNodeMan.getNodesCount()){
 								if (nodesToRunCurrently < highLvlNodeMan.getNodesCount()){
 									highLvlNodeMan.stopNode(id);
-									logger.info("Node " + id + " was still idle and has been stopped");								
+									managementLogger.log(clazzName, LoggerLevel.INFO, "Node " + id + " was still idle and has been stopped");								
 								} else {
 									// Stopping IDLE nodes is currently not allowed
 									// Restart idleNodeHandling
@@ -258,7 +240,7 @@ public class LoadBalancerTime extends LoadBalancer {
 						}
 					}
 				}
-				logger.info("Idle handling is done.");
+				managementLogger.log(clazzName, LoggerLevel.INFO, "Idle handling is done.");
 			}
 		}.start();
 	}
@@ -270,15 +252,15 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Override
 	public void acceptProcessingRequest(SentimentProcessingRequest req) {
 		
-		logger.info("SentimentProcessingRequest with ID " + req.getId() + " received");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "SentimentProcessingRequest with ID " + req.getId() + " received");
 		SentimentRequest parent = rqr.getRequest(req.getParentID());
 		parent.getSubRequestsNotProcessed().remove(req);
 		parent.getSubRequestsProcessed().add(req);
-		logger.info("SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
+		managementLogger.log(clazzName, LoggerLevel.INFO, "SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
 
 		this.combineParts(req.getParentID());
 		
-		logger.info("Change node status to idle");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Change node status to idle");
 		highLvlNodeMan.setNodeIdle(req);
 	}
 
@@ -297,17 +279,17 @@ public class LoadBalancerTime extends LoadBalancer {
 		SentimentRequest parentRequest = rqr.getRequest(id);
 		if(parentRequest.getSubRequestsNotProcessed().isEmpty()) {
 
-			logger.info("Combination of parts started");
+			managementLogger.log(clazzName, LoggerLevel.INFO, "Combination of parts started");
 			for (SentimentProcessingRequest s : parentRequest.getSubRequestsProcessed()) {
 
 				totalTweets += s.getNumberOfTweets();
-				logger.info("Number of tweets for this part: " + s.getNumberOfTweets());
+				managementLogger.log(clazzName, LoggerLevel.INFO, "Number of tweets for this part: " + s.getNumberOfTweets());
 				totalSentiment += s.getSentiment()*s.getNumberOfTweets();
-				logger.info("Sentiment for these tweets: " + s.getSentiment());
+				managementLogger.log(clazzName, LoggerLevel.INFO, "Sentiment for these tweets: " + s.getSentiment());
 			}
 
 			float weightedSentiment = totalSentiment/totalTweets;
-			logger.info("Total Sentiment: " + weightedSentiment);
+			managementLogger.log(clazzName, LoggerLevel.INFO, "Total Sentiment: " + weightedSentiment);
 			parentRequest.setNumberOfTweets(totalTweets);
 
 			parentRequest.setState(REQUEST_QUEUE_STATE.FINISHED);
