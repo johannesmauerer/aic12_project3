@@ -11,6 +11,7 @@ import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.beans.SentimentRequestList;
 import aic12.project3.common.beans.StatisticsBean;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.service.util.ManagementConfig;
 
 import com.sun.jersey.api.client.Client;
@@ -22,8 +23,8 @@ import com.sun.jersey.api.json.JSONConfiguration;
 public class StatisticsImpl implements Statistics
 {
     private WebResource resource;
-    @Autowired
-    protected ManagementConfig config;
+    @Autowired private ServersConfig serversConfig;
+    @Autowired private ManagementConfig config;
 
     private StatisticsBean bean;
 
@@ -33,7 +34,10 @@ public class StatisticsImpl implements Statistics
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 
         Client client = Client.create(config);
-        resource = client.resource(config.getProperty("databaseServer") + "/" + config.getProperty("databaseDeployment") + "/" + config.getProperty("databaseRequestRestPath") + "/" + "getall");
+        resource = client.resource(serversConfig.getProperty("databaseServer") +
+        		"/" + serversConfig.getProperty("databaseDeployment") + 
+        		"/" + serversConfig.getProperty("databaseRequestRestPath") + 
+        		"/" + "getall");
     }
 
     @Override
@@ -98,9 +102,9 @@ public class StatisticsImpl implements Statistics
     }
     
     public long getNumberOfTweetsForRequest(SentimentRequest req){
-		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
-				.path(config.getProperty("downloadManagerDeployment"))
-				.path(config.getProperty("databaseTweetRestPath"))
+		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
+				.path(serversConfig.getProperty("downloadManagerDeployment"))
+				.path(serversConfig.getProperty("databaseTweetRestPath"))
 				.path("getnumberoftweetforrequest")
 				.build();
 
