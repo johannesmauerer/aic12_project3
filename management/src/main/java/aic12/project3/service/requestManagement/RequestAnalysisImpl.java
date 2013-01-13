@@ -57,63 +57,6 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	}
 
 	/**
-	 * Check for a specific request in queue if it is already downloaded
-	 * @param id
-	 */
-	private void checkDownloaded(String id) {
-
-		// Get request from Queue
-		SentimentRequest req = requestQueueReady.getRequest(id);
-
-		// Count Tweets first
-		req.setNumberOfTweets(this.getNumberOfTweets(req));
-
-		// Add ID to Request
-		if (req.getId().equals("") || req.getId() == null){
-			req.setId(UUID.randomUUID().toString());				
-		}
-
-		// Change status of request to be ready to be processed
-		req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
-
-		// Save request
-		requestQueueReady.addRequest(req);
-	}
-
-	/**
-	 * Get the number of Tweets from DAO for a specific request
-	 * @param req
-	 * @return
-	 */
-	private int getNumberOfTweets(SentimentRequest req){
-
-		// Build URI for REST Call
-		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
-				.path(serversConfig.getProperty("databaseDeployment"))
-				.path(serversConfig.getProperty("databaseTweetRestPath"))
-				.path("find")
-				.queryParam("company", req.getCompanyName())
-				.queryParam("fromdate", req.getFrom())
-				.queryParam("todate", req.getTo())
-				.build();
-
-		// Jersey Client Config
-		ClientConfig config = new DefaultClientConfig();
-		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-		Client client = Client.create(config);
-
-		// WebResource
-		WebResource service = client.resource(uri);
-		ClientResponse response = service.accept("application/json").get(ClientResponse.class);
-
-		// Get tweets from result
-		List<TweetDTO> tweetResponse = response.getEntity(new GenericType<List<TweetDTO>>() {}); 
-
-		// return amount of Tweets
-		return tweetResponse.size();
-	}
-
-	/**
 	 * Handling of Updates in Queue
 	 */
 	@Override
@@ -131,8 +74,6 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 			case DOWNLOADED:
 				logger.info("New Update in Request Queue - DOWNLOADED");
-				// Downloaded: Check again for downloaded and continue
-				this.checkDownloaded(id);
 				break;
 
 			case FINISHED:
