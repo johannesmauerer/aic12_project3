@@ -18,7 +18,6 @@
     <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" init-method="initOnce"/>
     <bean id="config" class="aic12.project3.service.util.ManagementConfig" />
     <bean id="serversConfig" class="aic12.project3.common.config.ServersConfig" />
-    <bean id="downloadManagerClient" class="aic12.project3.dao.tweetsManagement.DownloadManagerClientRestImpl" />
     <bean id="highLevelNodeManager" class="aic12.project3.service.loadBalancing.HighLevelNodeManagerImpl" />
       
 </beans>

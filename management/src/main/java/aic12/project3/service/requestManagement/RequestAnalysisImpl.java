@@ -13,7 +13,6 @@ import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
-import aic12.project3.dao.tweetsManagement.DownloadManagerClient;
 import aic12.project3.service.util.ManagementConfig;
 
 import com.sun.jersey.api.client.Client;
@@ -28,7 +27,6 @@ import com.sun.jersey.api.json.JSONConfiguration;
 public class RequestAnalysisImpl extends RequestAnalysis {
 
 	@Autowired private RequestQueueReady requestQueueReady;
-	@Autowired private DownloadManagerClient downloadManager;
 	@Autowired protected ManagementConfig config;
 	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
 
@@ -56,39 +54,6 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 			requestQueueReady.addRequest(req);
 		}
 
-
-	}
-
-	/**
-	 * Check for a specific request in queue if it is already downloaded
-	 * @param id
-	 */
-	private void checkDownloaded(String id) {
-
-		// Get request from Queue (TODO: DownloadManager should do this himself)
-		SentimentRequest req = requestQueueReady.getRequest(id);
-
-		// Check if downloaded
-		if(downloadManager.isInitialDownloadFinished(req.getCompanyName())) {
-			// Count Tweets first
-			req.setNumberOfTweets(this.getNumberOfTweets(req));
-
-			// Add ID to Request
-			if (req.getId().equals("") || req.getId() == null){
-				req.setId(UUID.randomUUID().toString());				
-			}
-
-			// Change status of request to be ready to be processed
-			req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
-
-			// Save request
-			requestQueueReady.addRequest(req);
-
-		} else {
-			// Send to download Manager
-			downloadManager.notifyOnInitialDownloadFinished(req, 
-					config.getProperty("downloadManagerCallbackURL"));
-		}
 
 	}
 
@@ -142,7 +107,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 			case DOWNLOADED:
 				// Downloaded: Check again for downloaded and continue
-				this.checkDownloaded(id);
+				// NOT NEEDED
 				break;
 
 			case FINISHED:
