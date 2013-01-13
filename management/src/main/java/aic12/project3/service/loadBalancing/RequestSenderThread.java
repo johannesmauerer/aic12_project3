@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -52,17 +53,11 @@ public class RequestSenderThread extends Thread {
 		WebResource service = client.resource(uri);
 
 		// Prepare Request
-		String callbackURL = (serversConfig.getProperty("sentimentCallbackURL"));
-		logger.info("Setting callback address to " + callbackURL);
-		if (callbackURL == null || callbackURL.equals("")){
-			// Fallback
-			callbackURL = "http://128.130.172.202:8080/management/request/acceptProcessingRequest";
-			logger.info("Fallback for callback necessary");
-		}
+		String callbackURL = serversConfig.getProperty("sentimentCallbackURL");
 		request.setCallbackAddress(callbackURL);
 		logger.info("Callback Address set to " + request.getCallbackAddress());
 		// Call Node, missing IP for Node so far
-		service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(request);
+		logger.info("response from node: " + service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, request));
 		logger.info("SentimentProcessingRequest with id " + request.getId() + " has been sent to Node " + node.getIp() + " which has state " + node.getStatus());
 
 	}
