@@ -1,8 +1,10 @@
 package util;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class SentimentRequestStats {
+@SuppressWarnings("serial")
+public class SentimentRequestStats implements Serializable {
 
 	private double sentiment;
 	private long tweets;
