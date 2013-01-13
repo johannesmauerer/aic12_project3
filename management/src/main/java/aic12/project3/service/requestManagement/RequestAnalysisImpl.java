@@ -9,7 +9,6 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.dto.TweetDTO;
@@ -41,20 +40,44 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 
 			// Add Request to queue first
 			requestQueueReady.addRequest(req);
-			
+
 			// TODO: Important, change!
 			logger.info("No check if downloaded");
 			logger.info("Request with company Name " + req.getCompanyName() + " ready for processing");
 			req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
 			requestQueueReady.addRequest(req);
-			
-			
+
+
 		} else {
 			// Update request in Request Queue
 			requestQueueReady.addRequest(req);
 		}
 
 
+	}
+
+	/**
+	 * Check for a specific request in queue if it is already downloaded
+	 * @param id
+	 */
+	private void checkDownloaded(String id) {
+
+		// Get request from Queue
+		SentimentRequest req = requestQueueReady.getRequest(id);
+
+		// Count Tweets first
+		req.setNumberOfTweets(this.getNumberOfTweets(req));
+
+		// Add ID to Request
+		if (req.getId().equals("") || req.getId() == null){
+			req.setId(UUID.randomUUID().toString());				
+		}
+
+		// Change status of request to be ready to be processed
+		req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
+
+		// Save request
+		requestQueueReady.addRequest(req);
 	}
 
 	/**
@@ -102,15 +125,18 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 		if (requestQueueReady.getRequest(id) != null){
 			switch (requestQueueReady.getRequest(id).getState()){
 			case NEW:
+				logger.info("New Update in Request Queue - NEW");
 				// Never applicable
 				break;
 
 			case DOWNLOADED:
+				logger.info("New Update in Request Queue - DOWNLOADED");
 				// Downloaded: Check again for downloaded and continue
-				// NOT NEEDED
+				this.checkDownloaded(id);
 				break;
 
 			case FINISHED:
+				logger.info("New Update in Request Queue - FINISHED");
 				// Processing done, so archive Request
 				SentimentRequest req = requestQueueReady.getRequest(id);
 				req.setState(REQUEST_QUEUE_STATE.ARCHIVED);
@@ -121,6 +147,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 				break;
 
 			default:
+				logger.info("New Update in Request Queue - ### DEFAULT BRANCH");
 				break;
 
 			}			
