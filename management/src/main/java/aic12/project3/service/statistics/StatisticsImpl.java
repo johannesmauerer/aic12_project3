@@ -28,12 +28,15 @@ public class StatisticsImpl implements Statistics
 
     private StatisticsBean bean;
 
-    public StatisticsImpl()
-    {
+    /**
+     * do constructor work in separate method since autowired beans
+     * can't be used in a constructor (not yet wired)
+     */
+    protected void init() {
         ClientConfig config = new DefaultClientConfig();
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-
         Client client = Client.create(config);
+        
         resource = client.resource(serversConfig.getProperty("databaseServer") +
         		"/" + serversConfig.getProperty("databaseDeployment") + 
         		"/" + serversConfig.getProperty("databaseRequestRestPath") + 
@@ -103,7 +106,7 @@ public class StatisticsImpl implements Statistics
     
     public long getNumberOfTweetsForRequest(SentimentRequest req){
 		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
-				.path(serversConfig.getProperty("downloadManagerDeployment"))
+				.path(serversConfig.getProperty("databaseDeployment"))
 				.path(serversConfig.getProperty("databaseTweetRestPath"))
 				.path("getnumberoftweetforrequest")
 				.build();
