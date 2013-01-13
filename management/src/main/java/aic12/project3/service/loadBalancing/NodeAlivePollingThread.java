@@ -63,6 +63,7 @@ public class NodeAlivePollingThread extends Thread {
 		        Client client = Client.create(config);
 		       
 		        try {
+		        	// TODO this should be read from config.properties / serversConfig.properties
 		        	 WebResource resource = client.resource("http://"+node.getIp()+":8080/analysis/sentiment/amialive");
 			            //SentimentProcessingRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentProcessingRequest.class, request);
 

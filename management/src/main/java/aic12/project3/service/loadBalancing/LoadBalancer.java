@@ -40,8 +40,8 @@ public abstract class LoadBalancer implements Observer
 	@Autowired protected RequestQueueReady rqr;
 	@Autowired protected Statistics stats;
 	@Autowired protected ILowLevelNodeManager nm;
-	@Autowired @Qualifier("config") protected ManagementConfig config;
-	@Autowired @Qualifier("serversConfig") protected ServersConfig serversConfig;
+	@Autowired protected ManagementConfig config;
+	@Autowired protected ServersConfig serversConfig;
 	protected static Logger logger = Logger.getLogger(LoadBalancer.class);
 	
 

@@ -19,6 +19,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import com.sun.jersey.core.util.FeaturesAndProperties;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
@@ -31,6 +32,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	private HashMap<String, Node> processRequest_nodes = new HashMap<String, Node> (); // requestID <-> Node
 	@Autowired ILowLevelNodeManager lowLvlNodeMan;
 	@Autowired private ManagementConfig config;
+	@Autowired private ServersConfig serversConfig;
 	
 	@Override
 	public HashMap<String, Node> getNodes() {
@@ -107,7 +109,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public void sendRequestToNode(Node node, SentimentProcessingRequest request) {
-		new RequestSenderThread(node, request, config).start();
+		new RequestSenderThread(node, request, serversConfig).start();
 
 		// Also save assignment
 		processRequest_nodes.put(request.getId(), node);

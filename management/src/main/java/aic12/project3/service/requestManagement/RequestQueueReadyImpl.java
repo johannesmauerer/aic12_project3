@@ -18,6 +18,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.util.ManagementConfig;
 
@@ -30,7 +31,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 
 	private static RequestQueueReadyImpl instance = new RequestQueueReadyImpl();
 
-	@Autowired private ManagementConfig config;
+	@Autowired private ServersConfig serversConfig;
 	/**
 	 * Singleton method
 	 */
@@ -85,13 +86,13 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		logger.info("Saving Request to DB");
 		SentimentRequest s = readyQueue.get(id);
 
-		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
-				.path(config.getProperty("databaseDeployment"))
-				.path(config.getProperty("databaseRequestRestPath"))
+		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
+				.path(serversConfig.getProperty("databaseDeployment"))
+				.path(serversConfig.getProperty("databaseRequestRestPath"))
 				.path("insert")
 				.build();
 		
-		logger.info("Database Server is " + config.getProperty("databaseServer"));
+		logger.info("Database Server is " + serversConfig.getProperty("databaseServer"));
 
 		// Jersey Client Config
 		ClientConfig config = new DefaultClientConfig();

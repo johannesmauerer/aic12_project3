@@ -15,6 +15,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.service.nodeManagement.Node;
 import aic12.project3.service.util.ManagementConfig;
 
@@ -22,13 +23,13 @@ public class RequestSenderThread extends Thread {
 
 	private Node node;
 	private SentimentProcessingRequest request;
-	private ManagementConfig config;
+	private ServersConfig serversConfig;
 	private Logger logger = Logger.getLogger(RequestSenderThread.class);
 
-	public RequestSenderThread(Node node, SentimentProcessingRequest request, ManagementConfig config) {
+	public RequestSenderThread(Node node, SentimentProcessingRequest request, ServersConfig serversConfig) {
 		this.node = node;
 		this.request = request;
-		this.config = config;
+		this.serversConfig = serversConfig;
 	}
 
 	@Override
@@ -37,8 +38,8 @@ public class RequestSenderThread extends Thread {
 		// Request ready to be put onto Node
 		String server = "http://" + node.getIp() + ":8080";
 		URI uri = UriBuilder.fromUri(server)
-				.path(config.getProperty("sentimentDeployment"))
-				.path(config.getProperty("sentimentCallbackRestPath"))
+				.path(serversConfig.getProperty("sentimentDeployment"))
+				.path(serversConfig.getProperty("sentimentCallbackRestPath"))
 				.build();
 		
 		logger .info(uri.toString() + " prepared to send");
@@ -51,7 +52,7 @@ public class RequestSenderThread extends Thread {
 		WebResource service = client.resource(uri);
 
 		// Prepare Request
-		String callbackURL = (config.getProperty("sentimentCallbackURL"));
+		String callbackURL = (serversConfig.getProperty("sentimentCallbackURL"));
 		logger.info("Setting callback address to " + callbackURL);
 		if (callbackURL == null || callbackURL.equals("")){
 			// Fallback

@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
-import aic12.project3.service.util.ManagementConfig;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -27,7 +27,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 public class RequestAnalysisImpl extends RequestAnalysis {
 
 	@Autowired private RequestQueueReady requestQueueReady;
-	@Autowired protected ManagementConfig config;
+	@Autowired protected ServersConfig serversConfig;
 	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
 
 	/**
@@ -65,9 +65,9 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	private int getNumberOfTweets(SentimentRequest req){
 
 		// Build URI for REST Call
-		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
-				.path(config.getProperty("databaseDeployment"))
-				.path(config.getProperty("databaseTweetRestPath"))
+		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
+				.path(serversConfig.getProperty("databaseDeployment"))
+				.path(serversConfig.getProperty("databaseTweetRestPath"))
 				.path("find")
 				.queryParam("company", req.getCompanyName())
 				.queryParam("fromdate", req.getFrom())
