@@ -1,33 +1,9 @@
 package aic12.project3.service.util;
 
-import java.io.File;
-import java.util.*;
+import aic12.project3.common.config.GeneralConfig;
 
-import org.apache.log4j.Logger;
- 
-public class ManagementConfig 
-{
-   Properties configFile;
-   
-   private Logger logger = Logger.getRootLogger();
-   private String propertyFile = "config.properties";
-   
-   public ManagementConfig()
-   {
-	  
-		
-	configFile = new java.util.Properties();
-	try {			
-	  configFile.load(this.getClass().getClassLoader().
-	  getResourceAsStream(propertyFile));			
-	}catch(Exception eta){
-	    eta.printStackTrace();
+public class ManagementConfig extends GeneralConfig {
+	public ManagementConfig() {
+		super("config.properties"); // TODO can this be loaded?
 	}
-   }
- 
-   public String getProperty(String key)
-   {
-	String value = this.configFile.getProperty(key);		
-	return value;
-   }
 }

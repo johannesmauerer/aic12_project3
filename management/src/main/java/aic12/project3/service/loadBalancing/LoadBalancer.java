@@ -15,9 +15,11 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.TweetList;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
@@ -38,7 +40,8 @@ public abstract class LoadBalancer implements Observer
 	@Autowired protected RequestQueueReady rqr;
 	@Autowired protected Statistics stats;
 	@Autowired protected ILowLevelNodeManager nm;
-	@Autowired protected ManagementConfig config;
+	@Autowired @Qualifier("config") protected ManagementConfig config;
+	@Autowired @Qualifier("serversConfig") protected ServersConfig serversConfig;
 	protected static Logger logger = Logger.getLogger(LoadBalancer.class);
 	
 
