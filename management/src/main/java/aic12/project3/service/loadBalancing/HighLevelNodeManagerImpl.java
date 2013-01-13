@@ -88,7 +88,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 			 * Create new Node from available image
 			 */
 			Node n = lowLvlNodeMan.startNode(config.getProperty("serverNameSentiment"), config.getProperty("sentimentImageId"), config.getProperty("serverFlavor"));
-			n.setName("Sentiment");
+			n.setName(config.getProperty("serverNameSentiment"));
 			/*
 			 * Set Node Status to Starting
 			 */
