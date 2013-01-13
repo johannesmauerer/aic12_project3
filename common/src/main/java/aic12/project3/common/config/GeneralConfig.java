@@ -17,7 +17,11 @@ public class GeneralConfig {
 	}
 
 	public String getProperty(String key) {
-		return configFile.getProperty(key);		
+		String value = configFile.getProperty(key);
+		if(value == null) {
+			throw new IllegalArgumentException("key in config file not found!");
+		}
+		return value;		
 	}
 
 }
