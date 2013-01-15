@@ -36,7 +36,7 @@ public interface ILowLevelNodeManager {
 	 * 
 	 * @return List of running nodes.
 	 */
-	public List<Node> listNodes();
+	public List<Node> listRunningNodes();
 	
 	public String getIp(final String id);
 

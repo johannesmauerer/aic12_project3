@@ -138,7 +138,7 @@ public class JCloudsNodeManager implements ILowLevelNodeManager{
 	}
 
 	@Override
-	public List<Node> listNodes() {
+	public List<Node> listRunningNodes() {
 
 		List<Node> nodeList = new ArrayList<Node>();
 

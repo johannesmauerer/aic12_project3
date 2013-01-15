@@ -21,7 +21,7 @@ public class JCloudsNodeManagerTest extends SpringTest {
 		//nm.stopNode(n.getId());
 		
 		
-		List<Node> list = nm.listNodes();
+		List<Node> list = nm.listRunningNodes();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {

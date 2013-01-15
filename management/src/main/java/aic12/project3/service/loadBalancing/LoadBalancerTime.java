@@ -68,18 +68,14 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	@Override
 	protected void init(){
-
 		nodesToRunCurrently = Integer.parseInt(config.getProperty("minimumNodes"));
 		
-		// Add self as Observer to requestQueueReady
 		rqr.addObserver(this);
-
-		// Get available Nodes from NodeManager
-		List<Node> n = nm.listNodes();
+		List<Node> runningNodes = nm.listRunningNodes();
 		
-		if (n != null){
+		if (runningNodes != null){
 			// Stop all running nodes
-			for (Node node : n){
+			for (Node node : runningNodes){
 				// Check if any Sentiment Nodes exist
 				if (node.getName().contains(config.getProperty("serverNameSentiment"))){
 					nm.stopNode(node.getId());	
@@ -87,16 +83,12 @@ public class LoadBalancerTime extends LoadBalancer {
 			}			
 		}
 
-		// Try to start the minimum available nodes if more than 0
-		int minimumNodes = Integer.parseInt(config.getProperty("minimumNodes"));
-		if (minimumNodes > 0){
-			for (int i=0; i < minimumNodes; i++){
-				highLvlNodeMan.startNode().addObserver(this);
-			}
+		int minimumRunningNodes = Integer.parseInt(config.getProperty("minimumNodes"));
+		for (int i=0; i < minimumRunningNodes; i++){
+			highLvlNodeMan.startNode().addObserver(this);
 		}
 
 		managementLogger.log(clazzName, LoggerLevel.INFO, "init done");
-
 	}
 
 	/**
@@ -107,25 +99,8 @@ public class LoadBalancerTime extends LoadBalancer {
 		SentimentRequest request = rqr.getRequest(id);
 		
 		if (request != null){
-			/*
-			 * TODO: Remove Logger
-			 */
 			managementLogger.log(clazzName, LoggerLevel.INFO, "QueueUpdate: " + id + " is " + request.getState().toString());
 	
-			/*
-			 * TODO: Remove Logger
-			 * Iterate over all nodes and print details
-			 */
-//			Iterator it = nodes.entrySet().iterator();
-//			while (it.hasNext()) {
-//				Map.Entry pairs = (Map.Entry)it.next();
-//				Node n = (Node) pairs.getValue();
-//				managementLogger.log(clazzName, LoggerLevel.INFO, "ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
-//			}
-	
-			/*
-			 * Switch between Status of Request
-			 */
 			switch (request.getState()){
 			case READY_TO_PROCESS:
 				managementLogger.log(clazzName, LoggerLevel.INFO, "Time to split");
@@ -140,6 +115,10 @@ public class LoadBalancerTime extends LoadBalancer {
 				
 				// TODO calculate expected load
 				
+				// TODO calculate how many nodes will be most effective/needed
+				
+				// TODO do all of the above in own class...
+				
 				// TODO start nodes
 				int amountOfSentimentNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
 				int runningNodes = highLvlNodeMan.getNodesCount();
@@ -147,18 +126,13 @@ public class LoadBalancerTime extends LoadBalancer {
 				if (diff > 0){
 					for (int i = 0; i < diff; i++) highLvlNodeMan.startNode().addObserver(this);
 				}
-				
-				
 				break;
+			
 			default:
 				break;
-	
 			}
 		}
-
 	}
-
-	
 	
 	/**
 	 * Send request to node if one is available
@@ -166,11 +140,10 @@ public class LoadBalancerTime extends LoadBalancer {
 	 * @param id
 	 */
 	private void pollAndSend() {
-
-		managementLogger.log(clazzName, LoggerLevel.INFO, "New Poll and Send call");
-		managementLogger.log(clazzName, LoggerLevel.INFO, "Size of the process Queue currently: " + processQueue.size());
+		managementLogger.log(clazzName, LoggerLevel.INFO, "pollAndSend; Size of processQueue: " + processQueue.size());
 		// See if queue is non-empty
-		if (processQueue.size()>0){
+		SentimentProcessingRequest req = processQueue.poll();
+		if (req != null){ // polling was successful, continue
 			/*
 			 * Check Status of next node
 			 */
@@ -179,18 +152,13 @@ public class LoadBalancerTime extends LoadBalancer {
 				if (n == null){
 					// No Node available currently
 					// Request stays in ReadyQueue until Node is available
-	
+
 				} else {
-					
+
 					// Idle handling
 					String lastVisit = UUID.randomUUID().toString();
 					n.setLastVisitID(lastVisit);
 					n.setStatus(NODE_STATUS.BUSY);
-						
-	
-					// Get Next request
-					SentimentProcessingRequest req = processQueue.poll();
-	
 					highLvlNodeMan.sendRequestToNode(n, req);
 				}
 			}

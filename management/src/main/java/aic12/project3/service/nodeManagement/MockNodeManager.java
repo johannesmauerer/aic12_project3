@@ -59,7 +59,7 @@ public class MockNodeManager implements ILowLevelNodeManager {
 	 * @see aic12.project3.service.nodeManagement.INodeManager#listNodes()
 	 */
 	@Override
-	public List<Node> listNodes() {
+	public List<Node> listRunningNodes() {
 		// TODO Auto-generated method stub
 		return null;
 	}
