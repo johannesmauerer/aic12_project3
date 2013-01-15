@@ -226,46 +226,15 @@ public class LoadBalancerTime extends LoadBalancer {
 		parent.getSubRequestsProcessed().add(req);
 		managementLogger.log(clazzName, LoggerLevel.INFO, "SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
 
-		synchronized (this) {
-			this.combineParts(req.getParentID());
+		if(parent.getAllPartsProcessed()) {
+			managementLogger.log(clazzName, LoggerLevel.INFO, "Combination of parts started for " + parent.getCompanyName());
+			RequestSplitter.combineParts(parent);
 		}
-		
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Change node status to idle");
 		highLvlNodeMan.setNodeIdle(req);
 	}
 
-	/**
-	 * Checks if all parts are here and combines them
-	 * @param id
-	 */
-	private void combineParts(String id) {
-		
-		int totalTweets = 0;
-		float totalSentiment = 0;
-		
-		/*
-		 * Most importantly: Check if all parts are here
-		 */
-		SentimentRequest parentRequest = rqr.getRequest(id);
-		if(parentRequest.getSubRequestsNotProcessed().isEmpty()) {
-
-			managementLogger.log(clazzName, LoggerLevel.INFO, "Combination of parts started");
-			for (SentimentProcessingRequest s : parentRequest.getSubRequestsProcessed()) {
-
-				totalTweets += s.getNumberOfTweets();
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Number of tweets for this part: " + s.getNumberOfTweets());
-				totalSentiment += s.getSentiment()*s.getNumberOfTweets();
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Sentiment for these tweets: " + s.getSentiment());
-			}
-
-			float weightedSentiment = totalSentiment/totalTweets;
-			managementLogger.log(clazzName, LoggerLevel.INFO, "Total Sentiment: " + weightedSentiment);
-			parentRequest.setNumberOfTweets(totalTweets);
-
-			parentRequest.setState(REQUEST_QUEUE_STATE.FINISHED);
-			rqr.addRequest(parentRequest);
-		}
-	}
+	
 
 	@Override
 	protected void updateInNode(Node node) {

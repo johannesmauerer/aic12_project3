@@ -27,6 +27,7 @@ public class SentimentRequest
     private List<SentimentProcessingRequest> subRequestsNotProcessed = new ArrayList<SentimentProcessingRequest>();
     private List<SentimentProcessingRequest> subRequestsProcessed = new ArrayList<SentimentProcessingRequest>();
     private int numberOfParts;
+	private float weightedSentiment;
 
 
     public SentimentRequest() { }
@@ -226,12 +227,24 @@ public class SentimentRequest
 		this.subRequestsProcessed = subRequestsProcessed;
 	}
 
-	public void setParts(int i){
+	public void setNumberOfParts(int i){
 		this.numberOfParts = i;
 	}
 	
-	public int getParts(){
+	public int getNumberOfParts(){
 		return this.numberOfParts;
+	}
+
+	public boolean getAllPartsProcessed() {
+		return getSubRequestsProcessed().size() == getNumberOfParts();
+	}
+
+	public void setWeightedSentiment(float weightedSentiment) {
+		this.weightedSentiment = weightedSentiment;
+	}
+	
+	public float getWeightedSentiment() {
+		return this.weightedSentiment;
 	}
 
 
