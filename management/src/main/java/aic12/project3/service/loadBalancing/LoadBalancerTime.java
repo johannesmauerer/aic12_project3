@@ -258,7 +258,9 @@ public class LoadBalancerTime extends LoadBalancer {
 		parent.getSubRequestsProcessed().add(req);
 		managementLogger.log(clazzName, LoggerLevel.INFO, "SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
 
-		this.combineParts(req.getParentID());
+		synchronized (this) {
+			this.combineParts(req.getParentID());
+		}
 		
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Change node status to idle");
 		highLvlNodeMan.setNodeIdle(req);
