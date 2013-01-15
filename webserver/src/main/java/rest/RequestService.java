@@ -137,7 +137,7 @@ public class RequestService {
 		// Call Node
 		service.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON)
-				.post(SentimentRequest.class, request);
+				.post(request);
 		
 	}
 

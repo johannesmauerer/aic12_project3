@@ -8,9 +8,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/applicationContextTest.xml"})
+@ContextConfiguration(locations={"/applicationContext.xml"})
 public class SpringTest {
-	
+
 	@Test
 	public void mock(){
 		assertEquals(1,1);

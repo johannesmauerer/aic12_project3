@@ -93,4 +93,13 @@
     </plugins>
   </build>
 
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>unknown</groupId>
+  			<artifactId>libsvm</artifactId>
+  			<version>unknown</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>

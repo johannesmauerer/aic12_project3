@@ -24,7 +24,8 @@ public class SentimentRequest
     private long timestampProcessingStart;
     private long timestampProcessingDone;
     private long timestampRequestFinished;
-    private List<SentimentProcessingRequest> subRequests = new ArrayList<SentimentProcessingRequest>();
+    private List<SentimentProcessingRequest> subRequestsNotProcessed = new ArrayList<SentimentProcessingRequest>();
+    private List<SentimentProcessingRequest> subRequestsProcessed = new ArrayList<SentimentProcessingRequest>();
     private int numberOfParts;
 
 
@@ -206,21 +207,29 @@ public class SentimentRequest
 	/**
 	 * @return the subRequests
 	 */
-	public List<SentimentProcessingRequest> getSubRequests() {
-		return subRequests;
+	public List<SentimentProcessingRequest> getSubRequestsNotProcessed() {
+		return subRequestsNotProcessed;
 	}
 
 	/**
 	 * @param subRequests the subRequests to set
 	 */
-	public void setSubRequests(List<SentimentProcessingRequest> subRequests) {
-		this.subRequests = subRequests;
+	public void setSubRequestsNotProcessed(List<SentimentProcessingRequest> subRequests) {
+		this.subRequestsNotProcessed = subRequests;
 	}
-	
+
+	public List<SentimentProcessingRequest> getSubRequestsProcessed() {
+		return subRequestsProcessed;
+	}
+
+	public void setSubRequestsProcessed(List<SentimentProcessingRequest> subRequestsProcessed) {
+		this.subRequestsProcessed = subRequestsProcessed;
+	}
+
 	public void setParts(int i){
 		this.numberOfParts = i;
 	}
-	
+
 	public int getParts(){
 		return this.numberOfParts;
 	}

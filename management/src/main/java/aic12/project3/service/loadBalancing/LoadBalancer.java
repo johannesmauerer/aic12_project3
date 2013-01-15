@@ -1,31 +1,17 @@
 package aic12.project3.service.loadBalancing;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.UUID;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
-import aic12.project3.common.beans.TweetList;
-import aic12.project3.common.enums.NODE_STATUS;
-import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
-import aic12.project3.service.nodeManagement.INodeManager;
+import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
-import aic12.project3.service.requestManagement.RequestAnalysis;
 import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.service.statistics.Statistics;
 import aic12.project3.service.util.ManagementConfig;
+import aic12.project3.service.util.ManagementLogger;
 
 /**
  * Load Balancer (Singleton)
@@ -37,18 +23,23 @@ public abstract class LoadBalancer implements Observer
 {
 	@Autowired protected RequestQueueReady rqr;
 	@Autowired protected Statistics stats;
-	@Autowired protected INodeManager nm;
+	@Autowired protected ILowLevelNodeManager nm;
 	@Autowired protected ManagementConfig config;
-	protected static Logger logger = Logger.getRootLogger();
-	protected HashMap<String, Node> nodes = new HashMap<String,Node> ();
-	protected HashMap<String, String> processRequest_nodes = new HashMap<String, String> ();
+	@Autowired protected ManagementLogger managementLogger;
+
 
 	/**
 	 * Handle incoming updates as Observer
 	 */
 	public void update(Observable arg0, Object arg1) {
-		this.updateInQueue((String) arg1);
+		if(arg0 instanceof Node) {
+			this.updateInNode((Node) arg1);
+		} else {
+			this.updateInQueue((String) arg1);
+		}
 	}
+
+	protected abstract void updateInNode(Node node);
 
 	/**
 	 * Delegated from Observer method
@@ -62,40 +53,11 @@ public abstract class LoadBalancer implements Observer
 	protected abstract void init();
 
 	/**
-	 * Looks through available nodes and presents most available one
-	 * @return
-	 */
-	protected abstract String getMostAvailableNode();
-
-	/**
-	 * Returns avilable nodes in Load Balancer
-	 * @return the nodes
-	 */
-	public HashMap<String, Node> getNodes() {
-		return nodes;
-	}
-
-	/**
-	 * Start a new node (if available) and return ID
-	 * @throws LoadBalancerException
-	 */
-	protected abstract String startNode();
-
-	/**
-	 * Stops a node
-	 * @param id
-	 */
-	public void stopNode(String id){
-		nm.stopNode(id);
-	}
-
-	/**
 	 * Deal with currently Idle nodes
 	 * @param id
-	 * @param lastVisit
 	 */
-	public abstract void idleNodeHandling(final String id, final String lastVisit);
-	
+	public abstract void idleNodeHandling(final String id);
+
 	/**
 	 * Accepts a processing request
 	 * @param req

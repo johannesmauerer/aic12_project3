@@ -19,7 +19,9 @@ import com.sun.jersey.api.json.JSONConfiguration;
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
+import aic12.project3.service.util.LoggerLevel;
 import aic12.project3.service.util.ManagementConfig;
+import aic12.project3.service.util.ManagementLogger;
 
 /**
  * Main implementation of the Request Queue
@@ -31,6 +33,9 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	private static RequestQueueReadyImpl instance = new RequestQueueReadyImpl();
 
 	@Autowired private ManagementConfig config;
+	@Autowired private ManagementLogger managementLogger;
+	String clazzName = "RequestQueueReady";
+
 	/**
 	 * Singleton method
 	 */
@@ -55,7 +60,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		// TODO: ENable
 		// And save request to DB
 		saveRequestToDB(req.getId());
-		
+
 		// Delete request from queue if done
 		if (req.getState()==REQUEST_QUEUE_STATE.ARCHIVED){
 			readyQueue.remove(req.getId());
@@ -66,7 +71,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		super.notifyObservers(req.getId());
 
 		// TODO: Remove
-		logger.info("Request added");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Request added");
 	}
 
 	/**
@@ -82,6 +87,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	@Override
 	protected void saveRequestToDB(String id){
 		// TODO
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving Request to DB");
 		SentimentRequest s = readyQueue.get(id);
 
 		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
@@ -90,13 +96,18 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 				.path("insert")
 				.build();
 
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Database Server is " + config.getProperty("databaseServer"));
+
 		// Jersey Client Config
 		ClientConfig config = new DefaultClientConfig();
 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 		Client client = Client.create(config);
 
 		WebResource resource = client.resource(uri);
-		resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
+		ClientResponse resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
+
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving done");
+
 
 	}
 

@@ -1,6 +1,9 @@
 package aic12.project3.service.statistics;
 
+import java.net.URI;
+
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -67,9 +70,9 @@ public class StatisticsImpl implements Statistics
                     bean.setMinimumDurationOfRequest(requestDuration);
                 }
                 
-                if (request.getSubRequests() != null)
+                if (request.getSubRequestsProcessed() != null) // TODO chech if this is correct
                 {
-                    for (SentimentProcessingRequest procrequest : request.getSubRequests())
+                    for (SentimentProcessingRequest procrequest : request.getSubRequestsProcessed())
                     {
                         totalProcessingTime += procrequest.getTimestampAnalyzed() - procrequest.getTimestampDataFetched();
                         totalTotalTime += procrequest.getTimestampAnalyzed() - procrequest.getTimestampStartOfAnalysis();
@@ -92,5 +95,22 @@ public class StatisticsImpl implements Statistics
         }
 
         return bean;
+    }
+    
+    public long getNumberOfTweetsForRequest(SentimentRequest req){
+		URI uri = UriBuilder.fromUri(config.getProperty("databaseServer"))
+				.path(config.getProperty("downloadManagerDeployment"))
+				.path(config.getProperty("databaseTweetRestPath"))
+				.path("getnumberoftweetforrequest")
+				.build();
+
+		// Jersey Client Config
+		ClientConfig config = new DefaultClientConfig();
+		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+		Client client = Client.create(config);
+
+		WebResource resource = client.resource(uri);
+		Long resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Long.class, req);
+		return resp;
     }
 }

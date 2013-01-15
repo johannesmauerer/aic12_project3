@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.inject.Module;
 
-public class JCloudsNodeManager implements INodeManager{
+public class JCloudsNodeManager implements ILowLevelNodeManager{
 
 	private static JCloudsNodeManager instance = new JCloudsNodeManager();
 	private ComputeService compute;
@@ -40,7 +40,8 @@ public class JCloudsNodeManager implements INodeManager{
 		return instance;
 	}
 
-	private void init(){
+	protected void initOnce(){
+
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			public void uncaughtException(Thread t, Throwable e) {
 				if (compute != null) close();
@@ -65,8 +66,11 @@ public class JCloudsNodeManager implements INodeManager{
 		zones = nova.getApi().getConfiguredZones();
 	}
 
+	private void init(){
+	}
+
 	private void close() {
-		compute.getContext().close();
+		//compute.getContext().close();
 	}
 
 	@Override

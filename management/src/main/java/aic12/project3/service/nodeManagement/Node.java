@@ -1,8 +1,10 @@
 package aic12.project3.service.nodeManagement;
 
+import java.util.Observable;
+
 import aic12.project3.common.enums.NODE_STATUS;
 
-public class Node{
+public class Node extends Observable {
 
 	private String id;
 	private String name;
@@ -40,6 +42,10 @@ public class Node{
 	 */
 	public void setStatus(NODE_STATUS status) {
 		this.status = status;
+
+		// Inform all Observers
+		super.setChanged();
+		super.notifyObservers(this);
 	}
 
 	public String toString(){

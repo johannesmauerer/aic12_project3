@@ -14,7 +14,9 @@ import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.dto.TweetDTO;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.dao.tweetsManagement.DownloadManagerClient;
+import aic12.project3.service.util.LoggerLevel;
 import aic12.project3.service.util.ManagementConfig;
+import aic12.project3.service.util.ManagementLogger;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -30,7 +32,9 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	@Autowired private RequestQueueReady requestQueueReady;
 	@Autowired private DownloadManagerClient downloadManager;
 	@Autowired protected ManagementConfig config;
+	@Autowired private ManagementLogger managementLogger;
 	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
+	private String clazzName = "RequestAnalysis";
 
 	/**
 	 * Add Observer, add request and check for downloads
@@ -44,16 +48,13 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 			// Add Request to queue first
 			requestQueueReady.addRequest(req);
 
-			// Check if Tweets are there
-			// this.checkDownloaded(req.getId());
-			
 			// TODO: Important, change!
-			logger.info("No check if downloaded");
-			logger.info("Request with company Name " + req.getCompanyName() + " ready for processing");
+			managementLogger.log(clazzName, LoggerLevel.INFO, "No check if downloaded");
+			managementLogger.log(clazzName, LoggerLevel.INFO, "Request with company Name " + req.getCompanyName() + " ready for processing");
 			req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
 			requestQueueReady.addRequest(req);
-			
-			
+
+
 		} else {
 			// Update request in Request Queue
 			requestQueueReady.addRequest(req);
@@ -135,32 +136,35 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	protected void updateInQueue(String id) {
 
 		// TODO: Remove
-		logger.info("New Update in Request Queue");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "New Update in Request Queue");
 
-		switch (requestQueueReady.getRequest(id).getState()){
-		case NEW:
-			// Never applicable
-			break;
+		if (requestQueueReady.getRequest(id) != null){
+			switch (requestQueueReady.getRequest(id).getState()){
+			case NEW:
+				// Never applicable
+				break;
 
-		case DOWNLOADED:
-			// Downloaded: Check again for downloaded and continue
-			this.checkDownloaded(id);
-			break;
+			case DOWNLOADED:
+				// Downloaded: Check again for downloaded and continue
+				this.checkDownloaded(id);
+				break;
 
-		case FINISHED:
-			// Processing done, so archive Request
-			SentimentRequest req = requestQueueReady.getRequest(id);
-			req.setState(REQUEST_QUEUE_STATE.ARCHIVED);
-			requestQueueReady.addRequest(req);
+			case FINISHED:
+				// Processing done, so archive Request
+				SentimentRequest req = requestQueueReady.getRequest(id);
+				req.setState(REQUEST_QUEUE_STATE.ARCHIVED);
+				requestQueueReady.addRequest(req);
 
-			// Delete from requestQueueReady
-			requestQueueReady.deleteRequestFromQueue(id);
-			break;
+				// Delete from requestQueueReady
+				requestQueueReady.deleteRequestFromQueue(id);
+				break;
 
-		default:
-			break;
+			default:
+				break;
 
+			}			
 		}
+
 
 	}
 

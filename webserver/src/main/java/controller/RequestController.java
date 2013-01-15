@@ -38,14 +38,26 @@ public class RequestController implements Serializable{
 	@Async
 	public void sendToAnalysis() {
 		System.out.println("METHOD CALLED");
-		/*
-		 * generate id
-		 */
+
+    	/*
+		getResponseFromDB();
+		
+		if(this.response==null){
+
+		}
+		else{
+			
+//			this.subResponse=response.getSubRequestsNotProcessed();
+//			return "response";
+		}
+
+*/
 		UUID generatedId = generateId();
+		this.id = generatedId;
 		/*
 		 * store generated id as attribute of requestController
 		 */
-		this.id = generatedId;
+		
 		/*
 		 * create request
 		 */
@@ -75,8 +87,8 @@ public class RequestController implements Serializable{
 //		 */
 		calculateResponse(requestResponse);
 		
-		
 	}
+
 	
 	private void calculateResponse(SentimentRequest response) {
 
@@ -88,7 +100,8 @@ public class RequestController implements Serializable{
 		/*
 		 * calculating request details
 		 */
-		for (SentimentProcessingRequest subrequest : response.getSubRequests()) {
+
+		for (SentimentProcessingRequest subrequest : response.getSubRequestsProcessed()) {
 
 			long numberOfTweets = subrequest.getNumberOfTweets();
 			sumSentiment += (subrequest.getSentiment()*numberOfTweets);
@@ -112,6 +125,8 @@ public class RequestController implements Serializable{
 				+ minimumSentiment + " < " + finalSentiment + " < "
 				+ maximumSentiment + ")");
 	}
+
+	
 
 	@SuppressWarnings("unused")
 	private SentimentRequest mockSentimentResponse(){
@@ -147,7 +162,6 @@ public class RequestController implements Serializable{
 		subs.add(pr1);
 
 		SentimentRequest response = new SentimentRequest();
-		response.setSubRequests(subs);
 		response.setFrom(this.from);
 		response.setTo(this.to);
 		response.setCompanyName(this.companyName);
@@ -235,4 +249,6 @@ public class RequestController implements Serializable{
 		this.response = response;
 	}
 
+
 }
+

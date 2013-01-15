@@ -14,12 +14,12 @@
 			<title>Advanced Internet Computing</title>
 			<link href="styles/style.css" rel="stylesheet" type="text/css" />
 		</h:head>
-		
+
 		<!-- Polling for log messages -->
 		<h:form>
 	        <a4j:poll id="poll" interval="500" enabled="#{true}" render="poll,logging" />
 	    </h:form>
-	    
+
 		<h:body>
 			<div id="box">
 				<div id="header">
@@ -27,7 +27,7 @@
 				</div>
 				<div id="bodyPart">
 					<h:form>
-	
+
 						<h2>Welcome
 							<h:outputLabel rendered="#{user.registered eq 'true'}" value="back"/>
 							<i>
@@ -39,10 +39,10 @@
 							<h:commandButton value="See Analysis Statistics" action="#{user.getAnalysisStatistics}"></h:commandButton>
 							<h:commandButton value="Exit" action="welcome"></h:commandButton>
 						</div>
-	
+
 						<!-- setting companyName -->
 						<c:set value="#{user.name}" target="#{sentimentRequest}" property="companyName" />
-	
+
 						<f:view>	
 							<h3>Choose period for your sentiment analysis:</h3>
 							<p>
@@ -57,7 +57,7 @@
 									</div>
 								</span>
 							</p>
-	
+
 							<div id="clearLeft"></div>
 							<span id="calenderInput">
 								<div id="calendarText">
@@ -70,22 +70,21 @@
 								</div>
 							</span>
 							<div id="clearLeft"></div>
-	
+
 							<div id="buttons">
-							
+
 								<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}"></h:commandButton>
-							
+
 								<h:commandButton id="result" value="Show Response" action="#{sentimentRequest.getResponseFromDB}" 
 									onclick="document.getElementById('lastRequestSpan').style.visibility='visible';">									
 									<f:ajax event="action" render="lastRequest" execute="@this" />
 								</h:commandButton>
-								
+
 								<br/>
 								<!-- LOGGING OUTPUT -->
 								<h:inputTextarea id="logging" value="#{logging.logMessage}"
-									cols="50" rows="10"
+									cols="100" rows="40"
 									onselect="var textarea = document.getElementById('logging'); textarea.scrollTop = textarea.scrollHeight;" />
-
 								<div id="scrollableTable">
 									<br />
 									<span id="lastRequestSpan" style="visibility:hidden">
@@ -114,6 +113,7 @@
 										</h:panelGrid>
 									</span>
 								</div>
+
 							</div>
 						</f:view>
 					</h:form>

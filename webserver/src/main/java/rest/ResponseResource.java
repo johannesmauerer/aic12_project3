@@ -83,7 +83,7 @@ public class ResponseResource {
 		subs.add(pr1);
 
 		SentimentRequest response = new SentimentRequest();
-		response.setSubRequests(subs);
+		response.setSubRequestsNotProcessed(subs);
 		response.setCompanyName("coucou");
 		response.setFrom(new Date());
 		response.setTo(new Date());
