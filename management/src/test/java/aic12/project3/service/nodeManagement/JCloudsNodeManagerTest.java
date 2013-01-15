@@ -14,14 +14,14 @@ public class JCloudsNodeManagerTest extends SpringTest {
 
 	@Autowired ILowLevelNodeManager nm;
 	@Autowired protected ManagementConfig config;
-
+	
 	@Test
 	public void testStartNodeStringStringString() {
 		//Node n = nm.startNode(config.getProperty("serverNameSentiment"), config.getProperty("sentimentImageId"), config.getProperty("serverFlavor"));
 		//nm.stopNode(n.getId());
-
-
-		List<Node> list = nm.listNodes();
+		
+		
+		List<Node> list = nm.listRunningNodes();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -34,9 +34,9 @@ public class JCloudsNodeManagerTest extends SpringTest {
 				System.out.println(n.getName());
 			}			
 		}
+	
 
-
-
+		
 	}
 
 }

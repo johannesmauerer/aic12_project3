@@ -1,16 +1,12 @@
 package aic12.project3.service.loadBalancing;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Hours;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
-import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.service.requestManagement.RequestQueueReadyImpl;
@@ -21,11 +17,12 @@ public class RequestSplitter {
 	private static RequestQueueReady rqr = RequestQueueReadyImpl.getInstance();
 	
 	/**
+	 * TODO this doesn't work well if there are no tweets for a splitted part -> sentiment is NaN then
 	 * Split a SentimentRequest into multiple SentimentProcessingRequest
 	 * @param id the ID of the SentimentRequest
 	 */
 	public static void splitRequest(SentimentRequest request, int parts) {
-
+		
 		// Days between Start and End
 		DateTime cleanFrom = new DateTime(request.getFrom());
 		DateTime cleanTo = new DateTime(request.getTo());  
@@ -50,7 +47,7 @@ public class RequestSplitter {
 		}
 		
 		// Save amount of parts in request
-		request.setParts(parts);
+		request.setNumberOfParts(parts);
 		
 		/*
 		 * Now finally release the requests to the processQueue
@@ -67,5 +64,31 @@ public class RequestSplitter {
 		
 		request.setState(REQUEST_QUEUE_STATE.SPLIT);
 		rqr.addRequest(request);
+	}
+	
+	/**
+	 * Combines all parts
+	 * @param id id of {@link SentimentRequest} to combine
+	 */
+	public static synchronized void combineParts(SentimentRequest request) {
+		
+		int totalTweets = 0;
+		float totalSentiment = 0;
+		
+		if(request.getAllPartsProcessed()) {
+			for (SentimentProcessingRequest s : request.getSubRequestsProcessed()) {
+
+				totalTweets += s.getNumberOfTweets();
+				totalSentiment += s.getSentiment()*s.getNumberOfTweets();
+				logger.info("#tweets for this part: " + s.getNumberOfTweets() + "; Sentiment: " + s.getSentiment());
+			}
+
+			request.setNumberOfTweets(totalTweets);
+			request.setWeightedSentiment(totalSentiment/totalTweets);
+			logger.info("weighted sentiment for request " + request.getCompanyName() + ": " + request.getWeightedSentiment());
+
+			request.setState(REQUEST_QUEUE_STATE.FINISHED);
+			rqr.addRequest(request);
+		}
 	}
 }

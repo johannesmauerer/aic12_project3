@@ -51,7 +51,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	final Lock lock = new ReentrantLock();
 	@Autowired IHighLevelNodeManager highLvlNodeMan;
 	private String clazzName = "LoadBalancer";
-
+	
 	private LoadBalancerTime(){
 	}
 
@@ -68,18 +68,14 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	@Override
 	protected void init(){
-
 		nodesToRunCurrently = Integer.parseInt(config.getProperty("minimumNodes"));
-
-		// Add self as Observer to requestQueueReady
+		
 		rqr.addObserver(this);
-
-		// Get available Nodes from NodeManager
-		List<Node> n = nm.listNodes();
-
-		if (n != null){
+		List<Node> runningNodes = nm.listRunningNodes();
+		
+		if (runningNodes != null){
 			// Stop all running nodes
-			for (Node node : n){
+			for (Node node : runningNodes){
 				// Check if any Sentiment Nodes exist
 				if (node.getName().contains(config.getProperty("serverNameSentiment"))){
 					nm.stopNode(node.getId());	
@@ -87,16 +83,12 @@ public class LoadBalancerTime extends LoadBalancer {
 			}			
 		}
 
-		// Try to start the minimum available nodes if more than 0
-		int minimumNodes = Integer.parseInt(config.getProperty("minimumNodes"));
-		if (minimumNodes > 0){
-			for (int i=0; i < minimumNodes; i++){
-				highLvlNodeMan.startNode().addObserver(this);
-			}
+		int minimumRunningNodes = Integer.parseInt(config.getProperty("minimumNodes"));
+		for (int i=0; i < minimumRunningNodes; i++){
+			highLvlNodeMan.startNode().addObserver(this);
 		}
 
 		managementLogger.log(clazzName, LoggerLevel.INFO, "init done");
-
 	}
 
 	/**
@@ -105,41 +97,28 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Override
 	protected void updateInQueue(String id) {
 		SentimentRequest request = rqr.getRequest(id);
-
+		
 		if (request != null){
-			/*
-			 * TODO: Remove Logger
-			 */
 			managementLogger.log(clazzName, LoggerLevel.INFO, "QueueUpdate: " + id + " is " + request.getState().toString());
-
-			/*
-			 * TODO: Remove Logger
-			 * Iterate over all nodes and print details
-			 */
-//			Iterator it = nodes.entrySet().iterator();
-//			while (it.hasNext()) {
-//				Map.Entry pairs = (Map.Entry)it.next();
-//				Node n = (Node) pairs.getValue();
-//				managementLogger.log(clazzName, LoggerLevel.INFO, "ID: " + n.getId() + " with Name " + n.getName() + " is " + n.getStatus() + " available at " + n.getIp());
-//			}
-
-			/*
-			 * Switch between Status of Request
-			 */
+	
 			switch (request.getState()){
 			case READY_TO_PROCESS:
 				managementLogger.log(clazzName, LoggerLevel.INFO, "Time to split");
 				int parts = (int) Math.ceil(stats.getNumberOfTweetsForRequest(request) / (double) 1000);
 				RequestSplitter.splitRequest(request, parts);
 				break;
-
+	
 			case SPLIT:
 				managementLogger.log(clazzName, LoggerLevel.INFO, "request was split");
 				// fill processQueue
 				processQueue.addAll(request.getSubRequestsNotProcessed());
-
+				
 				// TODO calculate expected load
-
+				
+				// TODO calculate how many nodes will be most effective/needed
+				
+				// TODO do all of the above in own class...
+				
 				// TODO start nodes
 				int amountOfSentimentNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
 				int runningNodes = highLvlNodeMan.getNodesCount();
@@ -147,30 +126,24 @@ public class LoadBalancerTime extends LoadBalancer {
 				if (diff > 0){
 					for (int i = 0; i < diff; i++) highLvlNodeMan.startNode().addObserver(this);
 				}
-
-
 				break;
+			
 			default:
 				break;
-
 			}
 		}
-
 	}
-
-
-
+	
 	/**
 	 * Send request to node if one is available
 	 * if not then put into Queue.
 	 * @param id
 	 */
 	private void pollAndSend() {
-
-		managementLogger.log(clazzName, LoggerLevel.INFO, "New Poll and Send call");
-		managementLogger.log(clazzName, LoggerLevel.INFO, "Size of the process Queue currently: " + processQueue.size());
+		managementLogger.log(clazzName, LoggerLevel.INFO, "pollAndSend; Size of processQueue: " + processQueue.size());
 		// See if queue is non-empty
-		if (processQueue.size()>0){
+		SentimentProcessingRequest req = processQueue.poll();
+		if (req != null){ // polling was successful, continue
 			/*
 			 * Check Status of next node
 			 */
@@ -186,11 +159,6 @@ public class LoadBalancerTime extends LoadBalancer {
 					String lastVisit = UUID.randomUUID().toString();
 					n.setLastVisitID(lastVisit);
 					n.setStatus(NODE_STATUS.BUSY);
-
-
-					// Get Next request
-					SentimentProcessingRequest req = processQueue.poll();
-
 					highLvlNodeMan.sendRequestToNode(n, req);
 				}
 			}
@@ -206,7 +174,7 @@ public class LoadBalancerTime extends LoadBalancer {
 		 */
 		// CHeck if work is available
 		pollAndSend();
-
+		
 		new Thread()
 		{
 			@Override
@@ -251,51 +219,22 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	@Override
 	public void acceptProcessingRequest(SentimentProcessingRequest req) {
-
+		
 		managementLogger.log(clazzName, LoggerLevel.INFO, "SentimentProcessingRequest with ID " + req.getId() + " received");
 		SentimentRequest parent = rqr.getRequest(req.getParentID());
 		parent.getSubRequestsNotProcessed().remove(req);
 		parent.getSubRequestsProcessed().add(req);
 		managementLogger.log(clazzName, LoggerLevel.INFO, "SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
 
-		this.combineParts(req.getParentID());
-
+		if(parent.getAllPartsProcessed()) {
+			managementLogger.log(clazzName, LoggerLevel.INFO, "Combination of parts started for " + parent.getCompanyName());
+			RequestSplitter.combineParts(parent);
+		}
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Change node status to idle");
 		highLvlNodeMan.setNodeIdle(req);
 	}
 
-	/**
-	 * Checks if all parts are here and combines them
-	 * @param id
-	 */
-	private void combineParts(String id) {
-
-		int totalTweets = 0;
-		float totalSentiment = 0;
-
-		/*
-		 * Most importantly: Check if all parts are here
-		 */
-		SentimentRequest parentRequest = rqr.getRequest(id);
-		if(parentRequest.getSubRequestsNotProcessed().isEmpty()) {
-
-			managementLogger.log(clazzName, LoggerLevel.INFO, "Combination of parts started");
-			for (SentimentProcessingRequest s : parentRequest.getSubRequestsProcessed()) {
-
-				totalTweets += s.getNumberOfTweets();
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Number of tweets for this part: " + s.getNumberOfTweets());
-				totalSentiment += s.getSentiment()*s.getNumberOfTweets();
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Sentiment for these tweets: " + s.getSentiment());
-			}
-
-			float weightedSentiment = totalSentiment/totalTweets;
-			managementLogger.log(clazzName, LoggerLevel.INFO, "Total Sentiment: " + weightedSentiment);
-			parentRequest.setNumberOfTweets(totalTweets);
-
-			parentRequest.setState(REQUEST_QUEUE_STATE.FINISHED);
-			rqr.addRequest(parentRequest);
-		}
-	}
+	
 
 	@Override
 	protected void updateInNode(Node node) {

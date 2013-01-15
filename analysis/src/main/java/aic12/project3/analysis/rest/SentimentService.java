@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response.Status;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.TweetList;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.dto.TweetDTO;
 import classifier.ClassifierBuilder;
 import classifier.IClassifier;
@@ -40,6 +41,7 @@ public class SentimentService
     private WeightedMajority wm;
     private Map<UUID, SentimentProcessingRequest> map;
     private WebResource resource;
+    private ServersConfig serversConfig = new ServersConfig();
 
     public SentimentService() throws Exception
     {
@@ -47,14 +49,11 @@ public class SentimentService
         map = new ConcurrentHashMap<UUID, SentimentProcessingRequest>();
 
         // Initialize DAO access client
-        Properties properties = new Properties();
-        properties.load(SentimentService.class.getClassLoader().getResourceAsStream("config.properties"));
-
         ClientConfig config = new DefaultClientConfig();
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
 
         Client client = Client.create(config);
-        resource = client.resource(properties.getProperty("databaseServerUrl"));
+        resource = client.resource(serversConfig.getProperty("databaseServerUrl"));
 
         // Pre chaching of neural networks
         List<IClassifier> classifiers = new LinkedList<IClassifier>();
