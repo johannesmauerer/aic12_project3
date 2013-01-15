@@ -2,12 +2,24 @@ package aic12.project3.service.loadBalancing;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import javax.ws.rs.core.MediaType;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.json.JSONConfiguration;
+import com.sun.jersey.core.util.FeaturesAndProperties;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
@@ -22,6 +34,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	@Autowired ILowLevelNodeManager lowLvlNodeMan;
 	@Autowired private ManagementConfig config;
 	@Autowired private ManagementLogger managementLogger;
+	@Autowired private ServersConfig serversConfig;
 	
 	@Override
 	public HashMap<String, Node> getNodes() {
@@ -79,7 +92,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 			 * Create new Node from available image
 			 */
 			Node n = lowLvlNodeMan.startNode(config.getProperty("serverNameSentiment"), config.getProperty("sentimentImageId"), config.getProperty("serverFlavor"));
-			n.setName("Sentiment");
+			n.setName(config.getProperty("serverNameSentiment"));
 			/*
 			 * Set Node Status to Starting
 			 */
@@ -98,7 +111,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public void sendRequestToNode(Node node, SentimentProcessingRequest request) {
-		new RequestSenderThread(node, request, config, managementLogger).start();
+		new RequestSenderThread(node, request, serversConfig, managementLogger).start();
 
 		// Also save assignment
 		processRequest_nodes.put(request.getId(), node);

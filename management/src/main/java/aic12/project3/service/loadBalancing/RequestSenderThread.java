@@ -9,12 +9,14 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
+import aic12.project3.common.config.ServersConfig;
 import aic12.project3.service.nodeManagement.Node;
 import aic12.project3.service.util.LoggerLevel;
 import aic12.project3.service.util.ManagementConfig;
@@ -24,15 +26,15 @@ public class RequestSenderThread extends Thread {
 
 	private Node node;
 	private SentimentProcessingRequest request;
-	private ManagementConfig config;
+	private ServersConfig serversConfig;
 	private Logger logger = Logger.getLogger(RequestSenderThread.class);
 	private ManagementLogger managementLogger;
 	private String clazzName = "RequestSenderThread";
 
-	public RequestSenderThread(Node node, SentimentProcessingRequest request, ManagementConfig config, ManagementLogger managementLogger) {
+	public RequestSenderThread(Node node, SentimentProcessingRequest request, ServersConfig serversConfig, ManagementLogger managementLogger) {
 		this.node = node;
 		this.request = request;
-		this.config = config;
+		this.serversConfig = serversConfig;
 		this.managementLogger = managementLogger;
 	}
 
@@ -42,8 +44,8 @@ public class RequestSenderThread extends Thread {
 		// Request ready to be put onto Node
 		String server = "http://" + node.getIp() + ":8080";
 		URI uri = UriBuilder.fromUri(server)
-				.path(config.getProperty("sentimentDeployment"))
-				.path(config.getProperty("sentimentCallbackRestPath"))
+				.path(serversConfig.getProperty("sentimentDeployment"))
+				.path(serversConfig.getProperty("sentimentCallbackRestPath"))
 				.build();
 		
 		managementLogger.log(clazzName, LoggerLevel.INFO, uri.toString() + " prepared to send");
@@ -56,17 +58,13 @@ public class RequestSenderThread extends Thread {
 		WebResource service = client.resource(uri);
 
 		// Prepare Request
-		String callbackURL = (config.getProperty("sentimentCallbackURL"));
+		String callbackURL = serversConfig.getProperty("sentimentCallbackURL");
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Setting callback address to " + callbackURL);
-		if (callbackURL == null || callbackURL.equals("")){
-			// Fallback
-			callbackURL = "http://128.130.172.202:8080/management/request/acceptProcessingRequest";
-			managementLogger.log(clazzName, LoggerLevel.INFO, "Fallback for callback necessary");
-		}
+
 		request.setCallbackAddress(callbackURL);
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Callback Address set to " + request.getCallbackAddress());
 		// Call Node, missing IP for Node so far
-		service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(request);
+		logger.info("response from node: " + service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, request));
 		managementLogger.log(clazzName, LoggerLevel.INFO, "SentimentProcessingRequest with id " + request.getId() + " has been sent to Node " + node.getIp() + " which has state " + node.getStatus());
 
 	}

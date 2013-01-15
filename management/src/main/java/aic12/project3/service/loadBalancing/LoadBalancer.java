@@ -2,12 +2,25 @@ package aic12.project3.service.loadBalancing;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.UUID;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
+import aic12.project3.common.beans.TweetList;
+import aic12.project3.common.config.ServersConfig;
+import aic12.project3.common.enums.NODE_STATUS;
+import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
+import aic12.project3.service.requestManagement.RequestAnalysis;
 import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.service.statistics.Statistics;
 import aic12.project3.service.util.ManagementConfig;
@@ -26,6 +39,7 @@ public abstract class LoadBalancer implements Observer
 	@Autowired protected ILowLevelNodeManager nm;
 	@Autowired protected ManagementConfig config;
 	@Autowired protected ManagementLogger managementLogger;
+	@Autowired protected ServersConfig serversConfig;
 	
 
 	/**
