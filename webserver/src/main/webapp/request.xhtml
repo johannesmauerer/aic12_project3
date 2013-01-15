@@ -26,7 +26,7 @@
 					<h:graphicImage value="img/header.jpg" />
 				</div>
 				<div id="bodyPart">
-					<h:form>
+					<h:form id="form">
 
 						<h2>Welcome
 							<h:outputLabel rendered="#{user.registered eq 'true'}" value="back"/>
@@ -42,80 +42,79 @@
 
 						<!-- setting companyName -->
 						<c:set value="#{user.name}" target="#{sentimentRequest}" property="companyName" />
-
-						<f:view>	
-							<h3>Choose period for your sentiment analysis:</h3>
-							<p>
-								<span id="calenderInput">
-									<div id="calendarText">
-										<h4>From:</h4>
-									</div>
-									<div id="calendar">
-										<rich:calendar value="#{sentimentRequest.from}" popup="true"
-											time="dd/MM/yyyy" showInput="true" cellWidth="24px"
-											cellHeight="22px" style="width:200px" required="true" />
-									</div>
-								</span>
-							</p>
-
-							<div id="clearLeft"></div>
+	
+						<h3>Choose period for your sentiment analysis:</h3>
+						<p>
 							<span id="calenderInput">
 								<div id="calendarText">
-									<h4>To:</h4>
+									<h4>From:</h4>
 								</div>
 								<div id="calendar">
-									<rich:calendar value="#{sentimentRequest.to}" popup="true"
+									<rich:calendar value="#{sentimentRequest.from}" popup="true"
 										time="dd/MM/yyyy" showInput="true" cellWidth="24px"
 										cellHeight="22px" style="width:200px" required="true" />
 								</div>
 							</span>
-							<div id="clearLeft"></div>
+						</p>
 
-							<div id="buttons">
-
-								<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}"></h:commandButton>
-
-								<h:commandButton id="result" value="Show Response" action="#{sentimentRequest.getResponseFromDB}" 
-									onclick="document.getElementById('lastRequestSpan').style.visibility='visible';">									
-									<f:ajax event="action" render="lastRequest" execute="@this" />
-								</h:commandButton>
-
-								<br/>
-								<!-- LOGGING OUTPUT -->
-								<h:inputTextarea id="logging" value="#{logging.logMessage}"
-									cols="100" rows="40"
-									onselect="var textarea = document.getElementById('logging'); textarea.scrollTop = textarea.scrollHeight;" />
-								<div id="scrollableTable">
-									<br />
-									<span id="lastRequestSpan" style="visibility:hidden">
-										<h:panelGrid id="lastRequest" columns="7" border="1" cellpadding="0" cellspacing="2">
-
-											<f:facet name="header">
-												<h:outputText id="title" value="RESULT OF YOUR LAST REQUEST" />
-											</f:facet>
-
-											<h:outputText value="Company Name" />
-											<h:outputText value="From" />
-											<h:outputText value="To" />
-											<h:outputText value="Number of Tweets" />
-											<h:outputText value="Minimum" />
-											<h:outputText value="Maximum" />
-											<h:outputText value="Sentiment" />
-
-											<h:outputText value="#{sentimentRequest.response.companyName}" />
-											<h:outputText value="#{sentimentRequest.response.from}" />
-											<h:outputText value="#{sentimentRequest.response.to}" />
-											<h:outputText value="#{sentimentRequest.numberOfTweets}" />
-											<h:outputText value="#{sentimentRequest.minimumSentiment}" />
-											<h:outputText value="#{sentimentRequest.maximumSentiment}" />
-											<h:outputText value="#{sentimentRequest.sentiment}" />
-
-										</h:panelGrid>
-									</span>
-								</div>
-
+						<div id="clearLeft"></div>
+						<span id="calenderInput">
+							<div id="calendarText">
+								<h4>To:</h4>
 							</div>
-						</f:view>
+							<div id="calendar">
+								<rich:calendar value="#{sentimentRequest.to}" popup="true"
+									time="dd/MM/yyyy" showInput="true" cellWidth="24px"
+									cellHeight="22px" style="width:200px" required="true" />
+							</div>
+						</span>
+						<div id="clearLeft"></div>
+
+						<div id="buttons">
+
+							<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}"></h:commandButton>
+
+							<h:commandButton id="result" value="Show Response" action="#{sentimentRequest.getResponseFromDB}" 
+								onclick="document.getElementById('lastRequestSpan').style.visibility='visible';">									
+								<f:ajax event="action" render="lastRequest" execute="@this" />
+							</h:commandButton>
+
+							<br/>
+							<!-- LOGGING OUTPUT -->
+							<h:inputTextarea id="logging" value="#{logging.logMessage}"
+								cols="100" rows="40"
+								onmousemove="var textarea = document.getElementById('form:logging'); textarea.scrollTop = textarea.scrollHeight;"/>
+														
+							<div id="scrollableTable">
+								<br />
+								<span id="lastRequestSpan" style="visibility:hidden">
+									<h:panelGrid id="lastRequest" columns="7" border="1" cellpadding="0" cellspacing="2">
+
+										<f:facet name="header">
+											<h:outputText id="title" value="RESULT OF YOUR LAST REQUEST" />
+										</f:facet>
+
+										<h:outputText value="Company Name" />
+										<h:outputText value="From" />
+										<h:outputText value="To" />
+										<h:outputText value="Number of Tweets" />
+										<h:outputText value="Minimum" />
+										<h:outputText value="Maximum" />
+										<h:outputText value="Sentiment" />
+
+										<h:outputText value="#{sentimentRequest.response.companyName}" />
+										<h:outputText value="#{sentimentRequest.response.from}" />
+										<h:outputText value="#{sentimentRequest.response.to}" />
+										<h:outputText value="#{sentimentRequest.numberOfTweets}" />
+										<h:outputText value="#{sentimentRequest.minimumSentiment}" />
+										<h:outputText value="#{sentimentRequest.maximumSentiment}" />
+										<h:outputText value="#{sentimentRequest.sentiment}" />
+
+									</h:panelGrid>
+								</span>
+							</div>
+
+						</div>
 					</h:form>
 				</div>
 
