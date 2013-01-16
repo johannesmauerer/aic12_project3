@@ -1,6 +1,8 @@
 package aic12.project3.service.requestManagement;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 import org.apache.log4j.Logger;
@@ -17,7 +19,7 @@ import aic12.project3.common.beans.SentimentRequest;
 public abstract class RequestQueueReady extends Observable {
 
 	protected static Logger logger = Logger.getRootLogger();	
-	protected HashMap<String, SentimentRequest> readyQueue = new HashMap<String, SentimentRequest>();
+	protected Map<String, SentimentRequest> readyQueue = Collections.synchronizedMap(new HashMap<String, SentimentRequest>());
 
 	/**
 	 * Add a new request to the queue or update existing request
@@ -29,7 +31,7 @@ public abstract class RequestQueueReady extends Observable {
 	 * Get the whole request queue (e.g. for iterating over it)
 	 * @return
 	 */
-	public abstract HashMap<String, SentimentRequest> getRequestQueue();
+	public abstract Map<String, SentimentRequest> getRequestQueue();
 
 	/**
 	 * Get the size of the current queue
@@ -66,5 +68,7 @@ public abstract class RequestQueueReady extends Observable {
 	 * @param id
 	 */
 	public abstract void deleteRequestFromQueue(String id);
+
+	public abstract long getNumberOfTweetsInQueue();
 
 }

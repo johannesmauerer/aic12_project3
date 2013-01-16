@@ -14,9 +14,4 @@ public interface Statistics
      * Calculates the statistics and returns them. 
      */
     StatisticsBean calculateStatistics();
-    
-    /*
-     * 
-     */
-    long getNumberOfTweetsForRequest(SentimentRequest req);
 }

@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.log4j.Logger;
@@ -56,8 +57,6 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 			// Update request in Request Queue
 			requestQueueReady.addRequest(req);
 		}
-
-
 	}
 
 	/**
@@ -94,12 +93,25 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 			default:
 				logger.debug("New Update in Request Queue - ### DEFAULT BRANCH");
 				break;
-
 			}			
 		}
-
-
 	}
+    
+	@Override
+    public long getNumberOfTweetsForRequest(SentimentRequest req){
+		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
+				.path(serversConfig.getProperty("databaseDeployment"))
+				.path(serversConfig.getProperty("databaseTweetRestPath"))
+				.path("getnumberoftweetforrequest")
+				.build();
 
+		// Jersey Client Config
+		ClientConfig config = new DefaultClientConfig();
+		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+		Client client = Client.create(config);
 
+		WebResource resource = client.resource(uri);
+		Long resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Long.class, req);
+		return resp;
+    }
 }

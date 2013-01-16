@@ -27,5 +27,6 @@ public abstract class RequestAnalysis implements Observer {
 	 * @param id
 	 */
 	protected abstract void updateInQueue(String id);
-	
+
+	public abstract long getNumberOfTweetsForRequest(SentimentRequest req);
 }
