@@ -42,10 +42,10 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 		long numTweetsInQ = requestQReady.getNumberOfTweetsInQueue();
 		int runningNodes = highLvlNodeMan.getRunningNodesCount();
 		int nodeStartupTime = highLvlNodeMan.getNodeStartupTime();
-		desiredNodeCount = runningNodes;
+		desiredNodeCount = 1;
 
 		long expectedDuration = 0;
-		if(runningNodes == 0) {
+		if(desiredNodeCount == 0) {
 			expectedDuration = Long.MAX_VALUE;
 		} else {
 			expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, desiredNodeCount);
@@ -55,13 +55,13 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 				"\nnodeStartupTime: " + nodeStartupTime + 
 				"\nexpectedDuration: " + expectedDuration);
 
-		//calculate optimal nodes (expectedDuration > startupTime) (TODO doesn't stop nodes)
+		//calculate optimal nodes (expectedDuration > startupTime)
 		while(expectedDuration > nodeStartupTime) {
-			log.info("increasing desiredNodeCount");
+			log.debug("increasing desiredNodeCount");
 			desiredNodeCount++;
 			expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, desiredNodeCount);
 		}
-		managementLogger.log(clazz, LoggerLevel.INFO, "desiredNodes calculated: " + desiredNodeCount);
+		managementLogger.log(clazz, LoggerLevel.INFO, "desiredNodes calculated: * " + desiredNodeCount + " *");
 		log.info("expectedDuration: " + expectedDuration);
 		
 		return desiredNodeCount;
