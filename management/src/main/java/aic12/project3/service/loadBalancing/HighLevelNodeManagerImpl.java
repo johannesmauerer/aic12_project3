@@ -119,7 +119,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	}
 
 	@Override
-	public int getNodesCount() {
+	public int getRunningNodesCount() {
 		return nodes.size();
 	}
 
@@ -139,7 +139,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	@Override
 	public void runDesiredNumberOfNodes(int desiredNodeCount, Observer observer) {
 		int amountOfSentimentNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
-		int diff = amountOfSentimentNodes - this.getNodesCount();
+		int diff = amountOfSentimentNodes - this.getRunningNodesCount();
 		if (diff > 0){
 			for (int i = 0; i < diff; i++) this.startNode().addObserver(observer);
 		}

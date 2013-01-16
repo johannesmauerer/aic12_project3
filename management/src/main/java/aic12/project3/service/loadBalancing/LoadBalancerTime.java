@@ -189,8 +189,8 @@ public class LoadBalancerTime extends LoadBalancer {
 						if (node.getLastVisitID().equals(lastVisit)){
 							// Only stop if there are more nodes left
 							managementLogger.log(clazzName, LoggerLevel.INFO, "Node " + id + " is still idle");
-							if (minimumNodes < highLvlNodeMan.getNodesCount()){
-								if (nodesToRunCurrently < highLvlNodeMan.getNodesCount()){
+							if (minimumNodes < highLvlNodeMan.getRunningNodesCount()){
+								if (nodesToRunCurrently < highLvlNodeMan.getRunningNodesCount()){
 									highLvlNodeMan.stopNode(id);
 									managementLogger.log(clazzName, LoggerLevel.INFO, "Node " + id + " was still idle and has been stopped");								
 								} else {

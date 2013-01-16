@@ -35,7 +35,7 @@ public interface IHighLevelNodeManager {
 
 	public Node getNode(String id);
 
-	public int getNodesCount();
+	public int getRunningNodesCount();
 
 	public void setNodeIdle(SentimentProcessingRequest request);
 

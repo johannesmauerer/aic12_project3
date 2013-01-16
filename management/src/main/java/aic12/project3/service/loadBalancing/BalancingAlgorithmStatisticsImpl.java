@@ -15,6 +15,7 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 	@Autowired protected ManagementConfig config;
 	@Autowired private RequestQueueReady requestQReady;
 	@Autowired private RequestAnalysis analysis;
+	@Autowired private IHighLevelNodeManager highLvlNodeMan;
 	private int amountOfSentimentNodes;
 	
 	private Logger log = Logger.getLogger(BalancingAlgorithmStatisticsImpl.class);
@@ -30,8 +31,8 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 			statistics.calculateStatistics();
 			log.info(statistics);
 			double avgTotalTweetDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
-			
-			// TODO take queue length into account
+			long numTweetsInQ = requestQReady.getNumberOfTweetsInQueue();
+			int runningNodes = highLvlNodeMan.getRunningNodesCount();
 			
 			// TODO calculate how many nodes will be most effective/needed
 		}
