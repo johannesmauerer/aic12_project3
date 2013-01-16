@@ -36,8 +36,10 @@
 							!
 						</h2>
 						<div id="buttons">
-							<h:commandButton value="See Analysis Statistics" action="#{user.getAnalysisStatistics}"></h:commandButton>
-							<h:commandButton value="Exit" action="welcome"></h:commandButton>
+							<h:form>
+								<h:commandButton value="See Analysis Statistics" action="#{user.returnAnalysisStatistics}"></h:commandButton>
+								<h:commandButton value="Exit" action="welcome"></h:commandButton>
+							</h:form>
 						</div>
 
 						<!-- setting companyName -->
@@ -82,8 +84,7 @@
 							<br/>
 							<!-- LOGGING OUTPUT -->
 							<h:inputTextarea id="logging" value="#{logging.logMessage}"
-								cols="100" rows="40"
-								onmousemove="var textarea = document.getElementById('form:logging'); textarea.scrollTop = textarea.scrollHeight;"/>
+								cols="100" rows="40"/>
 														
 							<div id="scrollableTable">
 								<br />

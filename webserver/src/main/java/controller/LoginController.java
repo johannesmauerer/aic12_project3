@@ -114,8 +114,11 @@ public class LoginController implements Serializable{
 			for (SentimentProcessingRequest subrequest : userRequest.getSubRequestsProcessed()) {
 
 				long numberOfTweets = subrequest.getNumberOfTweets();
-				sumSentiment += (subrequest.getSentiment()*numberOfTweets);
-				finalNumberOfTweets += numberOfTweets;
+				if(numberOfTweets > 0){
+					sumSentiment += (subrequest.getSentiment()*numberOfTweets);
+					finalNumberOfTweets += numberOfTweets;
+				}
+				
 				
 			}
 			
@@ -136,7 +139,7 @@ public class LoginController implements Serializable{
 
 	}
 	
-	public String getAnalysisStatistics() {
+	public String returnAnalysisStatistics() {
 
 		RequestService requestService = new RequestService();
 
@@ -162,11 +165,11 @@ public class LoginController implements Serializable{
 	private SentimentRequestList mockUserRequests(){
 		
 		SentimentProcessingRequest req = new SentimentProcessingRequest();
-		req.setNumberOfTweets(657000);
+		req.setNumberOfTweets(0);
 		req.setSentiment(0.13f);
 
 		SentimentProcessingRequest pr1 = new SentimentProcessingRequest();
-		pr1.setNumberOfTweets(12);
+		pr1.setNumberOfTweets(0);
 		pr1.setSentiment(0.56f);
 
 		SentimentProcessingRequest pr2 = new SentimentProcessingRequest();
@@ -193,17 +196,17 @@ public class LoginController implements Serializable{
 		subs3.add(pr2);
 		
 		SentimentRequest response = new SentimentRequest();
-		response.setSubRequestsNotProcessed(subs1);
+		response.setSubRequestsProcessed(subs1);
 		response.setFrom(new Date());
 		response.setTo(new Date());
 		
 		SentimentRequest response2 = new SentimentRequest();
-		response.setSubRequestsNotProcessed(subs2);
+		response.setSubRequestsProcessed(subs2);
 		response2.setFrom(new Date());
 		response2.setTo(new Date());
 		
 		SentimentRequest response3 = new SentimentRequest();
-		response.setSubRequestsNotProcessed(subs3);
+		response.setSubRequestsProcessed(subs3);
 		response.setFrom(new Date());
 		response.setTo(new Date());
 		response3.setFrom(new Date());

@@ -30,6 +30,7 @@ public class LoggingController implements ILoggingObserver, Serializable{
 	
 	@Override
 	public void log(String message) {
-		this.logMessage += message + "\n";
+		String messageTampon = this.logMessage;
+		this.logMessage = message + "\n" + messageTampon;
 	}
 }
