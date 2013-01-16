@@ -33,12 +33,12 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 	}
 	
 	@Override
-	public int calculateNodeCount() {
+	public synchronized int calculateNodeCount() {
 		int desiredNodeCount = maxNodeCount; // TODO better fallback
 		if(areStatisticsMeaningful()) {
 			statistics.calculateStatistics();
 			log.info(statistics);
-			double avgTweetProcessingDuration = statistics.getStatistics().getAverageProcessingDurationPerTweet();
+			double avgTweetProcessingDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
 			long numTweetsInQ = requestQReady.getNumberOfTweetsInQueue();
 			int runningNodes = highLvlNodeMan.getRunningNodesCount();
 			int nodeStartupTime = highLvlNodeMan.getNodeStartupTime();
@@ -62,10 +62,7 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 				expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, desiredNodeCount);
 			}
 			managementLogger.log(clazz, LoggerLevel.INFO, "desiredNodes calculated: " + desiredNodeCount);
-			log.info("\n#tweetsInQ: " + numTweetsInQ + 
-					"\nrunningNodes: " + runningNodes + 
-					"\nnodeStartupTime: " + nodeStartupTime + 
-					"\nexpectedDuration: " + expectedDuration);
+			log.info("expectedDuration: " + expectedDuration);
 			
 //			2. Calculate Distribution:
 //				- How many nodes are busy currently?

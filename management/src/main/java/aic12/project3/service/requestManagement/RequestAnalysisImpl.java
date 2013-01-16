@@ -34,25 +34,22 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
 	private String clazzName = "RequestAnalysis";
 
+	public void init() {
+		requestQueueReady.addObserver(this);
+	}
+	
 	/**
 	 * Add Observer, add request and check for downloads
 	 */
 	@Override
 	public void acceptRequest(SentimentRequest req) {
 		if (req.getState() == REQUEST_QUEUE_STATE.NEW){
-			// Add self as Observer for Queue
-			requestQueueReady.addObserver(this);
-
 			// Add Request to queue first
 			requestQueueReady.addRequest(req);
 
-			// TODO: Important, change!
-			managementLogger.log(clazzName, LoggerLevel.INFO, "No check if downloaded");
 			managementLogger.log(clazzName, LoggerLevel.INFO, "Request with company Name " + req.getCompanyName() + " ready for processing");
 			req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
 			requestQueueReady.addRequest(req);
-
-
 		} else {
 			// Update request in Request Queue
 			requestQueueReady.addRequest(req);

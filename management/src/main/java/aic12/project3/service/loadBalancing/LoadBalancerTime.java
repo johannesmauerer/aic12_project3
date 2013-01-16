@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
@@ -52,6 +53,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Autowired IHighLevelNodeManager highLvlNodeMan;
 	private String clazzName = "LoadBalancer";
 	@Autowired private IBalancingAlgorithm balancingAlgorithm;
+	private Logger log = Logger.getLogger(LoadBalancerTime.class);
 	
 	private LoadBalancerTime(){
 	}
@@ -172,7 +174,7 @@ public class LoadBalancerTime extends LoadBalancer {
 				int nodeIdleTimeout = Integer.parseInt(config.getProperty("nodeIdleTimeout"));
 				int minimumNodes = Integer.parseInt(( config.getProperty("minimumNodes")));
 				
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Start idle handling for Node: " + id + " waiting " + nodeIdleTimeout + " milliseconds");
+				managementLogger.log(clazzName, LoggerLevel.INFO, "Start idle handling for Node: " + id + ", waiting " + nodeIdleTimeout + " ms");
 				Node node = highLvlNodeMan.getNode(id);
 				String lastVisit = node.getLastVisitID();
 				try {
@@ -200,7 +202,6 @@ public class LoadBalancerTime extends LoadBalancer {
 						}
 					}
 				}
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Idle handling is done.");
 			}
 		}.start();
 	}
@@ -211,11 +212,11 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Override
 	public void acceptProcessingRequest(SentimentProcessingRequest req) {
 		
-		managementLogger.log(clazzName, LoggerLevel.INFO, "SentimentProcessingRequest with ID " + req.getId() + " received");
+		log.debug("SentimentProcessingRequest with ID " + req.getId() + " received");
 		SentimentRequest parent = rqr.getRequest(req.getParentID());
 		parent.getSubRequestsNotProcessed().remove(req);
 		parent.getSubRequestsProcessed().add(req);
-		managementLogger.log(clazzName, LoggerLevel.INFO, "SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
+		managementLogger.log(clazzName, LoggerLevel.INFO, "SentimentProcessingRequest received; SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
 
 		if(RequestSplitter.areAllPartsProcessed(parent)) {
 			managementLogger.log(clazzName, LoggerLevel.INFO, "Combination of parts started for " + parent.getCompanyName());

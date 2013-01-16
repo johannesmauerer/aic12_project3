@@ -11,7 +11,7 @@
 	<context:annotation-config />
 
 	<!-- Normal runtime beans -->
-	<bean id="requestAnalysis" class="aic12.project3.service.requestManagement.RequestAnalysisImpl"/>
+	<bean id="requestAnalysis" class="aic12.project3.service.requestManagement.RequestAnalysisImpl" init-method="init"/>
 	<bean id="requestQueueReady" class="aic12.project3.service.requestManagement.RequestQueueReadyImpl" factory-method="getInstance"/>
 	<bean id="config" class="aic12.project3.service.util.ManagementConfig" />
 	<bean id="managementLogger" class="aic12.project3.service.util.ManagementLogger" factory-method="getInstance" init-method="init"/>
