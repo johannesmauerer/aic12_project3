@@ -38,6 +38,7 @@ public class RequestController implements Serializable{
 	@Async
 	public void sendToAnalysis() {
 
+		System.out.println("in analysis");
     	/*
 		getResponseFromDB();
 		
