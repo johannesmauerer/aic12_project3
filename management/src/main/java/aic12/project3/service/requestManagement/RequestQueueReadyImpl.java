@@ -1,8 +1,10 @@
 package aic12.project3.service.requestManagement;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -36,6 +38,8 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	@Autowired private ServersConfig serversConfig;
 	@Autowired private ManagementLogger managementLogger;
 	String clazzName = "RequestQueueReady";
+
+	@Autowired private RequestAnalysis analysis;
 	
 	/**
 	 * Singleton method
@@ -61,7 +65,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		// TODO: ENable
 		// And save request to DB
 		saveRequestToDB(req.getId());
-		
+
 		// Delete request from queue if done
 		if (req.getState()==REQUEST_QUEUE_STATE.ARCHIVED){
 			readyQueue.remove(req.getId());
@@ -78,7 +82,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	/**
 	 * Return the request Queue
 	 */
-	public HashMap<String, SentimentRequest> getRequestQueue(){
+	public Map<String, SentimentRequest> getRequestQueue(){
 		return readyQueue;
 	}
 
@@ -96,7 +100,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 				.path(serversConfig.getProperty("databaseRequestRestPath"))
 				.path("insert")
 				.build();
-		
+
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Database Server is " + serversConfig.getProperty("databaseServer"));
 
 		// Jersey Client Config
@@ -106,9 +110,9 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 
 		WebResource resource = client.resource(uri);
 		ClientResponse resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
-		
+
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving done");
-		
+
 
 	}
 
@@ -121,6 +125,16 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		this.readyQueue.remove(id);		
 	}
 
-
+	@Override
+	public long getNumberOfTweetsInQueue() {
+		long totalNumTweets = 0;
+		Collection<SentimentRequest> requestsInQueue = readyQueue.values();
+		synchronized(readyQueue) {
+			for(SentimentRequest req : requestsInQueue) {
+				totalNumTweets += analysis.getNumberOfTweetsForRequest(req);
+			}
+		}
+		return totalNumTweets;
+	}
 
 }

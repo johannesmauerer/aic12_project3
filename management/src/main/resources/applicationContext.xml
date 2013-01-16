@@ -11,7 +11,7 @@
 	<context:annotation-config />
 
 	<!-- Normal runtime beans -->
-	<bean id="requestAnalysis" class="aic12.project3.service.requestManagement.RequestAnalysisImpl"/>
+	<bean id="requestAnalysis" class="aic12.project3.service.requestManagement.RequestAnalysisImpl" init-method="init"/>
 	<bean id="requestQueueReady" class="aic12.project3.service.requestManagement.RequestQueueReadyImpl" factory-method="getInstance"/>
 	<bean id="config" class="aic12.project3.service.util.ManagementConfig" />
 	<bean id="managementLogger" class="aic12.project3.service.util.ManagementLogger" factory-method="getInstance" init-method="init"/>
@@ -19,6 +19,7 @@
     <bean id="statistics" class="aic12.project3.service.statistics.StatisticsImpl" init-method="init"/>
     <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" init-method="initOnce"/>
     <bean id="serversConfig" class="aic12.project3.common.config.ServersConfig" />
-    <bean id="highLevelNodeManager" class="aic12.project3.service.loadBalancing.HighLevelNodeManagerImpl" />
+    <bean id="highLevelNodeManager" class="aic12.project3.service.loadBalancing.HighLevelNodeManagerImpl" init-method="init"/>
+    <bean id="balancingAlgorithm" class="aic12.project3.service.loadBalancing.BalancingAlgorithmStatisticsImpl" init-method="init"/>
       
 </beans>

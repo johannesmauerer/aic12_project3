@@ -1,9 +1,14 @@
 package aic12.project3.service.loadBalancing;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Observer;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
@@ -23,21 +28,28 @@ import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.Node;
+import aic12.project3.service.util.StartupTimes;
 import aic12.project3.service.util.ManagementConfig;
 import aic12.project3.service.util.ManagementLogger;
 
 
 public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
-	private HashMap<String, Node> nodes = new HashMap<String,Node> ();
-	private HashMap<String, Node> processRequest_nodes = new HashMap<String, Node> (); // requestID <-> Node
+	private Map<String, Node> nodes = Collections.synchronizedMap(new HashMap<String,Node> ()); // nodeID <-> Node
+	private Map<String, Node> processRequest_nodes = Collections.synchronizedMap(new HashMap<String, Node> ()); // requestID <-> Node
 	@Autowired ILowLevelNodeManager lowLvlNodeMan;
 	@Autowired private ManagementConfig config;
 	@Autowired private ManagementLogger managementLogger;
 	@Autowired private ServersConfig serversConfig;
+	private StartupTimes startupTimes;
+	
+	public void init() {
+		int size = Integer.parseInt(config.getProperty("nodeStartupTimesCache"));
+		startupTimes = new StartupTimes(size);
+	}
 	
 	@Override
-	public HashMap<String, Node> getNodes() {
+	public Map<String, Node> getNodes() {
 		return processRequest_nodes;
 	}
 
@@ -102,7 +114,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 			/*
 			 * Start waiter for node to become available
 			 */
-			new NodeAlivePollingThread(n, config, lowLvlNodeMan, managementLogger).start();
+			new NodeAlivePollingThread(n, config, lowLvlNodeMan, this, managementLogger).start();
 
 			return n;
 		}
@@ -118,7 +130,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	}
 
 	@Override
-	public int getNodesCount() {
+	public int getRunningNodesCount() {
 		return nodes.size();
 	}
 
@@ -133,5 +145,30 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 		
 		// And remove from processRequest_nodes mapping
 		processRequest_nodes.remove(request.getId());
+	}
+
+	@Override
+	public void runDesiredNumberOfNodes(int desiredNodeCount, Observer observer) {
+		int diff = desiredNodeCount - this.getRunningNodesCount();
+		if (diff > 0){
+			for (int i = 0; i < diff; i++) this.startNode().addObserver(observer);
+		} else if (diff < 0) {
+			// TODO stop nodes after work is done
+			// remove from available queue?
+			// stop next node that becomes idle?
+		}
+	}
+
+	@Override
+	public int getNodeStartupTime() {
+		if(startupTimes.isEmpty()) {
+			return Integer.parseInt(config.getProperty("timeToStartup"));
+		}
+		return startupTimes.calculateAverageStartupTime();
+	}
+
+	@Override
+	public void addNodeStartupTime(long timeToStartup) {
+		startupTimes.add(timeToStartup);
 	}
 }

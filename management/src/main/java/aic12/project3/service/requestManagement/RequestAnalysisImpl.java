@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.log4j.Logger;
@@ -33,31 +34,26 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	private Logger logger = Logger.getLogger(RequestAnalysisImpl.class);
 	private String clazzName = "RequestAnalysis";
 
+	public void init() {
+		requestQueueReady.addObserver(this);
+	}
+	
 	/**
 	 * Add Observer, add request and check for downloads
 	 */
 	@Override
 	public void acceptRequest(SentimentRequest req) {
 		if (req.getState() == REQUEST_QUEUE_STATE.NEW){
-			// Add self as Observer for Queue
-			requestQueueReady.addObserver(this);
-
 			// Add Request to queue first
 			requestQueueReady.addRequest(req);
 
-			// TODO: Important, change!
-			managementLogger.log(clazzName, LoggerLevel.INFO, "No check if downloaded");
 			managementLogger.log(clazzName, LoggerLevel.INFO, "Request with company Name " + req.getCompanyName() + " ready for processing");
 			req.setState(REQUEST_QUEUE_STATE.READY_TO_PROCESS);
 			requestQueueReady.addRequest(req);
-
-
 		} else {
 			// Update request in Request Queue
 			requestQueueReady.addRequest(req);
 		}
-
-
 	}
 
 	/**
@@ -92,14 +88,27 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 				break;
 
 			default:
-				logger.info("New Update in Request Queue - ### DEFAULT BRANCH");
+				logger.debug("New Update in Request Queue - ### DEFAULT BRANCH");
 				break;
-
 			}			
 		}
-
-
 	}
+    
+	@Override
+    public long getNumberOfTweetsForRequest(SentimentRequest req){
+		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
+				.path(serversConfig.getProperty("databaseDeployment"))
+				.path(serversConfig.getProperty("databaseTweetRestPath"))
+				.path("getnumberoftweetforrequest")
+				.build();
 
+		// Jersey Client Config
+		ClientConfig config = new DefaultClientConfig();
+		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
+		Client client = Client.create(config);
 
+		WebResource resource = client.resource(uri);
+		Long resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Long.class, req);
+		return resp;
+    }
 }

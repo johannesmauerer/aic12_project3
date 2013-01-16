@@ -1,9 +1,6 @@
 package aic12.project3.service.statistics;
 
-import java.net.URI;
-
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -90,9 +87,9 @@ public class StatisticsImpl implements Statistics
                 totalTotalTime += requestDuration - request.getTimestampProcessingDone() + request.getTimestampProcessingStart();
             }
             
-            bean.setAverageDurationPerRequest(totalTime / list.getList().size());
-            bean.setAverageProcessingDurationPerTweet(totalProcessingTime / count);
-            bean.setAverageTotalDurationPerTweet(totalTotalTime / count);
+            bean.setAverageDurationPerRequest(totalTime / (double) list.getList().size());
+            bean.setAverageProcessingDurationPerTweet(totalProcessingTime / (double) count);
+            bean.setAverageTotalDurationPerTweet(totalTotalTime / (double) count);
         }
         else
         {
@@ -103,21 +100,17 @@ public class StatisticsImpl implements Statistics
 
         return bean;
     }
-    
-    public long getNumberOfTweetsForRequest(SentimentRequest req){
-		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
-				.path(serversConfig.getProperty("databaseDeployment"))
-				.path(serversConfig.getProperty("databaseTweetRestPath"))
-				.path("getnumberoftweetforrequest")
-				.build();
 
-		// Jersey Client Config
-		ClientConfig config = new DefaultClientConfig();
-		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);
-		Client client = Client.create(config);
-
-		WebResource resource = client.resource(uri);
-		Long resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Long.class, req);
-		return resp;
+    public String toString() {
+    	String str = "StatisticsImpl; ";
+    	if(bean != null) {
+    	str += "bean: avgPerReq: " 
+				+ bean.getAverageDurationPerRequest() + " avgPerTweet: "
+    			+ bean.getAverageProcessingDurationPerTweet() + 
+    			" avgTotalPerTweet: " + bean.getAverageTotalDurationPerTweet();
+    	} else {
+    		str += "bean: (not yet calculated)";
+    	}
+    	return str;
     }
 }

@@ -47,7 +47,7 @@ public class RequestSplitter {
 		}
 		
 		// Save amount of parts in request
-		request.setNumberOfParts(parts);
+		request.setParts(parts);
 		
 		/*
 		 * Now finally release the requests to the processQueue
@@ -63,6 +63,7 @@ public class RequestSplitter {
 		}
 		
 		request.setState(REQUEST_QUEUE_STATE.SPLIT);
+		logger.info("Splitting of req " + request.getCompanyName() + " done");
 		rqr.addRequest(request);
 	}
 	
@@ -75,20 +76,29 @@ public class RequestSplitter {
 		int totalTweets = 0;
 		float totalSentiment = 0;
 		
-		if(request.getAllPartsProcessed()) {
+		if(RequestSplitter.areAllPartsProcessed(request)) {
 			for (SentimentProcessingRequest s : request.getSubRequestsProcessed()) {
 
 				totalTweets += s.getNumberOfTweets();
-				totalSentiment += s.getSentiment()*s.getNumberOfTweets();
-				logger.info("#tweets for this part: " + s.getNumberOfTweets() + "; Sentiment: " + s.getSentiment());
+				if(s.getNumberOfTweets() < 1) {
+					logger.info("#tweets for this part: 0 - ignoring for sentiment calculation");
+				} else {
+					totalSentiment += s.getSentiment()*s.getNumberOfTweets();
+					logger.info("#tweets for this part: " + s.getNumberOfTweets() + "; Sentiment: " + s.getSentiment());
+				}
 			}
 
 			request.setNumberOfTweets(totalTweets);
-			request.setWeightedSentiment(totalSentiment/totalTweets);
-			logger.info("weighted sentiment for request " + request.getCompanyName() + ": " + request.getWeightedSentiment());
+			float weightedSentiment = totalSentiment/totalTweets;			
+			
+			logger.info("weighted sentiment for request " + request.getCompanyName() + ": " + weightedSentiment);
 
 			request.setState(REQUEST_QUEUE_STATE.FINISHED);
 			rqr.addRequest(request);
 		}
+	}
+
+	public static boolean areAllPartsProcessed(SentimentRequest request) {
+		return request.getSubRequestsProcessed().size() == request.getParts();
 	}
 }
