@@ -2,9 +2,9 @@ package aic12.project3.common.beans;
 
 public class StatisticsBean
 {
-    private long averageProcessingDurationPerTweet;
-    private long averageTotalDurationPerTweet;
-    private long averageDurationPerRequest;
+    private double averageProcessingDurationPerTweet;
+    private double averageTotalDurationPerTweet;
+    private double averageDurationPerRequest;
     private long maximumDurationOfRequest;
     private long minimumDurationOfRequest;
 
@@ -17,12 +17,12 @@ public class StatisticsBean
         minimumDurationOfRequest = -1;
     }
 
-    public long getAverageDurationPerRequest()
+    public double getAverageDurationPerRequest()
     {
         return averageDurationPerRequest;
     }
 
-    public void setAverageDurationPerRequest(long averageDurationPerRequest)
+    public void setAverageDurationPerRequest(double averageDurationPerRequest)
     {
         this.averageDurationPerRequest = averageDurationPerRequest;
     }
@@ -47,22 +47,22 @@ public class StatisticsBean
         this.minimumDurationOfRequest = minimumDurationOfRequest;
     }
 
-    public long getAverageProcessingDurationPerTweet()
+    public double getAverageProcessingDurationPerTweet()
     {
         return averageProcessingDurationPerTweet;
     }
 
-    public void setAverageProcessingDurationPerTweet(long averageProcessingDurationPerTweet)
+    public void setAverageProcessingDurationPerTweet(double averageProcessingDurationPerTweet)
     {
         this.averageProcessingDurationPerTweet = averageProcessingDurationPerTweet;
     }
 
-    public long getAverageTotalDurationPerTweet()
+    public double getAverageTotalDurationPerTweet()
     {
         return averageTotalDurationPerTweet;
     }
 
-    public void setAverageTotalDurationPerTweet(long averageTotalDurationPerTweet)
+    public void setAverageTotalDurationPerTweet(double averageTotalDurationPerTweet)
     {
         this.averageTotalDurationPerTweet = averageTotalDurationPerTweet;
     }

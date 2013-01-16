@@ -87,9 +87,9 @@ public class StatisticsImpl implements Statistics
                 totalTotalTime += requestDuration - request.getTimestampProcessingDone() + request.getTimestampProcessingStart();
             }
             
-            bean.setAverageDurationPerRequest(totalTime / list.getList().size());
-            bean.setAverageProcessingDurationPerTweet(totalProcessingTime / count);
-            bean.setAverageTotalDurationPerTweet(totalTotalTime / count);
+            bean.setAverageDurationPerRequest(totalTime / (double) list.getList().size());
+            bean.setAverageProcessingDurationPerTweet(totalProcessingTime / (double) count);
+            bean.setAverageTotalDurationPerTweet(totalTotalTime / (double) count);
         }
         else
         {

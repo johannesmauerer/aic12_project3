@@ -29,10 +29,9 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 		if(areStatisticsMeaningful()) {
 			statistics.calculateStatistics();
 			log.info(statistics);
-			long avgTotalTweetDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
+			double avgTotalTweetDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
 			
 			// TODO take queue length into account
-			
 			
 			// TODO calculate how many nodes will be most effective/needed
 		}
