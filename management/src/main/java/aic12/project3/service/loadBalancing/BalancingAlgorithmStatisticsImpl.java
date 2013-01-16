@@ -31,7 +31,8 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 
 	@Override
 	public int calculatePartsCountForRequest(SentimentRequest request) {
-		int parts = new Double(Math.ceil(statistics.getNumberOfTweetsForRequest(request) / (double) 1000)).intValue();
+		int defaultTweetsPerPart = Integer.parseInt(config.getProperty("defaultNumberOfTweetsPerPart"));
+		int parts = new Double(Math.ceil(statistics.getNumberOfTweetsForRequest(request) / (double) defaultTweetsPerPart)).intValue();
 		if(areStatisticsMeaningful()) {
 			// TODO take node speed into account
 		}
