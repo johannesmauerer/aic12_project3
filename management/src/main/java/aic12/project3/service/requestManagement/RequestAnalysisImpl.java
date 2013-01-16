@@ -92,7 +92,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 				break;
 
 			default:
-				logger.info("New Update in Request Queue - ### DEFAULT BRANCH");
+				logger.debug("New Update in Request Queue - ### DEFAULT BRANCH");
 				break;
 
 			}			

@@ -1,8 +1,10 @@
 package aic12.project3.service.loadBalancing;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import aic12.project3.common.beans.SentimentRequest;
+import aic12.project3.service.requestManagement.RequestQueueReady;
 import aic12.project3.service.statistics.Statistics;
 import aic12.project3.service.util.ManagementConfig;
 
@@ -10,7 +12,10 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 
 	@Autowired private Statistics statistics;
 	@Autowired protected ManagementConfig config;
+	@Autowired private RequestQueueReady requestQReady;
 	private int amountOfSentimentNodes;
+	
+	private Logger log = Logger.getLogger(BalancingAlgorithmStatisticsImpl.class);
 	
 	protected void init() {
 		 amountOfSentimentNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
@@ -20,9 +25,12 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 	public int calculateNodeCount() {
 		int desiredNodeCount = amountOfSentimentNodes; // TODO better fallback
 		if(areStatisticsMeaningful()) {
-			// TODO calculate expected load
+			statistics.calculateStatistics();
+			log.info(statistics);
+			long avgTotalTweetDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
 			
 			// TODO take queue length into account
+			
 			
 			// TODO calculate how many nodes will be most effective/needed
 		}

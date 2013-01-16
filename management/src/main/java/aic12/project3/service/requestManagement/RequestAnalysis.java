@@ -27,5 +27,5 @@ public abstract class RequestAnalysis implements Observer {
 	 * @param id
 	 */
 	protected abstract void updateInQueue(String id);
-
+	
 }

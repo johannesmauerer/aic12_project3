@@ -120,4 +120,17 @@ public class StatisticsImpl implements Statistics
 		Long resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(Long.class, req);
 		return resp;
     }
+    
+    public String toString() {
+    	String str = "StatisticsImpl; ";
+    	if(bean != null) {
+    	str += "bean: avgPerReq: " 
+				+ bean.getAverageDurationPerRequest() + " avgPerTweet: "
+    			+ bean.getAverageProcessingDurationPerTweet() + 
+    			" avgTotalPerTweet: " + bean.getAverageTotalDurationPerTweet();
+    	} else {
+    		str += "bean: (not yet calculated)";
+    	}
+    	return str;
+    }
 }
