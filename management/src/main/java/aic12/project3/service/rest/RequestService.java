@@ -55,7 +55,7 @@ public class RequestService {
 		// Send Information to Communication Service
 		serv.acceptRequest(req);
 	}
-	
+
 	/**
 	 * Accept processing request from Worker nodes
 	 * @param req the request to be processed
@@ -67,7 +67,7 @@ public class RequestService {
 		// Send Information to Communication Service
 		load.acceptProcessingRequest(req);
 	}
-	
+
 
 	/**
 	 * Test if webserver runs
@@ -97,7 +97,7 @@ public class RequestService {
 
 		return "Processing started";
 	}
-	
+
 	/**
 	 * Test if connection to node is okay
 	 */
@@ -122,7 +122,7 @@ public class RequestService {
 				.path(config.getProperty("sentimentDeployment"))
 				.path(config.getProperty("sentimentCallbackRestPath"))
 				.build();
-		
+
 		logger.info(uri.toString() + " prepared to send");
 
 		// Jersey Client Config

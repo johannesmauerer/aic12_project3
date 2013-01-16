@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 
 public class SentimentProcessingRequest {
-	
+
 	private String id;
 	private String parentID;
     private String companyName;

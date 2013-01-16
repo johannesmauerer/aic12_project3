@@ -12,11 +12,11 @@ import org.apache.log4j.Logger;
  *
  */
 public class MockNodeManager implements ILowLevelNodeManager {
-	
+
 	private Logger logger = Logger.getLogger(MockNodeManager.class);
 	private int countNode = 0;
 	private static MockNodeManager instance = new MockNodeManager();
-	
+
 	private MockNodeManager(){}
 
 	public static MockNodeManager getInstance(){
@@ -66,7 +66,7 @@ public class MockNodeManager implements ILowLevelNodeManager {
 
 	@Override
 	public String getIp(String id) {
-		
+
 		return "localhost";
 	}
 

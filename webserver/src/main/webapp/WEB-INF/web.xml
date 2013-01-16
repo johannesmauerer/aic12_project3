@@ -67,4 +67,10 @@
   		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 	
+	<!-- mime mapping -->
+	<mime-mapping>
+	   <extension>ecss</extension>
+	   <mime-type>text/css</mime-type>
+	</mime-mapping>
+	
 </web-app>

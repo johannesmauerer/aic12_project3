@@ -9,13 +9,13 @@ import aic12.project3.service.loadBalancing.IHighLevelNodeManager;
 public class INodeManagerTest extends SpringTest {
 
 	@Autowired IHighLevelNodeManager highLvlNodeMan;
-	
+
 	@Test
 	public void listNodesTest() {
-	
+
 		//nm.listNodes();
 		highLvlNodeMan.startNode();
-		
+
 	}
 
 }

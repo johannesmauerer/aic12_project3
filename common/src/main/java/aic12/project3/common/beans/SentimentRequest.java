@@ -217,7 +217,7 @@ public class SentimentRequest
 	public void setSubRequestsNotProcessed(List<SentimentProcessingRequest> subRequests) {
 		this.subRequestsNotProcessed = subRequests;
 	}
-	
+
 	public List<SentimentProcessingRequest> getSubRequestsProcessed() {
 		return subRequestsProcessed;
 	}
@@ -229,7 +229,7 @@ public class SentimentRequest
 	public void setParts(int i){
 		this.numberOfParts = i;
 	}
-	
+
 	public int getParts(){
 		return this.numberOfParts;
 	}

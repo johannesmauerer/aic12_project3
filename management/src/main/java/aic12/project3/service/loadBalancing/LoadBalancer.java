@@ -40,7 +40,7 @@ public abstract class LoadBalancer implements Observer
 	@Autowired protected ManagementConfig config;
 	@Autowired protected ManagementLogger managementLogger;
 	@Autowired protected ServersConfig serversConfig;
-	
+
 
 	/**
 	 * Handle incoming updates as Observer
@@ -71,7 +71,7 @@ public abstract class LoadBalancer implements Observer
 	 * @param id
 	 */
 	public abstract void idleNodeHandling(final String id);
-	
+
 	/**
 	 * Accepts a processing request
 	 * @param req

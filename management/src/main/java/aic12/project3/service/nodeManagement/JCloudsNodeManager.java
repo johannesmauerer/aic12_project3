@@ -39,7 +39,7 @@ public class JCloudsNodeManager implements ILowLevelNodeManager{
 	public static JCloudsNodeManager getInstance(){
 		return instance;
 	}
-	
+
 	protected void initOnce(){
 
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {

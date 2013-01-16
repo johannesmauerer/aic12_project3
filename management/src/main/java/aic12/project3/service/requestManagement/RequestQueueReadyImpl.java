@@ -65,7 +65,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		// TODO: ENable
 		// And save request to DB
 		saveRequestToDB(req.getId());
-		
+
 		// Delete request from queue if done
 		if (req.getState()==REQUEST_QUEUE_STATE.ARCHIVED){
 			readyQueue.remove(req.getId());
@@ -100,7 +100,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 				.path(serversConfig.getProperty("databaseRequestRestPath"))
 				.path("insert")
 				.build();
-		
+
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Database Server is " + serversConfig.getProperty("databaseServer"));
 
 		// Jersey Client Config
@@ -110,9 +110,9 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 
 		WebResource resource = client.resource(uri);
 		ClientResponse resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
-		
+
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving done");
-		
+
 
 	}
 

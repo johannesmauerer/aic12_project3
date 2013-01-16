@@ -1,5 +1,6 @@
 package rest;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.UUID;
 
@@ -19,7 +20,8 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
 
-public class RequestService {
+@SuppressWarnings("serial")
+public class RequestService implements Serializable{
 
 	protected ClientConfig config = new DefaultClientConfig();
 	protected Client client;

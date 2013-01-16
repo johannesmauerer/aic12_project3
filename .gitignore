@@ -39,3 +39,6 @@ eclipse-workspace
 #================
 *.log
 *log/
+
+# workaround for bad build config...
+C:\Program Files\Apache Software Foundation\Tomcat 6.0\webapps\

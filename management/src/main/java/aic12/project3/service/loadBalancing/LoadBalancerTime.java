@@ -54,7 +54,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	private String clazzName = "LoadBalancer";
 	@Autowired private IBalancingAlgorithm balancingAlgorithm;
 	private Logger log = Logger.getLogger(LoadBalancerTime.class);
-	
+
 	private LoadBalancerTime(){
 	}
 
@@ -72,7 +72,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Override
 	protected void init(){
 		nodesToRunCurrently = Integer.parseInt(config.getProperty("minimumNodes"));
-		
+
 		rqr.addObserver(this);
 		List<Node> runningNodes = nm.listRunningNodes();
 		
@@ -100,22 +100,22 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Override
 	protected void updateInQueue(String id) {
 		SentimentRequest request = rqr.getRequest(id);
-		
+
 		if (request != null){
 			managementLogger.log(clazzName, LoggerLevel.INFO, "QueueUpdate: " + id + " is " + request.getState().toString());
-	
+
 			switch (request.getState()){
 			case READY_TO_PROCESS:
 				managementLogger.log(clazzName, LoggerLevel.INFO, "Time to split");
 				int parts = balancingAlgorithm.calculatePartsCountForRequest(request);
 				RequestSplitter.splitRequest(request, parts);
 				break;
-	
+
 			case SPLIT:
 				managementLogger.log(clazzName, LoggerLevel.INFO, "request was split");
 				// fill processQueue
 				processQueue.addAll(request.getSubRequestsNotProcessed());
-				
+
 				// update needed nodes
 				int desiredNodeCount = balancingAlgorithm.calculateNodeCount();
 				highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, this);
@@ -165,7 +165,7 @@ public class LoadBalancerTime extends LoadBalancer {
 		 */
 		// CHeck if work is available
 		pollAndSend();
-		
+
 		new Thread()
 		{
 			@Override
@@ -211,7 +211,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	@Override
 	public void acceptProcessingRequest(SentimentProcessingRequest req) {
-		
+
 		log.debug("SentimentProcessingRequest with ID " + req.getId() + " received");
 		SentimentRequest parent = rqr.getRequest(req.getParentID());
 		parent.getSubRequestsNotProcessed().remove(req);
