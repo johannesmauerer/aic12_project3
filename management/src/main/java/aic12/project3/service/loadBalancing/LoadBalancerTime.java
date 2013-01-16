@@ -156,8 +156,6 @@ public class LoadBalancerTime extends LoadBalancer {
 		}
 	}
 
-
-
 	@Override
 	public void idleNodeHandling(final String id){
 		/*
@@ -207,7 +205,6 @@ public class LoadBalancerTime extends LoadBalancer {
 		}.start();
 	}
 
-
 	/**
 	 * Accepts the processed requests and calls combiner
 	 */
@@ -228,8 +225,6 @@ public class LoadBalancerTime extends LoadBalancer {
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Change node status to idle");
 		highLvlNodeMan.setNodeIdle(req);
 	}
-
-	
 
 	@Override
 	protected void updateInNode(Node node) {

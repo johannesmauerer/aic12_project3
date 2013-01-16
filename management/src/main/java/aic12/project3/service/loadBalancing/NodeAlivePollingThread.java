@@ -27,6 +27,7 @@ public class NodeAlivePollingThread extends Thread {
 	private ManagementConfig config;
 	private ManagementLogger managementLogger;
 	private String clazzName = "NodeAlivePollingThread";
+	private IHighLevelNodeManager highLvlNodeMan;
 	
 	// For dependency injection
 	public void setManagementConfig(ManagementConfig config){
@@ -37,10 +38,11 @@ public class NodeAlivePollingThread extends Thread {
 		this.lowLvlNodeMan = lowLvlNodeMan;
 	}
 	
-	public NodeAlivePollingThread(Node node, ManagementConfig config, ILowLevelNodeManager lowLvlNodeMan, ManagementLogger managementLogger) {
+	public NodeAlivePollingThread(Node node, ManagementConfig config, ILowLevelNodeManager lowLvlNodeMan, IHighLevelNodeManager highLvlNodeMan, ManagementLogger managementLogger) {
 		this.node = node;
 		this.config= config;
 		this.lowLvlNodeMan = lowLvlNodeMan;
+		this.highLvlNodeMan = highLvlNodeMan; 
 		this.managementLogger = managementLogger;
 	}
 
@@ -49,11 +51,10 @@ public class NodeAlivePollingThread extends Thread {
 	{
 		boolean alive = false;
 		boolean ipReady = false;
-		
+		long nodePollingStart = System.currentTimeMillis();
 
 		do {
-			// TODO: Send poll request
-			// Receive answer true or false (alive or unalive
+			// Poll node alive status
 			String ip = lowLvlNodeMan.getIp(node.getId());
 			node.setIp(ip);
 			if (ip!=null && !ip.equals("")){
@@ -76,7 +77,7 @@ public class NodeAlivePollingThread extends Thread {
 				        
 		            String response2 = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(String.class);
 		            if (response2.equals("alive")){
-		            	managementLogger.log(clazzName, LoggerLevel.INFO, "Node with IP " + node.getIp() + " IS RUNNING WITH TOMCAT! ALL GOOD");
+		            	logger.debug("Node with IP " + node.getIp() + " IS RUNNING WITH TOMCAT! ALL GOOD");
 		            	alive = true;
 		            }
 		            else managementLogger.log(clazzName, LoggerLevel.INFO, "There seems to be a problem with node with IP" + node.getIp());
@@ -87,21 +88,20 @@ public class NodeAlivePollingThread extends Thread {
 			}
 			
 			if (alive){
-				// Change status
+				long timeToStartup = System.currentTimeMillis() - nodePollingStart;
+				highLvlNodeMan.addNodeStartupTime(timeToStartup);
+
 				node.setStatus(NODE_STATUS.IDLE);
 				
 				// Idle handling
 				String lastVisit = UUID.randomUUID().toString();
 				node.setLastVisitID(lastVisit);
 				
-				// TODO: remove
-				managementLogger.log(clazzName, LoggerLevel.INFO, node.getId() + " is now alive and IDLE");
+				managementLogger.log(clazzName, LoggerLevel.INFO, node.getIp() + " is now alive and IDLE (after " + timeToStartup + "ms)");
 
 			} else {
 				// Wait for specified Time
-				
 				try {
-					
 					Thread.sleep(Integer.parseInt(config.getProperty("pollSentimentAliveInterval")));
 					
 				} catch (NumberFormatException e) {
