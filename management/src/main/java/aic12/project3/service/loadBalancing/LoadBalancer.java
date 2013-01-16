@@ -72,4 +72,8 @@ public abstract class LoadBalancer implements Observer
 	 */
 	public abstract void acceptProcessingRequest(SentimentProcessingRequest req);
 
+	public abstract IBalancingAlgorithm getBalancingAlgorithm();
+
+	public abstract void setBalancingAlgorithm(IBalancingAlgorithm alg);
+
 }

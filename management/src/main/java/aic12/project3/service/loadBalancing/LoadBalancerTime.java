@@ -53,7 +53,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	final Lock lock = new ReentrantLock();
 	@Autowired IHighLevelNodeManager highLvlNodeMan;
 	private String clazzName = "LoadBalancer";
-	@Autowired private IBalancingAlgorithm balancingAlgorithm;
+	private IBalancingAlgorithm balancingAlgorithm;
 	private Logger log = Logger.getLogger(LoadBalancerTime.class);
 	private int nodeIdleTimeout;
 
@@ -93,6 +93,8 @@ public class LoadBalancerTime extends LoadBalancer {
 		for (int i=0; i < minimumRunningNodes; i++){
 			highLvlNodeMan.startNode().addObserver(this);
 		}
+		
+		balancingAlgorithm = BalancingAlgorithmFactory.getInstance().getAlgorithm("default");
 
 		managementLogger.log(clazzName, LoggerLevel.INFO, "init done");
 	}
@@ -120,7 +122,7 @@ public class LoadBalancerTime extends LoadBalancer {
 				processQueue.addAll(request.getSubRequestsNotProcessed());
 
 				// update needed nodes
-				int desiredNodeCount = balancingAlgorithm.calculateNodeCount();
+				int desiredNodeCount = balancingAlgorithm.calculateNodeCountOnNewRequest();
 				highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, this);
 				
 				// distribute work to already running nodes
@@ -195,5 +197,17 @@ public class LoadBalancerTime extends LoadBalancer {
 		} else {
 			IdleNodeHandler.startIdleNodeHandling(node, nodeIdleTimeout, highLvlNodeMan);
 		}
+	}
+
+	@Override
+	public IBalancingAlgorithm getBalancingAlgorithm() {
+		return balancingAlgorithm;
+	}
+
+	@Override
+	public void setBalancingAlgorithm(IBalancingAlgorithm alg) {
+		this.balancingAlgorithm.stopUsage();
+		this.balancingAlgorithm = alg;
+		this.balancingAlgorithm.startUsage();
 	}
 }

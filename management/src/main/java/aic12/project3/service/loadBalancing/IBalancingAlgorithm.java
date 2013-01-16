@@ -3,9 +3,14 @@ package aic12.project3.service.loadBalancing;
 import aic12.project3.common.beans.SentimentRequest;
 
 public interface IBalancingAlgorithm {
-
-	int calculateNodeCount();
+	void init();
+	
+	int calculateNodeCountOnNewRequest();
 
 	int calculatePartsCountForRequest(SentimentRequest request);
+
+	void stopUsage();
+
+	void startUsage();
 
 }

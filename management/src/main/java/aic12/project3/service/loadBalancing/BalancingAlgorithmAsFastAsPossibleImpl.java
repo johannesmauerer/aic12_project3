@@ -33,7 +33,7 @@ public class BalancingAlgorithmAsFastAsPossibleImpl implements IBalancingAlgorit
 	}
 	
 	@Override
-	public synchronized int calculateNodeCount() {
+	public synchronized int calculateNodeCountOnNewRequest() {
 		statistics.calculateStatistics();
 		log.info(statistics);
 		double avgTweetProcessingDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
@@ -77,5 +77,13 @@ public class BalancingAlgorithmAsFastAsPossibleImpl implements IBalancingAlgorit
 		// TODO take node speed into account
 		
 		return parts;
+	}
+
+	@Override
+	public void stopUsage() {
+	}
+
+	@Override
+	public void startUsage() {
 	}
 }

@@ -17,7 +17,7 @@ import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
 import aic12.project3.service.nodeManagement.IdleNodeHandler;
 import aic12.project3.service.nodeManagement.Node;
 import aic12.project3.service.util.LoggerLevel;
-import aic12.project3.service.util.StartupTimes;
+import aic12.project3.service.util.FifoWithAverageCalculation;
 import aic12.project3.service.util.ManagementConfig;
 import aic12.project3.service.util.ManagementLogger;
 
@@ -30,7 +30,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	@Autowired private ManagementConfig config;
 	@Autowired private ManagementLogger managementLogger;
 	@Autowired private ServersConfig serversConfig;
-	private StartupTimes startupTimes;
+	private FifoWithAverageCalculation startupTimes;
 	private int maxNodeCount;
 	private int minNodeCount;
 	
@@ -38,7 +38,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	
 	public void init() {
 		int size = Integer.parseInt(config.getProperty("nodeStartupTimesCache"));
-		startupTimes = new StartupTimes(size);
+		startupTimes = new FifoWithAverageCalculation(size);
 		maxNodeCount = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
 		minNodeCount = Integer.parseInt(config.getProperty("minimumNodes"));
 	}
@@ -152,7 +152,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	}
 
 	@Override
-	public void runDesiredNumberOfNodes(int desiredNodeCount, Observer observer) {
+	public synchronized void runDesiredNumberOfNodes(int desiredNodeCount, Observer observer) {
 		
 		int diff = desiredNodeCount - this.getRunningNodesCount();
 		if (diff > 0){
@@ -165,8 +165,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 				}
 			}
 		} else if (diff < 0) {
-			diff = -diff;
-			for(int i = 0; i < diff; i++) {
+			for(int i = diff; i < 0; i++) {
 				scheduleAnyNodeForStopping_internal();
 			}
 		}
@@ -174,16 +173,20 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	
 	private synchronized void scheduleAnyNodeForStopping_internal() {
 		if(nodes.size() <= minNodeCount) {
+			System.out.println("not scheduling for stopping, minNodeCount reached");
 			return;
 		}
 		
-		Iterator<Node> it = nodes.values().iterator();
-		if(it.hasNext()) {
-			Node nodeToStop = it.next();
-			stopNodeSchedule(nodeToStop);
-		} else {
-			System.out.println("warning: scheduleAnyNodeForStopping_internal called and no node available");
+		synchronized (nodes) {
+			Iterator<Node> it = nodes.values().iterator();
+			if(it.hasNext()) {
+				Node nodeToStop = it.next();
+				stopNodeSchedule(nodeToStop);
+			} else {
+				System.out.println("warning: scheduleAnyNodeForStopping_internal called and no node available");
+			}
 		}
+		System.out.println("node has been scheduled for being stopped");
 	}
 
 	@Override
@@ -191,7 +194,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 		if(startupTimes.isEmpty()) {
 			return Integer.parseInt(config.getProperty("timeToStartup"));
 		}
-		return startupTimes.calculateAverageStartupTime();
+		return startupTimes.calculateAverage();
 	}
 
 	@Override
