@@ -80,8 +80,12 @@ public class RequestSplitter {
 			for (SentimentProcessingRequest s : request.getSubRequestsProcessed()) {
 
 				totalTweets += s.getNumberOfTweets();
-				totalSentiment += s.getSentiment()*s.getNumberOfTweets();
-				logger.info("#tweets for this part: " + s.getNumberOfTweets() + "; Sentiment: " + s.getSentiment());
+				if(s.getNumberOfTweets() < 1) {
+					logger.info("#tweets for this part: 0 - ignoring for sentiment calculation");
+				} else {
+					totalSentiment += s.getSentiment()*s.getNumberOfTweets();
+					logger.info("#tweets for this part: " + s.getNumberOfTweets() + "; Sentiment: " + s.getSentiment());
+				}
 			}
 
 			request.setNumberOfTweets(totalTweets);
