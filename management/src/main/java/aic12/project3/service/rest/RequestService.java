@@ -89,15 +89,39 @@ public class RequestService {
         req.setTo(cleanTo.toDate());
         
 		logger.info("From date: " + cleanFrom.toDate().toGMTString() + " and To date: " + cleanTo.toDate().toGMTString());
-        
         logger.info("Test request created, now sent to RequestService");
         
         serv.acceptRequest(req);
-        
-
 		return "Processing started";
 	}
 
+	/**
+	 * Test if webserver runs
+	 * @return
+	 */
+	@GET
+	@Path("test_big")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getRequestBig(){
+
+		SentimentRequest req = new SentimentRequest();
+
+		req.setId(UUID.randomUUID().toString());
+		req.setState(REQUEST_QUEUE_STATE.NEW);
+		req.setCompanyName("google");
+		DateTime cleanFrom = new DateTime(2013,1,2,0,0,0,0);
+		DateTime cleanTo = new DateTime(2013,1,4,11,11,11,0);
+		req.setFrom(cleanFrom.toDate());
+        req.setTo(cleanTo.toDate());
+        
+		logger.info("From date: " + cleanFrom.toDate().toGMTString() + " and To date: " + cleanTo.toDate().toGMTString());
+        logger.info("Test_BIG request created, now sent to RequestService");
+        
+        serv.acceptRequest(req);
+		return "Processing test_big started";
+	}
+
+	
 	/**
 	 * Test if connection to node is okay
 	 */
