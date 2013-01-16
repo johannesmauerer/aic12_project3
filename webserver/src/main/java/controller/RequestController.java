@@ -37,7 +37,6 @@ public class RequestController implements Serializable{
 	
 	@Async
 	public void sendToAnalysis() {
-		System.out.println("METHOD CALLED");
 
     	/*
 		getResponseFromDB();
@@ -104,8 +103,10 @@ public class RequestController implements Serializable{
 		for (SentimentProcessingRequest subrequest : response.getSubRequestsProcessed()) {
 
 			long numberOfTweets = subrequest.getNumberOfTweets();
-			sumSentiment += (subrequest.getSentiment()*numberOfTweets);
-			finalNumberOfTweets += numberOfTweets;
+			if(numberOfTweets > 0){
+				sumSentiment += (subrequest.getSentiment()*numberOfTweets);
+				finalNumberOfTweets += numberOfTweets;
+			}
 
 		}
 
