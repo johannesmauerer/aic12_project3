@@ -63,6 +63,7 @@ public class RequestSplitter {
 		}
 		
 		request.setState(REQUEST_QUEUE_STATE.SPLIT);
+		logger.info("Splitting of req " + request.getCompanyName() + " done");
 		rqr.addRequest(request);
 	}
 	

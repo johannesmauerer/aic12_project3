@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Observer;
 import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
@@ -29,7 +30,7 @@ import aic12.project3.service.util.ManagementLogger;
 
 public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
-	private HashMap<String, Node> nodes = new HashMap<String,Node> ();
+	private HashMap<String, Node> nodes = new HashMap<String,Node> (); // nodeID <-> Node
 	private HashMap<String, Node> processRequest_nodes = new HashMap<String, Node> (); // requestID <-> Node
 	@Autowired ILowLevelNodeManager lowLvlNodeMan;
 	@Autowired private ManagementConfig config;
@@ -133,5 +134,14 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 		
 		// And remove from processRequest_nodes mapping
 		processRequest_nodes.remove(request.getId());
+	}
+
+	@Override
+	public void runDesiredNumberOfNodes(int desiredNodeCount, Observer observer) {
+		int amountOfSentimentNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
+		int diff = amountOfSentimentNodes - this.getNodesCount();
+		if (diff > 0){
+			for (int i = 0; i < diff; i++) this.startNode().addObserver(observer);
+		}
 	}
 }

@@ -51,6 +51,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	final Lock lock = new ReentrantLock();
 	@Autowired IHighLevelNodeManager highLvlNodeMan;
 	private String clazzName = "LoadBalancer";
+	@Autowired private IBalancingAlgorithm balancingAlgorithm;
 	
 	private LoadBalancerTime(){
 	}
@@ -104,7 +105,7 @@ public class LoadBalancerTime extends LoadBalancer {
 			switch (request.getState()){
 			case READY_TO_PROCESS:
 				managementLogger.log(clazzName, LoggerLevel.INFO, "Time to split");
-				int parts = (int) Math.ceil(stats.getNumberOfTweetsForRequest(request) / (double) 1000);
+				int parts = balancingAlgorithm.calculatePartsCountForRequest(request);
 				RequestSplitter.splitRequest(request, parts);
 				break;
 	
@@ -113,19 +114,9 @@ public class LoadBalancerTime extends LoadBalancer {
 				// fill processQueue
 				processQueue.addAll(request.getSubRequestsNotProcessed());
 				
-				// TODO calculate expected load
-				
-				// TODO calculate how many nodes will be most effective/needed
-				
-				// TODO do all of the above in own class...
-				
-				// TODO start nodes
-				int amountOfSentimentNodes = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
-				int runningNodes = highLvlNodeMan.getNodesCount();
-				int diff = amountOfSentimentNodes - runningNodes;
-				if (diff > 0){
-					for (int i = 0; i < diff; i++) highLvlNodeMan.startNode().addObserver(this);
-				}
+				// update needed nodes
+				int desiredNodeCount = balancingAlgorithm.calculateNodeCount();
+				highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, this);
 				break;
 			
 			default:
@@ -180,11 +171,14 @@ public class LoadBalancerTime extends LoadBalancer {
 			@Override
 			public void run()
 			{
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Start waiting to stop Node: " + id + " for " + config.getProperty("nodeIdleTimeout") + " milliseconds");
+				int nodeIdleTimeout = Integer.parseInt(config.getProperty("nodeIdleTimeout"));
+				int minimumNodes = Integer.parseInt(( config.getProperty("minimumNodes")));
+				
+				managementLogger.log(clazzName, LoggerLevel.INFO, "Start idle handling for Node: " + id + " waiting " + nodeIdleTimeout + " milliseconds");
 				Node node = highLvlNodeMan.getNode(id);
 				String lastVisit = node.getLastVisitID();
 				try {
-					Thread.sleep(Integer.parseInt((String) config.getProperty("nodeIdleTimeout")));
+					Thread.sleep(nodeIdleTimeout);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -195,7 +189,7 @@ public class LoadBalancerTime extends LoadBalancer {
 						if (node.getLastVisitID().equals(lastVisit)){
 							// Only stop if there are more nodes left
 							managementLogger.log(clazzName, LoggerLevel.INFO, "Node " + id + " is still idle");
-							if (Integer.parseInt(((String) config.getProperty("minimumNodes"))) < highLvlNodeMan.getNodesCount()){
+							if (minimumNodes < highLvlNodeMan.getNodesCount()){
 								if (nodesToRunCurrently < highLvlNodeMan.getNodesCount()){
 									highLvlNodeMan.stopNode(id);
 									managementLogger.log(clazzName, LoggerLevel.INFO, "Node " + id + " was still idle and has been stopped");								
@@ -229,6 +223,7 @@ public class LoadBalancerTime extends LoadBalancer {
 		if(RequestSplitter.areAllPartsProcessed(parent)) {
 			managementLogger.log(clazzName, LoggerLevel.INFO, "Combination of parts started for " + parent.getCompanyName());
 			RequestSplitter.combineParts(parent);
+			// TODO notify GUI? set status of SentimentRequest?
 		}
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Change node status to idle");
 		highLvlNodeMan.setNodeIdle(req);

@@ -1,6 +1,7 @@
 package aic12.project3.service.loadBalancing;
 
 import java.util.HashMap;
+import java.util.Observer;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.service.nodeManagement.Node;
@@ -37,5 +38,7 @@ public interface IHighLevelNodeManager {
 	public int getNodesCount();
 
 	public void setNodeIdle(SentimentProcessingRequest request);
+
+	void runDesiredNumberOfNodes(int desiredNodeCount, Observer observer);
 
 }

@@ -20,5 +20,6 @@
     <bean id="nodeManager" class="aic12.project3.service.nodeManagement.JCloudsNodeManager" factory-method="getInstance" init-method="initOnce"/>
     <bean id="serversConfig" class="aic12.project3.common.config.ServersConfig" />
     <bean id="highLevelNodeManager" class="aic12.project3.service.loadBalancing.HighLevelNodeManagerImpl" />
+    <bean id="balancingAlgorithm" class="aic12.project3.service.loadBalancing.BalancingAlgorithmStatisticsImpl" init-method="init"/>
       
 </beans>
