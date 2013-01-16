@@ -14,6 +14,7 @@ import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.beans.SentimentRequest;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.common.enums.REQUEST_QUEUE_STATE;
+import aic12.project3.service.nodeManagement.IdleNodeHandler;
 import aic12.project3.service.nodeManagement.Node;
 import aic12.project3.service.util.LoggerLevel;
 
@@ -54,6 +55,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	private String clazzName = "LoadBalancer";
 	@Autowired private IBalancingAlgorithm balancingAlgorithm;
 	private Logger log = Logger.getLogger(LoadBalancerTime.class);
+	private int nodeIdleTimeout;
 
 	private LoadBalancerTime(){
 	}
@@ -71,17 +73,18 @@ public class LoadBalancerTime extends LoadBalancer {
 	 */
 	@Override
 	protected void init(){
+		nodeIdleTimeout = Integer.parseInt(config.getProperty("nodeIdleTimeout"));
 		nodesToRunCurrently = Integer.parseInt(config.getProperty("minimumNodes"));
 
 		rqr.addObserver(this);
-		List<Node> runningNodes = nm.listRunningNodes();
+		List<Node> runningNodes = lowLvlNodeMan.listRunningNodes();
 		
 		if (runningNodes != null){
 			// Stop all running nodes
 			for (Node node : runningNodes){
 				// Check if any Sentiment Nodes exist
 				if (node.getName().contains(config.getProperty("serverNameSentiment"))){
-					nm.stopNode(node.getId());	
+					lowLvlNodeMan.stopNode(node.getId());	
 				}
 			}			
 		}
@@ -119,6 +122,13 @@ public class LoadBalancerTime extends LoadBalancer {
 				// update needed nodes
 				int desiredNodeCount = balancingAlgorithm.calculateNodeCount();
 				highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, this);
+				
+				// distribute work to already running nodes
+				Node nodeForWork = highLvlNodeMan.getMostAvailableNode();
+				while(nodeForWork != null) {
+					startWorkOrStartIdleHandling_internal(nodeForWork);
+					nodeForWork = highLvlNodeMan.getMostAvailableNode();
+				}
 				break;
 			
 			default:
@@ -129,81 +139,21 @@ public class LoadBalancerTime extends LoadBalancer {
 	
 	/**
 	 * Send request to node if one is available
-	 * if not then put into Queue.
-	 * @param id
+	 * @return true if work was sent, false if node still stays idle
 	 */
-	private void pollAndSend() {
-		managementLogger.log(clazzName, LoggerLevel.INFO, "pollAndSend; Size of processQueue: " + processQueue.size());
-		// See if queue is non-empty
+	private boolean pollAndSend(Node n) {
+		managementLogger.log(clazzName, LoggerLevel.INFO, "pollAndSend; Node: " + n.getIp() + " Size of processQueue: " + processQueue.size());
+
+		// get work
 		SentimentProcessingRequest req = processQueue.poll();
-		if (req != null){ // polling was successful, continue
-			/*
-			 * Check Status of next node
-			 */
+		if (req != null){ // polling was successful, new work available
 			synchronized(highLvlNodeMan){
-				Node n = highLvlNodeMan.getMostAvailableNode();
-				if (n == null){
-					// No Node available currently
-					// Request stays in ReadyQueue until Node is available
-
-				} else {
-
-					// Idle handling
-					String lastVisit = UUID.randomUUID().toString();
-					n.setLastVisitID(lastVisit);
-					n.setStatus(NODE_STATUS.BUSY);
-					highLvlNodeMan.sendRequestToNode(n, req);
-				}
+				highLvlNodeMan.sendRequestToNode(n, req);
+				return true;
 			}
+		} else {
+			return false;
 		}
-	}
-
-	@Override
-	public void idleNodeHandling(final String id){
-		/*
-		 * Start Thread to shut down Node if its IDLE for too long
-		 */
-		// CHeck if work is available
-		pollAndSend();
-
-		new Thread()
-		{
-			@Override
-			public void run()
-			{
-				int nodeIdleTimeout = Integer.parseInt(config.getProperty("nodeIdleTimeout"));
-				int minimumNodes = Integer.parseInt(( config.getProperty("minimumNodes")));
-				
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Start idle handling for Node: " + id + ", waiting " + nodeIdleTimeout + " ms");
-				Node node = highLvlNodeMan.getNode(id);
-				String lastVisit = node.getLastVisitID();
-				try {
-					Thread.sleep(nodeIdleTimeout);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				synchronized (node) {
-
-					if (node.getStatus()==NODE_STATUS.IDLE){
-						if (node.getLastVisitID().equals(lastVisit)){
-							// Only stop if there are more nodes left
-							managementLogger.log(clazzName, LoggerLevel.INFO, "Node " + id + " is still idle");
-							if (minimumNodes < highLvlNodeMan.getRunningNodesCount()){
-								if (nodesToRunCurrently < highLvlNodeMan.getRunningNodesCount()){
-									highLvlNodeMan.stopNode(id);
-									managementLogger.log(clazzName, LoggerLevel.INFO, "Node " + id + " was still idle and has been stopped");								
-								} else {
-									// Stopping IDLE nodes is currently not allowed
-									// Restart idleNodeHandling
-									idleNodeHandling(id);
-								}
-							}
-						}
-					}
-				}
-			}
-		}.start();
 	}
 
 	/**
@@ -230,7 +180,18 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Override
 	protected void updateInNode(Node node) {
 		if(node.getStatus() == NODE_STATUS.IDLE) {
-			idleNodeHandling(node.getId());
+			// TODO decide if we should stop this node or give it new load
+			
+			startWorkOrStartIdleHandling_internal(node);
+		}
+	}
+
+	private void startWorkOrStartIdleHandling_internal(Node node) {
+		// look for new work
+		if(pollAndSend(node)) {
+			log.info("sending new work to node " + node.getId());
+		} else {
+			IdleNodeHandler.startIdleNodeHandling(node, nodeIdleTimeout, highLvlNodeMan);
 		}
 	}
 }

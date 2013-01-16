@@ -1,33 +1,22 @@
 package aic12.project3.service.loadBalancing;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Observer;
-import java.util.Set;
-import java.util.UUID;
 
-import javax.ws.rs.core.MediaType;
-
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.core.util.FeaturesAndProperties;
 
 import aic12.project3.common.beans.SentimentProcessingRequest;
 import aic12.project3.common.config.ServersConfig;
 import aic12.project3.common.enums.NODE_STATUS;
 import aic12.project3.service.nodeManagement.ILowLevelNodeManager;
+import aic12.project3.service.nodeManagement.IdleNodeHandler;
 import aic12.project3.service.nodeManagement.Node;
+import aic12.project3.service.util.LoggerLevel;
 import aic12.project3.service.util.StartupTimes;
 import aic12.project3.service.util.ManagementConfig;
 import aic12.project3.service.util.ManagementLogger;
@@ -42,10 +31,16 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	@Autowired private ManagementLogger managementLogger;
 	@Autowired private ServersConfig serversConfig;
 	private StartupTimes startupTimes;
+	private int maxNodeCount;
+	private int minNodeCount;
+	
+	private String clazz = this.getClass().getName();
 	
 	public void init() {
 		int size = Integer.parseInt(config.getProperty("nodeStartupTimesCache"));
 		startupTimes = new StartupTimes(size);
+		maxNodeCount = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
+		minNodeCount = Integer.parseInt(config.getProperty("minimumNodes"));
 	}
 	
 	@Override
@@ -55,11 +50,21 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public void stopNode(String id) {
-		Node n = nodes.get(id);
-		nodes.remove(id);
-		n.setStatus(NODE_STATUS.STOPPED);
-		
-		lowLvlNodeMan.stopNode(id);
+		if(nodes.size() > minNodeCount) {
+			stopNode_internal(nodes.get(id));
+		} else {
+			managementLogger.log(clazz, LoggerLevel.INFO, "minimum nodes reached, not stopping");
+		}
+	}
+
+	private void stopNode_internal(Node node) {
+		nodes.remove(node.getId());
+		node.setStatus(NODE_STATUS.STOPPED);
+		lowLvlNodeMan.stopNode(node.getId());
+	}
+	
+	private void stopNodeSchedule(Node node) {
+		node.setStatus(NODE_STATUS.SCHEDULED_FOR_STOP);
 	}
 	
 	@Override
@@ -69,18 +74,12 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public Node getMostAvailableNode(){
-		/*
-		 * Iterate through available nodes
-		 */
-		Iterator<Entry<String, Node>> it = nodes.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, Node> pairs = it.next();
-			Node n = pairs.getValue();
-			/*
-			 * If a node is IDLE, use it.
-			 */
-			if (n.getStatus() == NODE_STATUS.IDLE){
-				return n;
+		Collection<Node> nodeVals = nodes.values();
+		synchronized (nodes) {
+			for(Node node : nodeVals) {
+				if (node.getStatus() == NODE_STATUS.IDLE){
+					return node;
+				}
 			}
 		}
 		return null;
@@ -90,14 +89,10 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	 * Start a node implementation
 	 */
 	@Override
-	public Node startNode() {
-		/*
-		 * Check if resources to start new node are available
-		 */
-		if (nodes.size()>=Integer.parseInt(config.getProperty("amountOfSentimentNodes"))){
-			/*
-			 * If not available return null
-			 */
+	public synchronized Node startNode() {
+		//Check if resources to start new node are available
+		if (nodes.size() >= maxNodeCount){
+			// If not available return null
 			return null;
 		} else {
 			/*
@@ -123,6 +118,8 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public void sendRequestToNode(Node node, SentimentProcessingRequest request) {
+		node.setStatus(NODE_STATUS.BUSY);
+		IdleNodeHandler.updateLastVisit(node);
 		new RequestSenderThread(node, request, serversConfig, managementLogger).start();
 
 		// Also save assignment
@@ -136,26 +133,56 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public void setNodeIdle(SentimentProcessingRequest request) {
-		Node n= this.processRequest_nodes.get(request.getId());
-		n.setStatus(NODE_STATUS.IDLE);
+		Node node = this.processRequest_nodes.get(request.getId());
 		
-		// Idle handling
-		String lastVisit = UUID.randomUUID().toString();
-		n.setLastVisitID(lastVisit);
-		
-		// And remove from processRequest_nodes mapping
-		processRequest_nodes.remove(request.getId());
+		synchronized (node) {
+			if(node.getStatus() == NODE_STATUS.SCHEDULED_FOR_STOP) {
+				stopNode_internal(node);
+				return;
+			}
+			
+			if(node.getStatus() == NODE_STATUS.STOPPED) {
+				return; // don't set stopped nodes to idle (synchronization)
+			}
+			node.setStatus(NODE_STATUS.IDLE);
+			IdleNodeHandler.updateLastVisit(node);
+			
+			processRequest_nodes.remove(request.getId());
+		}
 	}
 
 	@Override
 	public void runDesiredNumberOfNodes(int desiredNodeCount, Observer observer) {
+		
 		int diff = desiredNodeCount - this.getRunningNodesCount();
 		if (diff > 0){
-			for (int i = 0; i < diff; i++) this.startNode().addObserver(observer);
+			for (int i = 0; i < diff; i++) {
+				Node startedNode = this.startNode();
+				if (startedNode == null) {
+					break;
+				} else {
+					startedNode.addObserver(observer);
+				}
+			}
 		} else if (diff < 0) {
-			// TODO stop nodes after work is done
-			// remove from available queue?
-			// stop next node that becomes idle?
+			diff = -diff;
+			for(int i = 0; i < diff; i++) {
+				scheduleAnyNodeForStopping_internal();
+			}
+		}
+	}
+	
+	private synchronized void scheduleAnyNodeForStopping_internal() {
+		if(nodes.size() <= minNodeCount) {
+			return;
+		}
+		
+		Iterator<Node> it = nodes.values().iterator();
+		if(it.hasNext()) {
+			Node nodeToStop = it.next();
+			stopNodeSchedule(nodeToStop);
+		} else {
+			System.out.println("warning: scheduleAnyNodeForStopping_internal called and no node available");
 		}
 	}
 
