@@ -14,6 +14,7 @@ import com.sun.jersey.api.json.JSONConfiguration;
 
 public class LogSendThread extends Thread {
 
+	private static final boolean DEBUG = false;
 	private String message;
 	private ManagementConfig config;
 
@@ -29,7 +30,9 @@ public class LogSendThread extends Thread {
 		URI uri = UriBuilder.fromUri(server)
 				.queryParam("message", this.message)
 				.build();
-		System.out.println("Sending message to Log: " + uri.toString());
+		if(DEBUG) {
+			System.out.println("Sending message to Log: " + uri.toString());
+		}
 
 		// Jersey Client Config
 		ClientConfig config2 = new DefaultClientConfig();
