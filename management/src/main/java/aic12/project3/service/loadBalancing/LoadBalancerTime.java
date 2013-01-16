@@ -124,10 +124,12 @@ public class LoadBalancerTime extends LoadBalancer {
 				highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, this);
 				
 				// distribute work to already running nodes
-				Node nodeForWork = highLvlNodeMan.getMostAvailableNode();
-				while(nodeForWork != null) {
-					startWorkOrStartIdleHandling_internal(nodeForWork);
-					nodeForWork = highLvlNodeMan.getMostAvailableNode();
+				synchronized (highLvlNodeMan) {
+					Node nodeForWork = highLvlNodeMan.getMostAvailableNode();
+					while(nodeForWork != null) {
+						startWorkOrStartIdleHandling_internal(nodeForWork);
+						nodeForWork = highLvlNodeMan.getMostAvailableNode();
+					}
 				}
 				break;
 			

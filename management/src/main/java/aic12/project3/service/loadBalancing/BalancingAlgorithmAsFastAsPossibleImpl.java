@@ -11,7 +11,7 @@ import aic12.project3.service.util.LoggerLevel;
 import aic12.project3.service.util.ManagementConfig;
 import aic12.project3.service.util.ManagementLogger;
 
-public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
+public class BalancingAlgorithmAsFastAsPossibleImpl implements IBalancingAlgorithm {
 
 	@Autowired private Statistics statistics;
 	@Autowired protected ManagementConfig config;
@@ -21,11 +21,11 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 	private int maxNodeCount;
 	private int minNodeCount;
 	
-	private Logger log = Logger.getLogger(BalancingAlgorithmStatisticsImpl.class);
+	private Logger log = Logger.getLogger(BalancingAlgorithmAsFastAsPossibleImpl.class);
 	private ManagementLogger managementLogger;
 	private String clazz;
 	
-	protected void init() {
+	public void init() {
 		 maxNodeCount = Integer.parseInt(config.getProperty("amountOfSentimentNodes"));
 		 minNodeCount = Integer.parseInt(config.getProperty("minimumNodes"));
 		 managementLogger = ManagementLogger.getInstance();
@@ -34,15 +34,13 @@ public class BalancingAlgorithmStatisticsImpl implements IBalancingAlgorithm {
 	
 	@Override
 	public synchronized int calculateNodeCount() {
-		int desiredNodeCount = maxNodeCount; // TODO better fallback
-		
 		statistics.calculateStatistics();
 		log.info(statistics);
 		double avgTweetProcessingDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
 		long numTweetsInQ = requestQReady.getNumberOfTweetsInQueue();
 		int runningNodes = highLvlNodeMan.getRunningNodesCount();
 		int nodeStartupTime = highLvlNodeMan.getNodeStartupTime();
-		desiredNodeCount = 1;
+		int desiredNodeCount = 1;
 
 		long expectedDuration = 0;
 		if(desiredNodeCount == 0) {
