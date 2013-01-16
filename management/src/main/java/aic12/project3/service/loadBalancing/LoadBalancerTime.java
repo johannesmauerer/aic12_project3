@@ -226,7 +226,7 @@ public class LoadBalancerTime extends LoadBalancer {
 		parent.getSubRequestsProcessed().add(req);
 		managementLogger.log(clazzName, LoggerLevel.INFO, "SubRequests processed: " + parent.getSubRequestsProcessed().size() + " not processed: " + parent.getSubRequestsNotProcessed().size());
 
-		if(parent.getAllPartsProcessed()) {
+		if(RequestSplitter.areAllPartsProcessed(parent)) {
 			managementLogger.log(clazzName, LoggerLevel.INFO, "Combination of parts started for " + parent.getCompanyName());
 			RequestSplitter.combineParts(parent);
 		}
