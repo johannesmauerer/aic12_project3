@@ -36,7 +36,7 @@ public abstract class LoadBalancer implements Observer
 {
 	@Autowired protected RequestQueueReady rqr;
 	@Autowired protected Statistics stats;
-	@Autowired protected ILowLevelNodeManager nm;
+	@Autowired protected ILowLevelNodeManager lowLvlNodeMan;
 	@Autowired protected ManagementConfig config;
 	@Autowired protected ManagementLogger managementLogger;
 	@Autowired protected ServersConfig serversConfig;
@@ -65,12 +65,6 @@ public abstract class LoadBalancer implements Observer
 	 * Initialize the Load Balancer (Check for nodes etc.)
 	 */
 	protected abstract void init();
-
-	/**
-	 * Deal with currently Idle nodes
-	 * @param id
-	 */
-	public abstract void idleNodeHandling(final String id);
 
 	/**
 	 * Accepts a processing request

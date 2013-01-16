@@ -43,7 +43,7 @@ public class RequestSplitter {
 			startDates[i] = cleanFrom.plusHours(hoursPerNode*i).toDate();
 			endDates[i] = cleanFrom.plusHours(hoursPerNode*(i+1)).toDate();
 			
-			logger.info("Dates for " + i + " set " + parts + " from " + startDates[i].toGMTString() + " to " + endDates[i].toGMTString());
+			logger.debug("Dates for " + i + " set " + parts + " from " + startDates[i].toGMTString() + " to " + endDates[i].toGMTString());
 		}
 		
 		// Save amount of parts in request
@@ -58,7 +58,7 @@ public class RequestSplitter {
 			s.setParentID(request.getId());
 			s.setFrom(startDates[i]);
 			s.setTo(endDates[i]);	
-			logger.info("Part " + i + " stored in Processing Queue");
+			logger.debug("Part " + i + " stored in Processing Queue");
 			request.getSubRequestsNotProcessed().add(s);
 		}
 		
