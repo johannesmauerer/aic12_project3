@@ -87,7 +87,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 					int nodesToStop = 0;
 					long newQDuration = -1;
 					do {
-						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes - nodesToStop) + nodeShutdownTime;
+						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes - nodesToStop);
 						nodesToStop++;
 						log.info("nodesToStop: " + nodesToStop);
 					} while(newQDuration < fifo.calculateAverage());
