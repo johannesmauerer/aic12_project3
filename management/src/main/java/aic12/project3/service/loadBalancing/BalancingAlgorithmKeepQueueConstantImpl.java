@@ -17,6 +17,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl implements IBalancingAlgori
 	@Autowired private RequestQueueReady requestQReady;
 	@Autowired private RequestAnalysis analysis;
 	@Autowired private IHighLevelNodeManager highLvlNodeMan;
+	@Autowired private LoadBalancerTime loadBalancer;
 	private int maxNodeCount;
 	private int minNodeCount;
 	
@@ -48,7 +49,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl implements IBalancingAlgori
 	@Override
 	public void startUsage() {
 		// start thread to overwatch balance
-		this.backgroundThread = new BalancingAlgorithmKeepQueueConstantImpl_Thread(statistics, requestQReady, highLvlNodeMan, managementLogger);
+		this.backgroundThread = new BalancingAlgorithmKeepQueueConstantImpl_Thread(statistics, requestQReady, highLvlNodeMan, managementLogger, loadBalancer);
 		this.backgroundThread.start();
 	}
 
