@@ -127,12 +127,10 @@ public class LoadBalancerTime extends LoadBalancer {
 				highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, this);
 				
 				// distribute work to already running nodes
-				synchronized (highLvlNodeMan) {
-					Node nodeForWork = highLvlNodeMan.getMostAvailableNode();
-					while(nodeForWork != null) {
-						startWorkOrStartIdleHandling_internal(nodeForWork);
-						nodeForWork = highLvlNodeMan.getMostAvailableNode();
-					}
+				Node nodeForWork = highLvlNodeMan.getMostAvailableNode();
+				while(nodeForWork != null) {
+					startWorkOrStartIdleHandling_internal(nodeForWork);
+					nodeForWork = highLvlNodeMan.getMostAvailableNode();
 				}
 				break;
 			
@@ -152,10 +150,8 @@ public class LoadBalancerTime extends LoadBalancer {
 		// get work
 		SentimentProcessingRequest req = processQueue.poll();
 		if (req != null){ // polling was successful, new work available
-			synchronized(highLvlNodeMan){
-				highLvlNodeMan.sendRequestToNode(n, req);
-				return true;
-			}
+			highLvlNodeMan.sendRequestToNode(n, req);
+			return true;
 		} else {
 			return false;
 		}
@@ -185,8 +181,6 @@ public class LoadBalancerTime extends LoadBalancer {
 	@Override
 	protected void updateInNode(Node node) {
 		if(node.getStatus() == NODE_STATUS.IDLE) {
-			// TODO decide if we should stop this node or give it new load
-			
 			startWorkOrStartIdleHandling_internal(node);
 		}
 	}

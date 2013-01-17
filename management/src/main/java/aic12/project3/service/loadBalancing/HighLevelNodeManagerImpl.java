@@ -50,6 +50,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public void stopNode(String id) {
+		managementLogger.log(clazz, LoggerLevel.INFO, "stopNode");
 		if(nodes.size() > minNodeCount) {
 			stopNode_internal(nodes.get(id));
 		} else {
@@ -58,12 +59,15 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	}
 
 	private void stopNode_internal(Node node) {
+		managementLogger.log(clazz, LoggerLevel.INFO, "stopNode_internal" + node.getIp());
 		nodes.remove(node.getId());
 		node.setStatus(NODE_STATUS.STOPPED);
 		lowLvlNodeMan.stopNode(node.getId());
+		managementLogger.log(clazz, LoggerLevel.INFO, "stopNode_internal finished!" + node.getIp());
 	}
 	
 	private void stopNodeSchedule(Node node) {
+		managementLogger.log(clazz, LoggerLevel.INFO, "stopNodeSchedule " + node.getIp());
 		node.setStatus(NODE_STATUS.SCHEDULED_FOR_STOP);
 	}
 	
@@ -134,9 +138,11 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	@Override
 	public void setNodeIdle(SentimentProcessingRequest request) {
 		Node node = this.processRequest_nodes.get(request.getId());
+		managementLogger.log(clazz, LoggerLevel.INFO, "setNodeIdle " + node.getIp());
 		
 		synchronized (node) {
 			if(node.getStatus() == NODE_STATUS.SCHEDULED_FOR_STOP) {
+				managementLogger.log(clazz, LoggerLevel.INFO, "node was scheduled for stop");
 				stopNode_internal(node);
 				return;
 			}
@@ -153,6 +159,9 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	@Override
 	public synchronized void runDesiredNumberOfNodes(int desiredNodeCount, Observer observer) {
+		if(desiredNodeCount > maxNodeCount) {
+			desiredNodeCount = maxNodeCount;
+		}
 		
 		int diff = desiredNodeCount - this.getRunningNodesCount();
 		if (diff > 0){
@@ -171,7 +180,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 		}
 	}
 	
-	private synchronized void scheduleAnyNodeForStopping_internal() {
+	private void scheduleAnyNodeForStopping_internal() {
 		if(nodes.size() <= minNodeCount) {
 			System.out.println("not scheduling for stopping, minNodeCount reached");
 			return;

@@ -38,7 +38,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 	public void run() {
 //		long _effectiveUpdateInterval = updateInterval;
 		
-		while(continueRunning ) {
+		while(continueRunning) {
 //			long _updateStart = System.currentTimeMillis();
 			log.info("periodic balancing update RUN");
 			

@@ -58,7 +58,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	 * Add a request (update or new)
 	 */
 	@Override
-	public void addRequest(SentimentRequest req) {
+	public synchronized void addRequest(SentimentRequest req) {
 		// Put request into Queue
 		readyQueue.put(req.getId(), req);
 
@@ -132,6 +132,9 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		synchronized(readyQueue) {
 			for(SentimentRequest req : requestsInQueue) {
 				totalNumTweets += analysis.getNumberOfTweetsForRequest(req);
+				for(SentimentProcessingRequest pReq : req.getSubRequestsProcessed()) {
+					totalNumTweets -= pReq.getNumberOfTweets();
+				}
 			}
 		}
 		return totalNumTweets;
