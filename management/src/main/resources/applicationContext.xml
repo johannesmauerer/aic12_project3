@@ -22,8 +22,8 @@
     <bean id="highLevelNodeManager" class="aic12.project3.service.loadBalancing.HighLevelNodeManagerImpl" init-method="init"/>
     
     <!-- balancing algorithms -->
-    <bean id="balancingAlgorithmAsFastAsPossibleImpl" class="aic12.project3.service.loadBalancing.BalancingAlgorithmAsFastAsPossibleImpl" />
-    <bean id="balancingAlgorithmKeepQueueConstantImpl" class="aic12.project3.service.loadBalancing.BalancingAlgorithmKeepQueueConstantImpl" />
+    <bean id="balancingAlgorithmAsFastAsPossibleImpl" class="aic12.project3.service.loadBalancing.BalancingAlgorithmAsFastAsPossibleImpl" init-method="init"/>
+    <bean id="balancingAlgorithmKeepQueueConstantImpl" class="aic12.project3.service.loadBalancing.BalancingAlgorithmKeepQueueConstantImpl" init-method="init"/>
     <bean id="balancingAlgorithmFactory" class="aic12.project3.service.loadBalancing.BalancingAlgorithmFactory" factory-method="getInstance" init-method="init" />
       
 </beans>
