@@ -72,8 +72,10 @@
 					</span>
 
 					<div id="clearLeft"></div>
-					<span style="visibility: hidden"> <f:ajax event="mouseout"
-							render="calFrom" /> <f:ajax event="mouseout" render="calTo" />
+					<span style=""> 
+						<f:ajax event="mouseout"
+							render="calFrom" /> 
+							<f:ajax event="mouseout" render="calTo" />
 						<h:outputText id="calFrom" value="#{sentimentRequest.from}" /> <h:outputText
 							id="calTo" value="#{sentimentRequest.to}" />
 					</span>
