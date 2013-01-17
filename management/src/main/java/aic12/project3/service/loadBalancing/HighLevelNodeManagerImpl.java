@@ -208,4 +208,9 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	public void addNodeStartupTime(long timeToStartup) {
 		startupTimes.add(timeToStartup);
 	}
+
+	@Override
+	public int getNodeShutdownTime() {
+		return getNodeStartupTime(); // we can't track shutdown times
+	}
 }

@@ -17,7 +17,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 	private IHighLevelNodeManager highLvlNodeMan;
 	private ManagementLogger managementLogger;
 	private String clazz = this.getClass().getName();
-	private long updateInterval = 2000;
+	private long updateInterval = 5000;
 	private FifoWithAverageCalculation fifo = new FifoWithAverageCalculation(100);
 	private LoadBalancerTime loadBalancer;
 	
@@ -46,6 +46,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 			log .info(statistics);
 			int runningNodes = highLvlNodeMan.getRunningNodesCount();
 			int nodeStartupTime = highLvlNodeMan.getNodeStartupTime();
+			int nodeShutdownTime = highLvlNodeMan.getNodeShutdownTime();
 			
 			double avgTweetProcessingDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
 //			long tweetsPerBalanceUpdateProcessedPerNode = (long) (_effectiveUpdateInterval / avgTweetProcessingDuration);
@@ -58,23 +59,24 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 
 				long expectedDuration = -1;
 				if(runningNodes == 0) {
-					expectedDuration = Long.MAX_VALUE;
+					expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, 1);
 				} else {
 					expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes);
 				}
+				fifo.add(expectedDuration);
 				log.info("Status now:\n#tweetsInQ: " + numTweetsInQ + 
 						"\nrunningNodes: " + runningNodes + 
 						"\nnodeStartupTime: " + nodeStartupTime + 
 						"\nexpectedDuration: " + expectedDuration);
-				fifo.add(expectedDuration);
-
-				long queueIncreaseToAvg = expectedDuration - fifo.calculateAverage();
+				
+				long avgOverTime = fifo.calculateAverage();
+				long queueIncreaseToAvg = expectedDuration - avgOverTime;
 				
 				if(queueIncreaseToAvg > 0) {
 					int nodesToAdd = 0;
 					long newQDuration = -1;
 					do {
-						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes + nodesToAdd);
+						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes + nodesToAdd) + nodeStartupTime;
 						nodesToAdd++;
 						log.info("nodesToAdd: " + nodesToAdd);
 					} while(newQDuration > fifo.calculateAverage());
@@ -85,13 +87,17 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 					int nodesToStop = 0;
 					long newQDuration = -1;
 					do {
-						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes - nodesToStop);
+						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes - nodesToStop) + nodeShutdownTime;
 						nodesToStop++;
 						log.info("nodesToStop: " + nodesToStop);
 					} while(newQDuration < fifo.calculateAverage());
 					nodesToStop--; // last run of loop was too much;
 					desiredNodeCount = runningNodes - nodesToStop;
 					log.info("nodes to STOP: " + nodesToStop);
+				}
+				
+				if(desiredNodeCount < 1) {
+					desiredNodeCount = 1; // we have work to do, can't stop everything now
 				}
 			} else {
 				desiredNodeCount = 0; // no tweets in Queue

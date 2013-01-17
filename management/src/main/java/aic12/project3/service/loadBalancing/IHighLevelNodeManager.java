@@ -46,4 +46,6 @@ public interface IHighLevelNodeManager {
 
 	public void addNodeStartupTime(long timeToStartup);
 
+	public int getNodeShutdownTime();
+
 }

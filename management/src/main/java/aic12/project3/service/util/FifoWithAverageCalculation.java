@@ -32,6 +32,9 @@ public class FifoWithAverageCalculation {
 		for(Long time : list) {
 			totalTime += time;
 		}
+		if(_curSize == 0) {
+			return (int) totalTime;
+		}
 		return (int) (totalTime/_curSize);
 	}
 
