@@ -63,8 +63,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	@Override
 	protected void updateInQueue(String id) {
 
-		// TODO: Remove
-		managementLogger.log(clazzName, LoggerLevel.INFO, "New Update in Request Queue");
+//		managementLogger.log(clazzName, LoggerLevel.INFO, "New Update in Request Queue");
 
 		if (requestQueueReady.getRequest(id) != null){
 			switch (requestQueueReady.getRequest(id).getState()){

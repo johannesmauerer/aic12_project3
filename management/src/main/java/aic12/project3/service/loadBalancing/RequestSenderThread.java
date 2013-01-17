@@ -46,7 +46,7 @@ public class RequestSenderThread extends Thread {
 				.path(serversConfig.getProperty("sentimentCallbackRestPath"))
 				.build();
 		
-		managementLogger.log(clazzName, LoggerLevel.INFO, uri.toString() + " prepared to send");
+//		managementLogger.log(clazzName, LoggerLevel.INFO, uri.toString() + " prepared to send");
 
 		ClientConfig config2 = new DefaultClientConfig();
 		config2.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true);

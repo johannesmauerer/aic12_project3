@@ -59,7 +59,7 @@ public class NodeAlivePollingThread extends Thread {
 			node.setIp(ip);
 			if (ip!=null && !ip.equals("")){
 				ipReady = true;
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Node with ip " + ip + " awake");
+//				managementLogger.log(clazzName, LoggerLevel.INFO, "Node with ip " + ip + " awake");
 			}
 			
 			// Now check if the tomcat server is running
@@ -73,11 +73,11 @@ public class NodeAlivePollingThread extends Thread {
 		        	 WebResource resource = client.resource("http://"+node.getIp()+":8080/analysis/sentiment/amialive");
 			            //SentimentProcessingRequest response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(SentimentProcessingRequest.class, request);
 
-				        logger .info("Checking if Node with IP " + node.getIp() + " has a running tomcat & sentiment deployment");
+				        logger .debug("Checking if Node with IP " + node.getIp() + " has a running tomcat & sentiment deployment");
 				        
 		            String response2 = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).get(String.class);
 		            if (response2.equals("alive")){
-		            	logger.debug("Node with IP " + node.getIp() + " IS RUNNING WITH TOMCAT! ALL GOOD");
+		            	logger.debug("*** Node with IP " + node.getIp() + " is alive and running with tomcat ***");
 		            	alive = true;
 		            }
 		            else managementLogger.log(clazzName, LoggerLevel.INFO, "There seems to be a problem with node with IP" + node.getIp());
@@ -97,7 +97,7 @@ public class NodeAlivePollingThread extends Thread {
 				String lastVisit = UUID.randomUUID().toString();
 				node.setLastVisitID(lastVisit);
 				
-				managementLogger.log(clazzName, LoggerLevel.INFO, node.getIp() + " is now alive and IDLE (after " + timeToStartup + "ms)");
+				managementLogger.log(clazzName, LoggerLevel.INFO, "*** " + node.getIp() + " is now alive and IDLE (after " + timeToStartup + "ms)");
 
 			} else {
 				// Wait for specified Time

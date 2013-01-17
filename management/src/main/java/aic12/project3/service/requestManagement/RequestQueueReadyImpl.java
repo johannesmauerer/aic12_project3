@@ -75,7 +75,6 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		super.setChanged();
 		super.notifyObservers(req.getId());
 
-		// TODO: Remove
 		managementLogger.log(clazzName, LoggerLevel.INFO, "Request added");
 	}
 

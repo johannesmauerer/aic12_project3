@@ -174,7 +174,7 @@ public class LoadBalancerTime extends LoadBalancer {
 			RequestSplitter.combineParts(parent);
 			// TODO notify GUI? set status of SentimentRequest?
 		}
-		managementLogger.log(clazzName, LoggerLevel.INFO, "Change node status to idle");
+//		managementLogger.log(clazzName, LoggerLevel.INFO, "Change node status to idle");
 		highLvlNodeMan.setNodeIdle(req);
 	}
 
