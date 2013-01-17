@@ -179,14 +179,21 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 		
 		synchronized (nodes) {
 			Iterator<Node> it = nodes.values().iterator();
-			if(it.hasNext()) {
+			while(it.hasNext()) {
 				Node nodeToStop = it.next();
-				stopNodeSchedule(nodeToStop);
-			} else {
-				System.out.println("warning: scheduleAnyNodeForStopping_internal called and no node available");
+				if(nodeIsRunning_internal(nodeToStop)) {
+					stopNodeSchedule(nodeToStop);
+					System.out.println("node " + nodeToStop.getIp() + " has been scheduled for being stopped");
+					return;
+				}
 			}
+			System.out.println("warning: scheduleAnyNodeForStopping_internal called and no node available");
 		}
-		System.out.println("node has been scheduled for being stopped");
+	}
+
+	private boolean nodeIsRunning_internal(Node node) {
+		return node.getStatus() == NODE_STATUS.IDLE || node.getStatus() == NODE_STATUS.BUSY;
+		
 	}
 
 	@Override

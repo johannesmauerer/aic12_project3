@@ -51,56 +51,60 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 //			long tweetsPerBalanceUpdateProcessedTotal = tweetsPerBalanceUpdateProcessedPerNode * runningNodes;
 			
 			long numTweetsInQ = requestQReady.getNumberOfTweetsInQueue();
-			
-			long expectedDuration = -1;
-			if(runningNodes == 0) {
-				expectedDuration = Long.MAX_VALUE;
-			} else {
-				expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes);
-			}
-			log.info("Status now:\n#tweetsInQ: " + numTweetsInQ + 
-					"\nrunningNodes: " + runningNodes + 
-					"\nnodeStartupTime: " + nodeStartupTime + 
-					"\nexpectedDuration: " + expectedDuration);
-			fifo.add(expectedDuration);
-
 			int desiredNodeCount = 0;
-			long queueIncreaseToAvg = expectedDuration - fifo.calculateAverage();
-			if(queueIncreaseToAvg > 0) {
-				int nodesToAdd = 0;
-				long newQDuration = -1;
-				do {
-					newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes + nodesToAdd);
-					nodesToAdd++;
-				} while(newQDuration > fifo.calculateAverage());
-				nodesToAdd--; // last run of loop was too much;
-				
-				log.info("nodes to ADD: " + nodesToAdd);
-				desiredNodeCount = runningNodes + nodesToAdd;
-			} else {
-				int nodesToStop = 0;
-				long newQDuration = -1;
-				do {
-					newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes - nodesToStop);
-					nodesToStop--;
-				} while(newQDuration < fifo.calculateAverage());
-				nodesToStop++; // last run of loop was too much;
-				
-				log.info("nodes to STOP: " + nodesToStop);
-			}
 			
+			if(numTweetsInQ != 0) {
+
+				long expectedDuration = -1;
+				if(runningNodes == 0) {
+					expectedDuration = Long.MAX_VALUE;
+				} else {
+					expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes);
+				}
+				log.info("Status now:\n#tweetsInQ: " + numTweetsInQ + 
+						"\nrunningNodes: " + runningNodes + 
+						"\nnodeStartupTime: " + nodeStartupTime + 
+						"\nexpectedDuration: " + expectedDuration);
+				fifo.add(expectedDuration);
+
+				long queueIncreaseToAvg = expectedDuration - fifo.calculateAverage();
+				
+				if(queueIncreaseToAvg > 0) {
+					int nodesToAdd = 0;
+					long newQDuration = -1;
+					do {
+						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes + nodesToAdd);
+						nodesToAdd++;
+					} while(newQDuration > fifo.calculateAverage());
+					nodesToAdd--; // last run of loop was too much;
+					desiredNodeCount = runningNodes + nodesToAdd;
+					log.info("nodes to ADD: " + nodesToAdd);
+				} else if(queueIncreaseToAvg < 0) {
+					int nodesToStop = 0;
+					long newQDuration = -1;
+					do {
+						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes - nodesToStop);
+						nodesToStop--;
+					} while(newQDuration < fifo.calculateAverage());
+					nodesToStop++; // last run of loop was too much;
+					desiredNodeCount = runningNodes - nodesToStop;
+					log.info("nodes to STOP: " + nodesToStop);
+				}
+			} else {
+				desiredNodeCount = 0; // no tweets in Queue
+			}
+
 			managementLogger.log(clazz, LoggerLevel.INFO, "desiredNodes calculated: * " + desiredNodeCount + " * setting in nodeManager");
 			log.info("expectedDuration: " + calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, desiredNodeCount));
 			highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, loadBalancer);
 
-			
 			try {
 				Thread.sleep(updateInterval);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-//			_effectiveUpdateInterval = _updateStart - System.currentTimeMillis();
+			//			_effectiveUpdateInterval = _updateStart - System.currentTimeMillis();
 		}
 	}
 
