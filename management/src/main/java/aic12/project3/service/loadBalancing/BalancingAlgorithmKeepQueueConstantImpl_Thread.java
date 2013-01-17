@@ -17,8 +17,8 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 	private IHighLevelNodeManager highLvlNodeMan;
 	private ManagementLogger managementLogger;
 	private String clazz = this.getClass().getName();
-	private long updateInterval = 5000;
-	private FifoWithAverageCalculation fifo = new FifoWithAverageCalculation(100);
+	private long updateInterval = 20000;
+	private FifoWithAverageCalculation fifo = new FifoWithAverageCalculation(200);
 	private LoadBalancerTime loadBalancer;
 	
 	public BalancingAlgorithmKeepQueueConstantImpl_Thread(
@@ -48,6 +48,8 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 			int nodeStartupTime = highLvlNodeMan.getNodeStartupTime();
 			int nodeShutdownTime = highLvlNodeMan.getNodeShutdownTime();
 			
+//			updateInterval = nodeStartupTime; // updating too often isn't useful
+			
 			double avgTweetProcessingDuration = statistics.getStatistics().getAverageTotalDurationPerTweet();
 //			long tweetsPerBalanceUpdateProcessedPerNode = (long) (_effectiveUpdateInterval / avgTweetProcessingDuration);
 //			long tweetsPerBalanceUpdateProcessedTotal = tweetsPerBalanceUpdateProcessedPerNode * runningNodes;
@@ -75,22 +77,35 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 				if(queueIncreaseToAvg > 0) {
 					int nodesToAdd = 0;
 					long newQDuration = -1;
+					
 					do {
 						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes + nodesToAdd) + nodeStartupTime;
 						nodesToAdd++;
 						log.info("nodesToAdd: " + nodesToAdd);
+						if(nodesToAdd > (Math.ceil(highLvlNodeMan.getMaxNodeCount() / (double) 2) + 1)) {
+							// never start too many nodes at once
+							break;
+						}
 					} while(newQDuration > fifo.calculateAverage());
+					
 					nodesToAdd--; // last run of loop was too much;
 					desiredNodeCount = runningNodes + nodesToAdd;
 					log.info("nodes to ADD: " + nodesToAdd);
+					
 				} else if(queueIncreaseToAvg < 0) {
 					int nodesToStop = 0;
 					long newQDuration = -1;
+					
 					do {
 						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes - nodesToStop);
 						nodesToStop++;
 						log.info("nodesToStop: " + nodesToStop);
+						if(nodesToStop > (Math.ceil(highLvlNodeMan.getMaxNodeCount() / (double) 2) + 1)) {
+							// never stop too many nodes at once
+							break;
+						}
 					} while(newQDuration < fifo.calculateAverage());
+					
 					nodesToStop--; // last run of loop was too much;
 					desiredNodeCount = runningNodes - nodesToStop;
 					log.info("nodes to STOP: " + nodesToStop);

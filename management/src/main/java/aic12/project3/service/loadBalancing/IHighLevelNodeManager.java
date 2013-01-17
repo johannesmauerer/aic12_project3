@@ -48,4 +48,8 @@ public interface IHighLevelNodeManager {
 
 	public int getNodeShutdownTime();
 
+	int getMaxNodeCount();
+
+	int getMinNodeCount();
+
 }

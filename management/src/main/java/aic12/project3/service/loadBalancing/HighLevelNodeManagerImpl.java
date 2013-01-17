@@ -222,4 +222,14 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	public int getNodeShutdownTime() {
 		return getNodeStartupTime(); // we can't track shutdown times
 	}
+
+	@Override
+	public int getMaxNodeCount() {
+		return maxNodeCount;
+	}
+
+	@Override
+	public int getMinNodeCount() {
+		return minNodeCount;
+	}
 }
