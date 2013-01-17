@@ -207,6 +207,7 @@ public class LoadBalancerTime extends LoadBalancer {
 
 	@Override
 	public void setBalancingAlgorithm(IBalancingAlgorithm alg) {
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Changing balancing algorithm to " + alg);
 		this.balancingAlgorithm.stopUsage();
 		this.balancingAlgorithm = alg;
 		this.balancingAlgorithm.startUsage();

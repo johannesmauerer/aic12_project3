@@ -40,6 +40,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 		
 		while(continueRunning ) {
 //			long _updateStart = System.currentTimeMillis();
+			log.info("periodic balancing update RUN");
 			
 			statistics.calculateStatistics();
 			log .info(statistics);
@@ -75,6 +76,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 					do {
 						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes + nodesToAdd);
 						nodesToAdd++;
+						log.info("nodesToAdd: " + nodesToAdd);
 					} while(newQDuration > fifo.calculateAverage());
 					nodesToAdd--; // last run of loop was too much;
 					desiredNodeCount = runningNodes + nodesToAdd;
@@ -84,9 +86,10 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 					long newQDuration = -1;
 					do {
 						newQDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, runningNodes - nodesToStop);
-						nodesToStop--;
+						nodesToStop++;
+						log.info("nodesToStop: " + nodesToStop);
 					} while(newQDuration < fifo.calculateAverage());
-					nodesToStop++; // last run of loop was too much;
+					nodesToStop--; // last run of loop was too much;
 					desiredNodeCount = runningNodes - nodesToStop;
 					log.info("nodes to STOP: " + nodesToStop);
 				}
@@ -98,6 +101,7 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 			log.info("expectedDuration: " + calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, desiredNodeCount));
 			highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, loadBalancer);
 
+			log.info("periodic balancing update RUN ENDED - sleeping now");
 			try {
 				Thread.sleep(updateInterval);
 			} catch (InterruptedException e) {
