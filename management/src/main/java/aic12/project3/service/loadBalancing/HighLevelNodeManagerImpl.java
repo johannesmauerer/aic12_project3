@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Observer;
 
@@ -35,6 +37,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 	private int minNodeCount;
 	
 	private String clazz = this.getClass().getName();
+	private List<String> nodesToBeStopped = Collections.synchronizedList(new LinkedList<String>());
 	
 	public void init() {
 		int size = Integer.parseInt(config.getProperty("nodeStartupTimesCache"));
@@ -60,14 +63,16 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 
 	private void stopNode_internal(Node node) {
 		managementLogger.log(clazz, LoggerLevel.INFO, "stopNode_internal" + node.getIp());
-		nodes.remove(node.getId());
 		node.setStatus(NODE_STATUS.STOPPED);
+		nodes.remove(node.getId());
+		nodesToBeStopped.remove(node.getId());
 		lowLvlNodeMan.stopNode(node.getId());
 		managementLogger.log(clazz, LoggerLevel.INFO, "stopNode_internal finished!" + node.getIp());
 	}
 	
 	private void stopNodeSchedule(Node node) {
 		managementLogger.log(clazz, LoggerLevel.INFO, "stopNodeSchedule " + node.getIp());
+		nodesToBeStopped.add(node.getId());
 		node.setStatus(NODE_STATUS.SCHEDULED_FOR_STOP);
 	}
 	
@@ -174,7 +179,7 @@ public class HighLevelNodeManagerImpl implements IHighLevelNodeManager {
 				}
 			}
 		} else if (diff < 0) {
-			for(int i = diff; i < 0; i++) {
+			for(int i = diff + nodesToBeStopped.size(); i < 0; i++) {
 				scheduleAnyNodeForStopping_internal();
 			}
 		}
