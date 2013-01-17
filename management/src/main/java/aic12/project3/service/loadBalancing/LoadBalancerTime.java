@@ -112,19 +112,19 @@ public class LoadBalancerTime extends LoadBalancer {
 
 			switch (request.getState()){
 			case READY_TO_PROCESS:
-				managementLogger.log(clazzName, LoggerLevel.INFO, "Time to split");
 				int parts = balancingAlgorithm.calculatePartsCountForRequest(request);
+				managementLogger.log(clazzName, LoggerLevel.INFO, "splitting request in " + parts + " parts");
 				RequestSplitter.splitRequest(request, parts);
 				break;
 
 			case SPLIT:
-				managementLogger.log(clazzName, LoggerLevel.INFO, "request was split");
 				// fill processQueue
 				processQueue.addAll(request.getSubRequestsNotProcessed());
 
 				// update needed nodes
 				int desiredNodeCount = balancingAlgorithm.calculateNodeCountOnNewRequest();
 				highLvlNodeMan.runDesiredNumberOfNodes(desiredNodeCount, this);
+				managementLogger.log(clazzName, LoggerLevel.INFO, "starting nodes");
 				
 				// distribute work to already running nodes
 				Node nodeForWork = highLvlNodeMan.getMostAvailableNode();

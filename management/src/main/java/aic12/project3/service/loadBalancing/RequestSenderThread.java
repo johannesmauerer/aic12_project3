@@ -59,6 +59,6 @@ public class RequestSenderThread extends Thread {
 		request.setCallbackAddress(callbackURL);
 
 		logger.debug("response from node: " + service.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, request));
-		managementLogger.log(clazzName, LoggerLevel.INFO, "SentimentProcessingRequest with id " + request.getId() + " has been sent to Node " + node.getIp() + " which has state " + node.getStatus());
+		managementLogger.log(clazzName, LoggerLevel.INFO, "ProcessingRequest sent to Node " + node.getIp() + " node state; " + node.getStatus());
 	}
 }

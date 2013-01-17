@@ -48,7 +48,7 @@ public class BalancingAlgorithmAsFastAsPossibleImpl implements IBalancingAlgorit
 		} else {
 			expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, desiredNodeCount);
 		}
-		log.info("\n#tweetsInQ: " + numTweetsInQ + 
+		log.info("Current statistics:\n#tweetsInQ: " + numTweetsInQ + 
 				"\nrunningNodes: " + runningNodes + 
 				"\nnodeStartupTime: " + nodeStartupTime + 
 				"\nexpectedDuration: " + expectedDuration);
@@ -59,7 +59,7 @@ public class BalancingAlgorithmAsFastAsPossibleImpl implements IBalancingAlgorit
 			desiredNodeCount++;
 			expectedDuration = calculateExpDuration(numTweetsInQ, avgTweetProcessingDuration, desiredNodeCount);
 		}
-		managementLogger.log(clazz, LoggerLevel.INFO, "desiredNodes calculated: * " + desiredNodeCount + " *");
+		managementLogger.log(clazz, LoggerLevel.INFO, "desiredNodes calculated: ** " + desiredNodeCount + " **");
 		log.info("expectedDuration: " + expectedDuration);
 		
 		return desiredNodeCount;

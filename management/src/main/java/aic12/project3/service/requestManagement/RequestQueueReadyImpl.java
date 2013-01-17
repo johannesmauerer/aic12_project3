@@ -62,8 +62,6 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		// Put request into Queue
 		readyQueue.put(req.getId(), req);
 
-		// TODO: ENable
-		// And save request to DB
 		saveRequestToDB(req.getId());
 
 		// Delete request from queue if done
@@ -75,7 +73,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		super.setChanged();
 		super.notifyObservers(req.getId());
 
-		managementLogger.log(clazzName, LoggerLevel.INFO, "Request added");
+//		managementLogger.log(clazzName, LoggerLevel.INFO, "Request added");
 	}
 
 	/**

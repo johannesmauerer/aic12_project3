@@ -38,7 +38,8 @@ public class ManagementLogger {
 	public void log(String Clazz, LoggerLevel level, String message){
 		
 		// First append to aggregate Message
-		String msg = level + ": from " + Clazz + " - " + message;
+//		String msg = level + ": from " + Clazz + " - " + message;
+		String msg = Clazz + ": " + message;
 		aggregateMessage +=  msg + "\n";
 		
 		// now Switch between the levels
