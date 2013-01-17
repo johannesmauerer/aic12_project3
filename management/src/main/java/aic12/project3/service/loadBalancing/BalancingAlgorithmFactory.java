@@ -4,23 +4,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BalancingAlgorithmFactory {
-	private Map<String, IBalancingAlgorithm> algMap = new HashMap<String, IBalancingAlgorithm>();
+import org.springframework.beans.factory.annotation.Autowired;
 
-	private static BalancingAlgorithmFactory instance = new BalancingAlgorithmFactory().init();
+public class BalancingAlgorithmFactory {
+	private Map<String, IBalancingAlgorithm> algMap;
+	@Autowired private BalancingAlgorithmAsFastAsPossibleImpl def;
+	@Autowired private BalancingAlgorithmKeepQueueConstantImpl queue;
+	private static BalancingAlgorithmFactory instance = new BalancingAlgorithmFactory();
 	
 	private BalancingAlgorithmFactory() { }
 	
-	private BalancingAlgorithmFactory init() {
-		IBalancingAlgorithm def = new BalancingAlgorithmAsFastAsPossibleImpl();
-		def.init();
+	public void init() {
+		algMap = new HashMap<String, IBalancingAlgorithm>();
 		algMap.put("default", def);
-		
-		IBalancingAlgorithm queue = new BalancingAlgorithmKeepQueueConstantImpl();
-		queue.init();
 		algMap.put("queue", queue);
-
-		return this;
 	}
 
 	public static BalancingAlgorithmFactory getInstance() {

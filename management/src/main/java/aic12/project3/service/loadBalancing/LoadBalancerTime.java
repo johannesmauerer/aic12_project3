@@ -56,6 +56,7 @@ public class LoadBalancerTime extends LoadBalancer {
 	private IBalancingAlgorithm balancingAlgorithm;
 	private Logger log = Logger.getLogger(LoadBalancerTime.class);
 	private int nodeIdleTimeout;
+	@Autowired private BalancingAlgorithmFactory balancingFactory;
 
 	private LoadBalancerTime(){
 	}
@@ -94,7 +95,7 @@ public class LoadBalancerTime extends LoadBalancer {
 			highLvlNodeMan.startNode().addObserver(this);
 		}
 		
-		balancingAlgorithm = BalancingAlgorithmFactory.getInstance().getAlgorithm("default");
+		balancingAlgorithm = balancingFactory.getAlgorithm("default");
 
 		managementLogger.log(clazzName, LoggerLevel.INFO, "init done");
 	}
