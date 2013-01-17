@@ -105,6 +105,9 @@ public class BalancingAlgorithmKeepQueueConstantImpl_Thread extends Thread {
 	}
 
 	private long calculateExpDuration(long numTweetsInQ, double avgTweetProcessingDuration, int nodes) {
+		if(nodes == 0) {
+			return Long.MAX_VALUE;
+		}
 		return (long) (numTweetsInQ * avgTweetProcessingDuration) / nodes;
 	}
 	
