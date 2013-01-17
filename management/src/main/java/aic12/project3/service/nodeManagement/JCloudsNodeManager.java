@@ -44,9 +44,7 @@ public class JCloudsNodeManager implements ILowLevelNodeManager{
 
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			public void uncaughtException(Thread t, Throwable e) {
-				if (compute != null) close();
 				e.printStackTrace();
-				System.exit(1);
 			}
 		});
 
@@ -93,23 +91,27 @@ public class JCloudsNodeManager implements ILowLevelNodeManager{
 
 		init();
 
-		for (String zone: zones) {			
+		try {
+			for (String zone: zones) {			
 
-			ServerApi serverApi = nova.getApi().getServerApiForZone(zone);	
-			ServerCreated created = serverApi.create(name, image, flavor);
+				ServerApi serverApi = nova.getApi().getServerApiForZone(zone);	
+				ServerCreated created = serverApi.create(name, image, flavor);
 
-			if(created != null){
+				if(created != null){
 
-				close();
-				Node n = new Node(created.getName(), created.getId());
+					close();
+					Node n = new Node(created.getName(), created.getId());
 
-				// TODO: Please change to actually make it work :)
-				n.setIp(this.getIp(created.getId()));
-				return n;
+					// TODO: Please change to actually make it work :)
+					n.setIp(this.getIp(created.getId()));
+					return n;
+				}
 			}
-		}
 
-		close();
+			close();
+		} catch (org.jclouds.rest.InsufficientResourcesException e) {
+			logger.warn("not enough resources from JClouds");
+		}
 		return null;
 	}
 
