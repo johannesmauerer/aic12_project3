@@ -60,65 +60,72 @@
 						</p>
 
 						<div id="clearLeft"></div>
-						<span id="calenderInput">
-							<div id="calendarText">
-								<h4>To:</h4>
-							</div>
-							<div id="calendar">
-								<rich:calendar value="#{sentimentRequest.to}" popup="true"
-									time="dd/MM/yyyy" showInput="true" cellWidth="24px"
-									cellHeight="22px" style="width:200px" required="true" />
-							</div>
-						</span>
-						<div id="clearLeft"></div>
-
-						<div id="buttons">
-
-							<h:form>
-								<h:commandButton id="analysis" value="Start analysis" action="#{sentimentRequest.sendToAnalysis}">
-									<f:ajax event="action" render="analysis" execute="@this" />
-								</h:commandButton>
-								<h:commandButton id="result" value="Show Response" action="#{sentimentRequest.getResponseFromDB}" 
-									onclick="document.getElementById('lastRequestSpan').style.visibility='visible';">									
-									<f:ajax event="action" render="lastRequest" execute="@this" />
-								</h:commandButton>
-							
-								<br/>
-								<!-- LOGGING OUTPUT -->
-								<h:inputTextarea id="logging" value="#{logging.logMessage}"
-									cols="100" rows="40"/>
-															
-								<div id="scrollableTable">
-									<br />
-									<span id="lastRequestSpan" style="visibility:hidden">
-										<h:panelGrid id="lastRequest" columns="7" border="1" cellpadding="0" cellspacing="2">
-	
-											<f:facet name="header">
-												<h:outputText id="title" value="RESULT OF YOUR LAST REQUEST" />
-											</f:facet>
-	
-											<h:outputText value="Company Name" />
-											<h:outputText value="From" />
-											<h:outputText value="To" />
-											<h:outputText value="Number of Tweets" />
-											<h:outputText value="Minimum" />
-											<h:outputText value="Maximum" />
-											<h:outputText value="Sentiment" />
-	
-											<h:outputText value="#{sentimentRequest.response.companyName}" />
-											<h:outputText value="#{sentimentRequest.response.from}" />
-											<h:outputText value="#{sentimentRequest.response.to}" />
-											<h:outputText value="#{sentimentRequest.numberOfTweets}" />
-											<h:outputText value="#{sentimentRequest.minimumSentiment}" />
-											<h:outputText value="#{sentimentRequest.maximumSentiment}" />
-											<h:outputText value="#{sentimentRequest.sentiment}" />
-	
-										</h:panelGrid>
-									</span>
-								</div>
-							</h:form>
+					<span id="calenderInput">
+						<div id="calendarText">
+							<h4>To:</h4>
 						</div>
-					</h:form>
+						<div id="calendar">
+							<rich:calendar value="#{sentimentRequest.to}" popup="true"
+								time="dd/MM/yyyy" showInput="true" cellWidth="24px"
+								cellHeight="22px" style="width:200px" required="true" />
+						</div>
+					</span>
+
+					<div id="clearLeft"></div>
+					<span style="visibility: hidden"> <f:ajax event="mouseout"
+							render="calFrom" /> <f:ajax event="mouseout" render="calTo" />
+						<h:outputText id="calFrom" value="#{sentimentRequest.from}" /> <h:outputText
+							id="calTo" value="#{sentimentRequest.to}" />
+					</span>
+					<div id="buttons">
+
+						<h:form>
+							<h:commandButton id="analysis" value="Start analysis"
+								action="#{sentimentRequest.sendToAnalysis}">
+								<f:ajax event="action" render="analysis" execute="@this" />
+							</h:commandButton>
+							<h:commandButton id="result" value="Show Response"
+								action="#{sentimentRequest.getResponseFromDB}"
+								onclick="document.getElementById('lastRequestSpan').style.visibility='visible';">
+								<f:ajax event="action" render="lastRequest" execute="@this" />
+							</h:commandButton>
+
+							<br />
+							<!-- LOGGING OUTPUT -->
+							<h:inputTextarea id="logging" value="#{logging.logMessage}"
+								cols="100" rows="40" />
+
+							<div id="scrollableTable">
+								<br /> <span id="lastRequestSpan" style="visibility: hidden">
+									<h:panelGrid id="lastRequest" columns="7" border="1"
+										cellpadding="0" cellspacing="2">
+
+										<f:facet name="header">
+											<h:outputText id="title" value="RESULT OF YOUR LAST REQUEST" />
+										</f:facet>
+
+										<h:outputText value="Company Name" />
+										<h:outputText value="From" />
+										<h:outputText value="To" />
+										<h:outputText value="Number of Tweets" />
+										<h:outputText value="Minimum" />
+										<h:outputText value="Maximum" />
+										<h:outputText value="Sentiment" />
+
+										<h:outputText value="#{sentimentRequest.response.companyName}" />
+										<h:outputText value="#{sentimentRequest.response.from}" />
+										<h:outputText value="#{sentimentRequest.response.to}" />
+										<h:outputText value="#{sentimentRequest.numberOfTweets}" />
+										<h:outputText value="#{sentimentRequest.minimumSentiment}" />
+										<h:outputText value="#{sentimentRequest.maximumSentiment}" />
+										<h:outputText value="#{sentimentRequest.sentiment}" />
+
+									</h:panelGrid>
+								</span>
+							</div>
+						</h:form>
+					</div>
+				</h:form>
 				</div>
 
 				<div id="footer">

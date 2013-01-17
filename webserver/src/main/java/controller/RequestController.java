@@ -64,6 +64,7 @@ public class RequestController implements Serializable{
 		SentimentRequest request = new SentimentRequest();
 		request.setId(generatedId.toString());
 		request.setCompanyName(this.companyName);
+		System.out.println("Date from: " + this.from);
 		request.setFrom(this.from);
 		request.setTo(this.to);
 		request.setState(REQUEST_QUEUE_STATE.NEW);
