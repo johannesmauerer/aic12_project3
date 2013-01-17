@@ -92,7 +92,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 	@Override
 	protected void saveRequestToDB(String id){
 		// TODO
-		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving Request to DB");
+		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving Request to DB id: " + id);
 		SentimentRequest s = readyQueue.get(id);
 
 		URI uri = UriBuilder.fromUri(serversConfig.getProperty("databaseServer"))
@@ -101,7 +101,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 				.path("insert")
 				.build();
 
-		managementLogger.log(clazzName, LoggerLevel.INFO, "Database Server is " + serversConfig.getProperty("databaseServer"));
+//		managementLogger.log(clazzName, LoggerLevel.INFO, "Database Server is " + serversConfig.getProperty("databaseServer"));
 
 		// Jersey Client Config
 		ClientConfig config = new DefaultClientConfig();
@@ -111,7 +111,7 @@ public class RequestQueueReadyImpl extends RequestQueueReady {
 		WebResource resource = client.resource(uri);
 		ClientResponse resp = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).post(ClientResponse.class, s);
 
-		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving done");
+//		managementLogger.log(clazzName, LoggerLevel.INFO, "Saving done");
 
 
 	}

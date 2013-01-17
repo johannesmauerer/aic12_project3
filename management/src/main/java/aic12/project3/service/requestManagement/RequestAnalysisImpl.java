@@ -44,6 +44,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 	@Override
 	public void acceptRequest(SentimentRequest req) {
 		if (req.getState() == REQUEST_QUEUE_STATE.NEW){
+			requestQueueReady.addObserver(this);
 			// Add Request to queue first
 			requestQueueReady.addRequest(req);
 
@@ -68,12 +69,12 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 		if (requestQueueReady.getRequest(id) != null){
 			switch (requestQueueReady.getRequest(id).getState()){
 			case NEW:
-				logger.info("New Update in Request Queue - NEW");
+//				logger.info("New Update in Request Queue - NEW");
 				// Never applicable
 				break;
 
 			case DOWNLOADED:
-				logger.info("New Update in Request Queue - DOWNLOADED");
+//				logger.info("New Update in Request Queue - DOWNLOADED");
 				break;
 
 			case FINISHED:
@@ -88,7 +89,7 @@ public class RequestAnalysisImpl extends RequestAnalysis {
 				break;
 
 			default:
-				logger.debug("New Update in Request Queue - ### DEFAULT BRANCH");
+//				logger.debug("New Update in Request Queue - ### DEFAULT BRANCH");
 				break;
 			}			
 		}

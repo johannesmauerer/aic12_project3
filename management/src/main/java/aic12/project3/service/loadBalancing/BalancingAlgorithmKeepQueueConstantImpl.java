@@ -40,9 +40,6 @@ public class BalancingAlgorithmKeepQueueConstantImpl implements IBalancingAlgori
 	public int calculatePartsCountForRequest(SentimentRequest request) {
 		int defaultTweetsPerPart = Integer.parseInt(config.getProperty("defaultNumberOfTweetsPerPart"));
 		int parts = new Double(Math.ceil(analysis.getNumberOfTweetsForRequest(request) / (double) defaultTweetsPerPart)).intValue();
-		
-		// TODO take node speed into account
-		
 		return parts;
 	}
 	

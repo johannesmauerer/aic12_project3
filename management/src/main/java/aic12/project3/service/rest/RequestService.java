@@ -53,6 +53,7 @@ public class RequestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void acceptRequest(SentimentRequest req){
 		// Send Information to Communication Service
+		logger.info("accepting request " + req);
 		serv.acceptRequest(req);
 	}
 
