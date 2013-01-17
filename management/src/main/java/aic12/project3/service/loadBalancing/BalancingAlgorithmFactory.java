@@ -7,9 +7,11 @@ import java.util.Map;
 public class BalancingAlgorithmFactory {
 	private Map<String, IBalancingAlgorithm> algMap = new HashMap<String, IBalancingAlgorithm>();
 
-	private static BalancingAlgorithmFactory instance = new BalancingAlgorithmFactory();
+	private static BalancingAlgorithmFactory instance = new BalancingAlgorithmFactory().init();
 	
-	private BalancingAlgorithmFactory() {
+	private BalancingAlgorithmFactory() { }
+	
+	private BalancingAlgorithmFactory init() {
 		IBalancingAlgorithm def = new BalancingAlgorithmAsFastAsPossibleImpl();
 		def.init();
 		algMap.put("default", def);
@@ -17,8 +19,10 @@ public class BalancingAlgorithmFactory {
 		IBalancingAlgorithm queue = new BalancingAlgorithmKeepQueueConstantImpl();
 		queue.init();
 		algMap.put("queue", queue);
+
+		return this;
 	}
-	
+
 	public static BalancingAlgorithmFactory getInstance() {
 		return instance;
 	}
